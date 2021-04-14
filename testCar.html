@@ -14,7 +14,7 @@
 <body style='overflow:hidden'> 
 
 <div id='heading'>
-	<h3 style = "color:red">init</h3>
+	<h3 style = "color:red">Car</h3>
 </div>
 <audio id="collisionsound" style="display:none">
 <source src="https://jyunming-chen.github.io/game3js/gameHWhelpers/sounds/collision3.wav" type='audio/wav'>
@@ -31,6 +31,19 @@ import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoade
 
 var camera, scene, renderer;
 var clock = new THREE.Clock();
+var car;
+
+class Car{
+	constructor(body, wheelF, wheelBL, wheelBR){
+		this.body = body;
+		this.wheelF = wheelF;
+		this.wheelBL = wheelBL;
+		this.wheelBR = wheelBR;
+		this.mesh = new THREE.Group();
+		this.mesh.add(this.body, this.wheelF, this.wheelBL, this.wheelBR);
+		scene.add(this.mesh);
+	}
+}
 
 init();
 animate();
@@ -53,7 +66,9 @@ function init() {
 	
 	var light = new THREE.PointLight( 0xffffff, 1, 1000 );
 	scene.add( light );
-
+	
+	car = buildCar();
+	
 }
 
 function onWindowResize() {
@@ -65,11 +80,33 @@ function onWindowResize() {
 function animate() {
 	var dt = clock.getDelta();
 	
+	  
+	
 	renderer.render(scene,camera);
 	requestAnimationFrame( animate );
 }
 
-
+function buildCar(){
+	let ccar;
+	let cube = new THREE.Mesh( new THREE.BoxGeometry( 40, 20, 10 )
+		, new THREE.MeshBasicMaterial( {color: 0x0091ff, opacity:0.7, transparent: true} ) );
+	let wheelF = new THREE.Mesh( new THREE.CylinderGeometry( 5, 5, 2, 32 )
+		, new THREE.MeshBasicMaterial( {color: 0xf6ff00} ) );
+	let wheelBL = new THREE.Mesh( new THREE.CylinderGeometry( 5, 5, 2, 32 )
+		, new THREE.MeshBasicMaterial( {color: 0xf6ff00} ) );
+	let wheelBR = new THREE.Mesh( new THREE.CylinderGeometry( 5, 5, 2, 32 )
+		, new THREE.MeshBasicMaterial( {color: 0xf6ff00} ) );
+	ccar = new Car(cube, wheelF, wheelBL, wheelBR);
+	cube.rotation.x = Math.PI/2;
+	cube.position.y = 8;
+	wheelF.rotation.x = Math.PI/2;
+	wheelBL.rotation.x = Math.PI/2;
+	wheelBR.rotation.x = Math.PI/2;
+	wheelF.position.set(15, 3, 0);
+	wheelBL.position.set(-15, 3, -10);
+	wheelBR.position.set(-15, 3, 10);
+	return ccar;
+}
 </script>
 
 </body>
