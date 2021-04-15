@@ -31,11 +31,13 @@ var clock = new THREE.Clock();
 var car;
 
 class Car{
-	constructor(body, wheelF, wheelBL, wheelBR){
+	constructor(body, wheelF, wheelBL, wheelBR, lineL, lineR){
 		this.body = body;
 		this.wheelF = wheelF;
 		this.wheelBL = wheelBL;
 		this.wheelBR = wheelBR;
+		this.lineL = lineL;
+		this.lineR = lineR;
 		scene.add(this.body, this.wheelF, this.wheelBL, this.wheelBR);
 	}
 }
@@ -83,6 +85,7 @@ function animate() {
 
 function buildCar(){
 	let ccar;
+	
 	let cube = new THREE.Mesh( new THREE.BoxGeometry( 40, 10, 20 )
 		, new THREE.MeshBasicMaterial( {color: 0x0091ff, opacity:0.7, transparent: true} ) );
 	let wheelF = new THREE.Mesh( new THREE.CylinderGeometry( 5, 5, 2, 32 )
@@ -91,7 +94,23 @@ function buildCar(){
 		, new THREE.MeshBasicMaterial( {color: 0xf6ff00} ) );
 	let wheelBR = new THREE.Mesh( new THREE.CylinderGeometry( 5, 5, 2, 32 )
 		, new THREE.MeshBasicMaterial( {color: 0xf6ff00} ) );
-	ccar = new Car(cube, wheelF, wheelBL, wheelBR);
+	let lineL = [], lineR = [];
+	for(let i = 0;i < 10;i++){
+		let circle = new THREE.Mesh( new THREE.CircleGeometry( 1.5, 32 ), new THREE.MeshBasicMaterial( { color: 0xfc0303, side:THREE.DoubleSide } ) );
+		lineL.push(circle);
+		circle.position.set(6*i-80, 0, -10);
+		circle.rotation.x = Math.PI/2;
+		scene.add(lineL[i]);
+	}
+	for(let i = 0;i < 10;i++){
+		let circle = new THREE.Mesh( new THREE.CircleGeometry( 1.5, 32 ), new THREE.MeshBasicMaterial( { color: 0xfc0303, side:THREE.DoubleSide } ) );
+		lineR.push(circle);
+		circle.position.set(6*i-80, 0, 10);
+		circle.rotation.x = Math.PI/2;
+		scene.add(lineR[i]);
+	}
+	
+	ccar = new Car(cube, wheelF, wheelBL, wheelBR, lineL, lineR);
 	cube.position.y = 8;
 	wheelF.rotation.x = Math.PI/2;
 	wheelBL.rotation.x = Math.PI/2;
