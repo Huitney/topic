@@ -16,9 +16,6 @@
 <div id='heading'>
 	<h3 style = "color:red">Car</h3>
 </div>
-<audio id="collisionsound" style="display:none">
-<source src="https://jyunming-chen.github.io/game3js/gameHWhelpers/sounds/collision3.wav" type='audio/wav'>
-</audio>
 
 <script type ="module">
 javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='https://mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
@@ -39,9 +36,7 @@ class Car{
 		this.wheelF = wheelF;
 		this.wheelBL = wheelBL;
 		this.wheelBR = wheelBR;
-		this.mesh = new THREE.Group();
-		this.mesh.add(this.body, this.wheelF, this.wheelBL, this.wheelBR);
-		scene.add(this.mesh);
+		scene.add(this.body, this.wheelF, this.wheelBL, this.wheelBR);
 	}
 }
 
@@ -88,7 +83,7 @@ function animate() {
 
 function buildCar(){
 	let ccar;
-	let cube = new THREE.Mesh( new THREE.BoxGeometry( 40, 20, 10 )
+	let cube = new THREE.Mesh( new THREE.BoxGeometry( 40, 10, 20 )
 		, new THREE.MeshBasicMaterial( {color: 0x0091ff, opacity:0.7, transparent: true} ) );
 	let wheelF = new THREE.Mesh( new THREE.CylinderGeometry( 5, 5, 2, 32 )
 		, new THREE.MeshBasicMaterial( {color: 0xf6ff00} ) );
@@ -97,7 +92,6 @@ function buildCar(){
 	let wheelBR = new THREE.Mesh( new THREE.CylinderGeometry( 5, 5, 2, 32 )
 		, new THREE.MeshBasicMaterial( {color: 0xf6ff00} ) );
 	ccar = new Car(cube, wheelF, wheelBL, wheelBR);
-	cube.rotation.x = Math.PI/2;
 	cube.position.y = 8;
 	wheelF.rotation.x = Math.PI/2;
 	wheelBL.rotation.x = Math.PI/2;
