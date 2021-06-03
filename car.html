@@ -48,7 +48,7 @@ import * as THREE from "https://threejs.org/build/three.module.js";
 import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 
 var scene, renderer, camera, controls;
-var cameraHUD, backSceneHUD;
+var cameraHUD, backSceneHUD, sceneHUD;
 var car = new THREE.Object3D();
 var leftfrontWheel = new THREE.Object3D();
 var rightfrontWheel = new THREE.Object3D();
@@ -99,7 +99,7 @@ function init() {
 	backControls = new OrbitControls(backCamera, renderer.domElement);//原為birdCamera
 
 	renderer.autoClear = false;
-	var sceneHUD = new THREE.Scene();
+	sceneHUD = new THREE.Scene();
 
 	//frame
 	var fframe = new THREE.Mesh(new THREE.PlaneGeometry(5.7, 0.08), new THREE.MeshBasicMaterial({
@@ -483,13 +483,25 @@ function animate() {
 			rightfrontWheel.rotation.y = -theta;
 		}
 	} 
-	if (keyboard.pressed("right")) {
+	else if (keyboard.pressed("right")) {
 		if (theta <= 0.45) {
 			theta += 0.02;
 			leftfrontWheel.rotation.y = -theta;
 			rightfrontWheel.rotation.y = -theta;
 		}
 	} 
+	else{    //Tire back
+		if (theta >= -0.5 & theta <= 0) {
+			theta += 0.002;
+			leftfrontWheel.rotation.y = -theta;
+			rightfrontWheel.rotation.y = -theta;
+		}
+		else if(theta <= 0.5 & theta > 0) {
+			theta -= 0.002;
+			leftfrontWheel.rotation.y = -theta;
+			rightfrontWheel.rotation.y = -theta;
+		}
+	}
 
 	let RC = car.localToWorld (new THREE.Vector3(-12,0,24/Math.tan(theta)));
 	RCmesh.position.copy (RC);
