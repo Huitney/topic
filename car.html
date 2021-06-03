@@ -48,6 +48,7 @@ import * as THREE from "https://threejs.org/build/three.module.js";
 import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 
 var scene, renderer, camera, controls;
+var cameraHUD, backSceneHUD;
 var car = new THREE.Object3D();
 var leftfrontWheel = new THREE.Object3D();
 var rightfrontWheel = new THREE.Object3D();
@@ -91,11 +92,11 @@ function init() {
 	birdCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
 	birdCamera.position.set(-10, 390, 0);
 	birdControls = new OrbitControls(birdCamera, renderer.domElement);
-	var cameraHUD = new THREE.OrthographicCamera(-10, 10, 10, -10, -10, 1000);
+	cameraHUD = new THREE.OrthographicCamera(-10, 10, 10, -10, -10, 1000);
 	cameraHUD.position.z = 500;
 
 	backCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-	backControls = new OrbitControls(birdCamera, renderer.domElement);
+	backControls = new OrbitControls(backCamera, renderer.domElement);//原為birdCamera
 
 	renderer.autoClear = false;
 	var sceneHUD = new THREE.Scene();
@@ -147,7 +148,7 @@ function init() {
 	fBackRight.rotation.z = Math.PI/2;
 	fBackRight.position.set (9.7,-5,0);
   
-	var backSceneHUD = new THREE.Scene();
+	backSceneHUD = new THREE.Scene();
 	backSceneHUD.add(fBackUp);
 	backSceneHUD.add(fBackDown);
 	backSceneHUD.add(fBackLeft);
@@ -334,8 +335,8 @@ function ifIntersect (hit, obstacle) {
 	}
 }
 
-function parkingGuide (v, theta) {
-	var parkingGuideGeometry = new THREE.Geometry();
+function parkingGuide (v, theta, RC) {
+	var parkingGuideGeometry = new THREE.BufferGeometry();
 	var omega = 8 * Math.tan(theta)/24;
 	var deltaT = clock.getDelta();
 	if (b) scene.remove(b);
@@ -368,7 +369,8 @@ function parkingGuide (v, theta) {
 	var v3 = tmp3.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*1).add(RC);
 	var v4 = tmp4.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*1).add(RC);
 	var m2 = tmp12.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*1).add(RC);
-	parkingGuideGeometry = new THREE.Geometry();
+	parkingGuideGeometry = new THREE.BufferGeometry();
+	parkingGuideGeometry.vertices = [];
 	parkingGuideGeometry.vertices.push(v1);
 	parkingGuideGeometry.vertices.push(v2);
 	parkingGuideGeometry.vertices.push(v4);
@@ -383,7 +385,8 @@ function parkingGuide (v, theta) {
 	var v5 = tmp5.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*2).add(RC);
 	var v6 = tmp6.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*2).add(RC);
 	var m3 = tmp13.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*2).add(RC);
-	parkingGuideGeometry = new THREE.Geometry();
+	parkingGuideGeometry = new THREE.BufferGeometry();
+	parkingGuideGeometry.vertices = [];
 	parkingGuideGeometry.vertices.push(v3);
 	parkingGuideGeometry.vertices.push(v5);
 	parkingGuideGeometry.vertices.push(v6);
@@ -397,7 +400,8 @@ function parkingGuide (v, theta) {
 	var v7 = tmp7.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*3).add(RC);
 	var v8 = tmp8.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*3).add(RC);
 	var m4 = tmp14.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*3).add(RC);
-	parkingGuideGeometry = new THREE.Geometry();
+	parkingGuideGeometry = new THREE.BufferGeometry();
+	parkingGuideGeometry.vertices = [];
 	parkingGuideGeometry.vertices.push(v5);
 	parkingGuideGeometry.vertices.push(v7);
 	parkingGuideGeometry.vertices.push(v8);
@@ -411,7 +415,8 @@ function parkingGuide (v, theta) {
 	var v9 = tmp9.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*4).add(RC);
 	var v10 = tmp10.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*4).add(RC);
 	var m5 = tmp15.clone().sub(RC).applyAxisAngle(new THREE.Vector3(0, 1, 0),omega*4).add(RC);
-	parkingGuideGeometry = new THREE.Geometry();  
+	parkingGuideGeometry = new THREE.BufferGeometry();  
+	parkingGuideGeometry.vertices = [];
 	parkingGuideGeometry.vertices.push(v7);
 	parkingGuideGeometry.vertices.push(v9);
 	parkingGuideGeometry.vertices.push(v10);
@@ -423,7 +428,8 @@ function parkingGuide (v, theta) {
 	f.rotation.y = omega*deltaT;
 	scene.add(f);
 
-	parkingGuideGeometry = new THREE.Geometry();  
+	parkingGuideGeometry = new THREE.BufferGeometry();  
+	parkingGuideGeometry.vertices = [];
 	parkingGuideGeometry.vertices.push(m1);
 	parkingGuideGeometry.vertices.push(m2);
 	parkingGuideGeometry.vertices.push(m3);
@@ -541,7 +547,7 @@ function animate() {
 	leftRearWheel.rotation.z = animate.LRW;
 	rightRearWheel.rotation.z = animate.RRW;
 	
-	if (asternTurn) parkingGuide(animate.speed, theta);
+	if (asternTurn) parkingGuide(animate.speed, theta, RC);
 	else {
 		if (b) scene.remove(b);
 		if (c) scene.remove(c);
