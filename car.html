@@ -1,48 +1,46 @@
 <html><head>
 <style>
 #info {
-  position: absolute;
-  top: 2%;
-  width: 100%;
-  padding: 10px;
-  text-align: center;
-  color: #ffff00
+	position: absolute;
+	top: 2%;
+	width: 100%;
+	padding: 10px;
+	text-align: center;
+	color: #ffff00
 }
 
 body {
-  overflow: hidden;
+	overflow: hidden;
 }
 
 #birdEye {
-  position: absolute;
-  border-radius: 100px;
-  top: 86.5%;
+	position: absolute;
+	border-radius: 100px;
+	top: 86.5%;
 }
 #astern {
-  position: absolute;
-  border-radius: 100px;
-  top: 86.5%;
-  left : 12%;
+	position: absolute;
+	border-radius: 100px;
+	top: 86.5%;
+	left : 12%;
 }
 #viewPoint {
-  position: absolute;
-  border-radius: 100px;
-  top: 86.5%;
-  left : 23%;
+	position: absolute;
+	border-radius: 100px;
+	top: 86.5%;
+	left : 23%;
 }
 </style>
 </head>
 
 <body> 
-<div id="info">HW3
-  <br/></div>
+<div id="info">Car<br/></div>
 <button id="birdEye"><img src="http://i.imgur.com/JUbhFU8.png"></button>
 <button id="astern"><img src="http://i.imgur.com/Ogi9S4m.png"></button>
 <button id="viewPoint"><img src="http://i.imgur.com/rcJraRH.png"></button>
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
-
 
 <script type = "module">
 
@@ -51,7 +49,8 @@ import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitCo
 
 var scene, renderer, camera, controls;
 var car = new THREE.Object3D();
-var frontWheel = new THREE.Object3D();
+var leftfrontWheel = new THREE.Object3D();
+var rightfrontWheel = new THREE.Object3D();
 var leftRearWheel = new THREE.Object3D();
 var rightRearWheel = new THREE.Object3D();
 var parkingSpace = new THREE.Object3D();
@@ -65,14 +64,14 @@ var birdCamera, birdControls, backControls;
 var RCmesh, C, backCamera;
 
 $("#birdEye").click(function() {
-  birdEyeTurn = !birdEyeTurn;
+	birdEyeTurn = !birdEyeTurn;
 });
 $("#astern").click(function() {
-  asternTurn = !asternTurn;
+	asternTurn = !asternTurn;
 });
 $("#viewPoint").click(function() {
-  viewPoint = !viewPoint;
-  birdCamera.position.set(-10, 390, 0);
+	viewPoint = !viewPoint;
+	birdCamera.position.set(-10, 390, 0);
 });
 
 init();
@@ -204,30 +203,35 @@ function init() {
 	//car mesh
 	var mesh = new THREE.Mesh(carBodyGeometry, materialArray);
 	car.add(mesh);
-	car.add(frontWheel);
+	car.add(leftfrontWheel, rightfrontWheel);
 	car.add(leftRearWheel);
 	car.add(rightRearWheel);
 	car.position.y = 13;
 	scene.add(car);
   
-	//frontWheel
+	//leftfrontWheel frontWheel
 	mesh = new THREE.Mesh(wheelGeometry, wheelMaterial);
-	frontWheel.position.set(12, -8, 0);
+	leftfrontWheel.position.set(12, -8, -7);
 	mesh.add(circle);
 	mesh.add(circle2);
-	frontWheel.add(mesh);
+	leftfrontWheel.add(mesh);
 	//important ’ˆÓçz—¹xŒã“Iyæîz
 	mesh.rotation.x = Math.PI/2;
+	
+	//rightfrontWheel
+	var mesh2 = mesh.clone();;
+	rightfrontWheel.position.set(12, -8, 7);
+	rightfrontWheel.add(mesh2);
   
 	//leftRearWheel
-	var mesh2 = mesh.clone();;
+	var mesh3 = mesh.clone();;
 	leftRearWheel.position.set(-12, -8, -7);
-	leftRearWheel.add(mesh2);
+	leftRearWheel.add(mesh3);
 
 	//rightRearWheel
-	var mesh3 = mesh.clone();;
+	var mesh4 = mesh.clone();;
 	rightRearWheel.position.set(-12, -8, 7);
-	rightRearWheel.add(mesh3);
+	rightRearWheel.add(mesh4);
 
 	//ground
 	loader = new THREE.TextureLoader();
@@ -468,14 +472,16 @@ function animate() {
 	} 
 	if (keyboard.pressed("left")) {
 		if (theta >= -0.45) {
-		theta -= 0.02;
-		frontWheel.rotation.y = -theta;
+			theta -= 0.02;
+			leftfrontWheel.rotation.y = -theta;
+			rightfrontWheel.rotation.y = -theta;
 		}
 	} 
 	if (keyboard.pressed("right")) {
 		if (theta <= 0.45) {
-		theta += 0.02;
-		frontWheel.rotation.y = -theta;
+			theta += 0.02;
+			leftfrontWheel.rotation.y = -theta;
+			rightfrontWheel.rotation.y = -theta;
 		}
 	} 
 
@@ -530,7 +536,8 @@ function animate() {
 	animate.LRW += animate.speed*deltaT/5;
 	animate.RRW += animate.speed*deltaT/5;
 
-	frontWheel.rotation.z = animate.FWN; 
+	leftfrontWheel.rotation.z = animate.FWN; 
+	rightfrontWheel.rotation.z = animate.FWN; 
 	leftRearWheel.rotation.z = animate.LRW;
 	rightRearWheel.rotation.z = animate.RRW;
 	
