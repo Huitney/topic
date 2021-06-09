@@ -184,7 +184,7 @@ function animate() {
 		theta -= 0.02;
 	if (keyboard.pressed('left'))
 		theta += 0.02;  
-	theta = Math.clamp (theta, -0.52, 0.52);
+	theta = Math.clamp (theta, -0.89, 0.89);
 	
 	leftfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)-8));
 	rightfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)+8));
@@ -202,7 +202,7 @@ function animate() {
 
 	// C is the center of car body
 	let C = car.position;
-
+	
 	var vv = C.clone().sub(RC).applyAxisAngle (new THREE.Vector3(0,1,0), omega*deltaT).add(RC);//C'=RC+Rot(Y,W*deltaT)*(C-RC)
 	car.position.copy(vv);
 	car.rotation.y += omega*deltaT;//Rot(Y,W*deltaT)

@@ -515,14 +515,14 @@ function animate() {
   
 	//camera position
 	if (viewPoint) {
-	animate.god = 1;
-	var tmp = car.localToWorld(new THREE.Vector3(-100, 35, 0));
-	camera.position.copy(tmp);
-	tmp = car.localToWorld(new THREE.Vector3(0, 0, 0));
-	camera.lookAt(tmp);
+		animate.god = 1;
+		var tmp = car.localToWorld(new THREE.Vector3(-100, 35, 0));
+		camera.position.copy(tmp);
+		tmp = car.localToWorld(new THREE.Vector3(0, 0, 0));
+		camera.lookAt(tmp);
 	} else {
-	if(animate.god) camera.position.set(-200, 100, 0);
-	animate.god = 0;
+		if(animate.god) camera.position.set(-200, 100, 0);
+		animate.god = 0;
 	}
 	tmp = car.localToWorld(new THREE.Vector3(-20, 10, 0));
 	backCamera.position.copy(tmp);
