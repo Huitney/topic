@@ -16,8 +16,9 @@ body {
 </style>
 </head>
 
-<body> 
-<div id="info">Tricycle
+<body style='overflow:hidden'> 
+<div id="info">Tricycle<br>
+<button id="3PV">3rd Person View</button>
 </div>
 
 <script src="https://threejs.org/build/three.min.js"></script>
@@ -32,6 +33,10 @@ body {
 	} 
 } )();
 
+$('#3PV').click (function() {
+	thirdPV = !thirdPV;
+})
+
 var scene, renderer, camera;
 var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
@@ -39,6 +44,9 @@ var clock = new THREE.Clock();
 var car, leftfrontWheel, rightfrontWheel, leftRearWheel, rightRearWheel;
 var theta = 0.001;  // car orientation
 
+var state = [0,0], tail, clock;
+var tailVec = new THREE.Vector3 (-1,0,0);
+var thirdPV = false;
 
 init();
 animate();
@@ -147,7 +155,21 @@ function buildCar() {
 	let mesh4 = mesh1.clone();;
 	rightRearWheel.position.set(-13, -8, 8);
 	rightRearWheel.add(mesh4);
+	
+	tail = new THREE.Object3D();
 
+	let tailMesh = new THREE.Mesh(new THREE.BoxGeometry(22, 1, 1),
+	new THREE.MeshBasicMaterial({
+		color: 0xffff34,
+		transparent: true,
+		opacity: 0.3
+	}));
+	tail.add(tailMesh);
+	tailMesh.rotation.y = -Math.PI/2;
+	tailMesh.position.z = -11;
+	tail.position.x = -26;
+	car.add (tail);
+	
 	return car;
 }
 
@@ -156,6 +178,41 @@ function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function moveTail (dt) {
+	let vel = new THREE.Vector3(animate.speed, 0, 0);
+	vel.applyAxisAngle(new THREE.Vector3(0, 1, 0), theta);
+	computeTheta (vel, tailVec);
+	PDupdate (dt);
+
+	// compute new tailVec based on state[0]
+	tailVec = vel.clone().normalize().applyAxisAngle (new THREE.Vector3(0,1,0), state[0]);
+	return state[0];
+}
+
+function computeTheta(vel, tailVec) {
+	let phi = tailVec.angleTo (vel);
+	let cross = new THREE.Vector3();
+
+	if (cross.crossVectors(vel, tailVec).dot(new THREE.Vector3(0,1,0)) > 0) 
+		state[0] = phi; 
+	else
+		state[0] = 2*Math.PI - phi;
+}
+
+function PDupdate (dt) {
+
+	// compute feedback force
+	const KP = 50;
+	const KD = 20;
+	const thetaRef = Math.PI;
+
+	let f = -KP*(state[0] - thetaRef) - KD*state[1];
+
+	// Euler for state
+	state[1] += f*dt;
+	state[0] += state[1]*dt
 }
 
 
@@ -207,7 +264,7 @@ function animate() {
 	car.position.copy(vv);
 	car.rotation.y += omega*deltaT;//Rot(Y,W*deltaT)
 
-	camera.position.set(-200, 100, 0); // fixed camera, no orbitControl!
+	//camera.position.set(-200, 100, 0); // fixed camera, no orbitControl!
     
 	//////////////////////////////////////////////////////////////
 	// slowing down    after keyboard up
@@ -239,7 +296,13 @@ function animate() {
 		}
 
 	}
-
+	
+	////////////tail
+	var dt = clock.getDelta();
+	let tailAngle = moveTail (dt);
+	tail.rotation.y = tailAngle - Math.PI;
+	
+	
 	/////////////////////////////////////////////
 	// purely cosmetic ...    wheel turn
 	this.LFW += this.speed*deltaT/5;
@@ -257,6 +320,21 @@ function animate() {
 }
 
 function render() {
+	renderer.clear();
+	const WW = window.innerWidth;
+	const HH = window.innerHeight;
+	
+	if (thirdPV) {
+		let carEnd = car.localToWorld (new THREE.Vector3(-10,0,0));
+		camera.lookAt (carEnd);
+		camera.position.copy (tail.localToWorld (new THREE.Vector3 (0,20,-40)));
+	}
+	else{
+		let carEnd = car.localToWorld (new THREE.Vector3(0,0,0));
+		camera.lookAt (carEnd);
+		camera.position.set(-200, 100, 0);
+	}
+
 	renderer.render(scene, camera);
 }
 </script>
