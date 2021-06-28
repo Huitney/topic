@@ -6,25 +6,48 @@
 	width: 100%;
 	padding: 10px;
 	text-align: center;
-	color: #ffff00
+	color: #ff0000
 }
 
 body {
 	overflow: hidden;
 }
 
+#topView {
+	position: absolute;
+	border-radius: 100px;
+	top: 86.5%;
+	left : 5%;
+}
+#thirdPV {
+	position: absolute;
+	border-radius: 100px;
+	top: 86.5%;
+	left : 15%;
+}
+
+#firstPV{
+	position: absolute;
+	border-radius: 100px;
+	top: 86.5%;
+	left : 25%;
+}
+
 </style>
 </head>
 
-<body style='overflow:hidden'> 
-<div id="info">Tricycle<br>
-<button id="3PV">3rd Person View</button>
+<body> 
+<div id="info">car
 </div>
 
 <script src="https://threejs.org/build/three.min.js"></script>
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
+
+<button id="topView"><img src ="https://i.imgur.com/96tj0yh.png?2" style="width:80px;height:80px;"></button>
+<button id="thirdPV"><img src="https://i.imgur.com/OvvIh4R.png?2" style="width:80px;height:80px;"></button>
+<button id="firstPV"><img src="https://i.imgur.com/AX5vRqY.png" style="width:80px;height:80px;"></button>
 
 <script>
 ( function( ) {
@@ -33,9 +56,19 @@ body {
 	} 
 } )();
 
-$('#3PV').click (function() {
+$("#topView").click(function() {
+	topViewTurn = !topViewTurn;
+});
+$("#thirdPV").click(function() {
 	thirdPV = !thirdPV;
-})
+	if(thirdPV)
+		firstPV = false;
+});
+$("#firstPV").click(function() {
+	firstPV = !firstPV;
+	if(firstPV)
+		thirdPV = false;
+});
 
 var scene, renderer, camera;
 var keyboard = new KeyboardState();
@@ -44,9 +77,15 @@ var clock = new THREE.Clock();
 var car, leftfrontWheel, rightfrontWheel, leftRearWheel, rightRearWheel;
 var theta = 0.001;  // car orientation
 
+//button 
+var sceneHUD;
+var topViewTurn = false, topControls;
+var thirdPV = false;
+var firstPV = false;
+
+///chase camera
 var state = [0,0], tail, clock;
 var tailVec = new THREE.Vector3 (-1,0,0);
-var thirdPV = false;
 
 init();
 animate();
@@ -61,6 +100,15 @@ function init() {
 	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
 	camera.position.set(-200, 100, 0);
 	let controls = new THREE.OrbitControls(camera, renderer.domElement);
+	
+	//topCamera
+	topCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+	topCamera.position.set(-10, 390, 0);
+	topControls = new THREE.OrbitControls(topCamera, renderer.domElement);
+	cameraHUD = new THREE.OrthographicCamera(-10, 10, 10, -10, -10, 1000);
+	cameraHUD.position.z = 500;
+	sceneHUD = new THREE.Scene();
+	renderer.autoClear = false;
 
 	var light = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
 	light.position.set(0, 100, 0);
@@ -68,7 +116,7 @@ function init() {
 
 	var grid = new THREE.GridHelper (400,40,'red','white');
 	scene.add (grid);
-
+	
 	////////////////////////////////////////////////////////////
 	car = buildCar();  
 	car.position.y = 13;
@@ -80,7 +128,18 @@ function init() {
 	////////////////////////////
 	RCmesh = new THREE.Mesh (new THREE.SphereGeometry(5,6,6), new THREE.MeshBasicMaterial());
 	scene.add(RCmesh);
+	
+	drawParkingSpace();
+	//buildSteeringWheel();////////////HUD
+	
+}
 
+function buildSteeringWheel() {
+	let loader = new THREE.TextureLoader();
+	loader.setCrossOrigin('');
+	let circle = new THREE.Mesh(new THREE.CircleGeometry(5, 32), 
+	new THREE.MeshBasicMaterial({map: loader.load ('https://i.imgur.com/AaejjAQ.png'), 
+							   transparent: true, side:THREE.DoubleSide}));
 }
 
 function buildCar() {
@@ -89,23 +148,29 @@ function buildCar() {
 
 	var materialArray = [];
 	materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/3hnQcus.png'),
-		transparent: true, opacity: 0.7}));
+		map: loader.load ('http://i.imgur.com/3hnQcus.png'), 
+		transparent: true, opacity: 0.7
+	}));
 	materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/oPWLR0Y.png'),
-		transparent: true, opacity: 0.7}));
+		map: loader.load ('http://i.imgur.com/oPWLR0Y.png'), 
+		transparent: true, opacity: 0.7
+	}));
 	materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/qTj48LD.png'),
-		transparent: true, opacity: 0.7}));
+		map: loader.load ('http://i.imgur.com/qTj48LD.png'), 
+		transparent: true, opacity: 0.7
+	}));
 	materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/qTj48LD.png'),
-		transparent: true, opacity: 0.7}));
+		map: loader.load ('http://i.imgur.com/qTj48LD.png'), 
+		transparent: true, opacity: 0.7
+	}));
 	materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/oWaSyZJ.png'),
-		transparent: true, opacity: 0.7}));
+		map: loader.load ('http://i.imgur.com/oWaSyZJ.png'), 
+		transparent: true, opacity: 0.7
+	}));
 	materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/oWaSyZJ.png'),
-		transparent: true, opacity: 0.7}));
+		map: loader.load ('http://i.imgur.com/oWaSyZJ.png'), 
+		transparent: true, opacity: 0.7
+	}));
 
 	var carBodyGeometry = new THREE.BoxGeometry(38, 20, 20);
 	var carBodyMaterial = new THREE.MeshBasicMaterial({
@@ -168,11 +233,30 @@ function buildCar() {
 	tailMesh.rotation.y = -Math.PI/2;
 	tailMesh.position.z = -11;
 	tail.position.x = -26;
+	tail.children[0].material.visible = !tail.children[0].material.visible ;
 	car.add (tail);
 	
 	return car;
 }
 
+function drawParkingSpace(){
+    const material = new THREE.LineBasicMaterial( { color: 0xffff00 } );
+    const points = [];
+    points.push( new THREE.Vector3( 25, 0, 13 ) );
+    points.push( new THREE.Vector3( 25, 0, 40 ) );
+    points.push( new THREE.Vector3( -25, 0, 40 ) );
+    points.push( new THREE.Vector3( -25, 0, 13 ) );
+    points.push( new THREE.Vector3( 25, 0, 13 ) );
+
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+    const parkingSpace1 = new THREE.Line( geometry, material );
+    scene.add( parkingSpace1 );
+
+    var parkingSpace2 = parkingSpace1.clone();
+    parkingSpace2.position.x = 55;
+    scene.add(parkingSpace2);
+
+}
 
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
@@ -329,13 +413,34 @@ function render() {
 		camera.lookAt (carEnd);
 		camera.position.copy (tail.localToWorld (new THREE.Vector3 (0,20,-40)));
 	}
+	else if(firstPV){////////dark
+		let carEnd = car.localToWorld (new THREE.Vector3(5, 10, 0));
+		camera.lookAt (carEnd);
+		let tmp = car.localToWorld(new THREE.Vector3(-10, 10, 0));
+		camera.position.set(tmp);
+		console.log(carEnd, tmp);
+	}
 	else{
 		let carEnd = car.localToWorld (new THREE.Vector3(0,0,0));
 		camera.lookAt (carEnd);
 		camera.position.set(-200, 100, 0);
 	}
-
+	
+	//topView
+	renderer.setScissorTest( true );
+	renderer.setViewport(0, 0, WW, HH);
+	renderer.setScissor(0, 0, WW, HH);
+	renderer.clear();
 	renderer.render(scene, camera);
+
+	if (topViewTurn) {
+		renderer.render(sceneHUD, cameraHUD);
+		renderer.setViewport(WW/1.43, HH/1.41, WW/3.5, HH/3.5);
+		renderer.setScissor(WW/1.43, HH/1.41, WW/3.5, HH/3.5);
+		renderer.clear();
+		renderer.render(scene, topCamera);
+	}
+	renderer.setScissorTest( false );
 }
 </script>
 
