@@ -38,7 +38,6 @@ body {
 <body> 
 <div id="info">auto parking -> stop parking -> manual<br>
 	<button id="parking"> auto parking </button>
-	<button id="auto"> before to start </button>
 </div>
 
 <script src="https://threejs.org/build/three.min.js"></script>
@@ -140,8 +139,8 @@ function init() {
 
     ////////////////////////////////////////////////////////////
     car = buildCar();  
-	car.position.set(Math.random()*100-50, 13, Math.random()*50-50);
-    //car.position.set(66.5, 13, 0);
+	//car.position.set(Math.random()*100-50, 13, Math.random()*50-50);
+    car.position.set(-50, 13, 0);
     car2 = car.clone();
     car2.position.set (55, 13, 29);
   
@@ -448,24 +447,32 @@ function animate() {
 
     //parking // control 0 manual 1 auto parking 2 stop parking
     if(control == 1){            //auto parking
-		if(status === 0){
+		if(status == 0){
+			this.speed += 1;
+			this.speed = Math.clamp (this.speed, -50, 50);
+			if(car.position.x >= 66.5){
+				status = 1;
+				this.speed = 0;
+			}
+		}
+		if(status == 1){
 			this.speed -= 1;
 			this.speed = Math.clamp (this.speed, -50, 50);
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.rotation.y >= Math.PI /4){
-				status = 1;
+				status = 2;
 			}
 		}
-		if(status === 1){
+		if(status == 2){
 			this.speed = 0;
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(theta == Math.PI/7){
-				status = 2;
+				status = 3;
 			}
 		}
-		if(status === 2){
+		if(status == 3){
 			this.speed -= 1;
 			this.speed = Math.clamp (this.speed, -50, 50);
 			theta += 0.02;
