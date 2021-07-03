@@ -49,6 +49,8 @@ body {
 <button id="thirdPV"><img src="https://i.imgur.com/OvvIh4R.png?2" style="width:80px;height:80px;"></button>
 <button id="firstPV"><img src="https://i.imgur.com/AX5vRqY.png" style="width:80px;height:80px;"></button>
 
+<script src="build.js"></script>
+
 <script>
 ( function() {
 	Math.clamp = function(val,min,max) {
@@ -60,19 +62,15 @@ var scene, renderer, camera;
 var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
-var car, leftfrontWheel, rightfrontWheel, leftRearWheel, rightRearWheel;
+var car;
 var theta = 0.001;  // car orientation
 
 var sceneHUD;
 
 var topViewTurn = false, topControls;
 var thirdPV = false, firstPV = false;
-var control = 0, auto = 0;
-var status = 0;
-
-///chase camera
-var state = [0,0], tail, clock;
-var tailVec = new THREE.Vector3 (-1,0,0);
+var parkingMode = 0, auto = 0;
+var PPpart = 0;
 
 //button
 $("#topView").click(function() {
@@ -93,13 +91,13 @@ $("#firstPV").click(function() {
 });
 
 $("#parking").click(function() {
-	control++;
-	if(control > 2) control = 0;
+	parkingMode++;
+	if(parkingMode > 2) parkingMode = 0;
 	
-	if(control == 0){
+	if(parkingMode == 0){
 		$("#parking").text('auto parking');
 	}
-	else if(control == 1){
+	else if(parkingMode == 1){
 		$("#parking").text('stop parking');
 	}
 	else{
@@ -139,7 +137,6 @@ function init() {
 
     ////////////////////////////////////////////////////////////
     car = buildCar();  
-	//car.position.set(Math.random()*100-50, 13, Math.random()*50-50);
     car.position.set(-50, 13, 0);
     car2 = car.clone();
     car2.position.set (55, 13, 29);
@@ -165,188 +162,14 @@ function init() {
     cameraHUD.position.z = 500;
     topControls = new THREE.OrbitControls(topCamera, renderer.domElement);
 
-
-    //frame 邊框
-    var fframe = new THREE.Mesh(new THREE.PlaneGeometry(5.7, 0.08), new THREE.MeshBasicMaterial({
-		color: 0xff0000,
-		depthTest: false
-    }));
-    var fframe2 = new THREE.Mesh(new THREE.PlaneGeometry(5.8, 0.08), new THREE.MeshBasicMaterial({
-		color: 0xff0000,
-		opacity: 0.6,
-		transparent: true,
-		depthTest: false
-    }));
-    var fup = fframe.clone();
-    fup.position.set (6.8,9.9,0);
-    var fdown = fframe.clone();
-    fdown.position.set (6.8,4.1,0);
-    var fleft = fframe2.clone();
-    fleft.rotation.z = Math.PI/2;
-    fleft.position.set (3.94,7,0);
-    var fright = fframe2.clone();
-    fright.rotation.z = Math.PI/2;
-    fright.position.set (9.7,7,0);
-    sceneHUD.add(fup);
-    sceneHUD.add(fdown);
-    sceneHUD.add(fleft);
-    sceneHUD.add(fright);
-
     drawParkingSpace();
-
-}
-  
-function buildCar() {
-    let loader = new THREE.TextureLoader();
-    loader.setCrossOrigin('');
-  
-    var materialArray = [];
-    materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/3hnQcus.png'),
-		transparent: true, opacity: 0.7
-	}));
-    materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/oPWLR0Y.png'),
-		transparent: true, opacity: 0.7
-	}));
-    materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/qTj48LD.png'),
-		transparent: true, opacity: 0.7
-	}));
-    materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/qTj48LD.png'),
-		transparent: true, opacity: 0.7
-	}));
-    materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/oWaSyZJ.png'),
-		transparent: true, opacity: 0.7
-	}));
-    materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/oWaSyZJ.png'),
-		transparent: true, opacity: 0.7
-	}));
-  
-    var carBodyGeometry = new THREE.BoxGeometry(38, 20, 20);
-    var carBodyMaterial = new THREE.MeshBasicMaterial({color: 0x0000ff});
-    let body = new THREE.Mesh(carBodyGeometry, materialArray);
-  
-    let wheelGeometry = new THREE.CylinderGeometry(5, 5, 2, 32, 1, true);
-    let wheelMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
-    let circle = new THREE.Mesh(new THREE.CircleGeometry(5, 32), 
-    new THREE.MeshBasicMaterial({map: loader.load ('http://i.imgur.com/8enBd95.png'), 
-								transparent: true, 
-								side:THREE.DoubleSide}));
-    circle.rotation.x = Math.PI/2;
-    circle.position.y = 1;
-    circle2 = circle.clone();
-    circle2.position.y = -1;
-  
-    // assembly
-    car = new THREE.Group();
-    leftfrontWheel = new THREE.Group();
-    rightfrontWheel = new THREE.Group();
-    leftRearWheel = new THREE.Group();
-    rightRearWheel = new THREE.Group();
-  
-    car.add(body, leftfrontWheel, rightfrontWheel, leftRearWheel, rightRearWheel);
-  
-    // wheels
-    let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);
-    leftfrontWheel.position.set(13, -8, -8);
-    mesh1.add(circle);
-    mesh1.add(circle2);
-    leftfrontWheel.add(mesh1);
-    //important!!
-    mesh1.rotation.x = Math.PI/2;
-  
-    let mesh2 = mesh1.clone();;
-    rightfrontWheel.position.set(13, -8, 8);
-    rightfrontWheel.add(mesh2);
-    
-    let mesh3 = mesh1.clone();;
-    leftRearWheel.position.set(-13, -8, -8);
-    leftRearWheel.add(mesh3);
-  
-    let mesh4 = mesh1.clone();;
-    rightRearWheel.position.set(-13, -8, 8);
-    rightRearWheel.add(mesh4);
-	
-	///tail
-	tail = new THREE.Object3D();
-	let tailMesh = new THREE.Mesh(new THREE.BoxGeometry(22, 1, 1),
-	new THREE.MeshBasicMaterial({
-		color: 0xffff34,
-		transparent: true,
-		opacity: 0.3
-	}));
-	tail.add(tailMesh);
-	tailMesh.rotation.y = -Math.PI/2;
-	tailMesh.position.z = -11;
-	tail.position.x = -26;
-	tail.children[0].material.visible = !tail.children[0].material.visible ;
-	car.add (tail);
-	
-    return car;
-}
-
-function drawParkingSpace(){
-	const material = new THREE.LineBasicMaterial( { color: 0xffff00 } );
-	const points = [];
-	points.push( new THREE.Vector3( 25, 0, 18 ) );
-	points.push( new THREE.Vector3( 25, 0, 42 ) );
-	points.push( new THREE.Vector3( -25, 0, 42 ) );
-	points.push( new THREE.Vector3( -25, 0, 18 ) );
-	points.push( new THREE.Vector3( 25, 0, 18 ) );
-
-	const geometry = new THREE.BufferGeometry().setFromPoints( points );
-	const parkingSpace1 = new THREE.Line( geometry, material );
-	scene.add( parkingSpace1 );
-
-	var parkingSpace2 = parkingSpace1.clone();
-	parkingSpace2.position.x = 67;
-	scene.add(parkingSpace2);
-
+	drawFrame();
 }
   
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function moveTail (dt) {
-	let vel = new THREE.Vector3(animate.speed, 0, 0);
-	vel.applyAxisAngle(new THREE.Vector3(0, 1, 0), theta);
-	computeTheta (vel, tailVec);
-	PDupdate (dt);
-
-	// compute new tailVec based on state[0]
-	tailVec = vel.clone().normalize().applyAxisAngle (new THREE.Vector3(0,1,0), state[0]);
-	return state[0];
-}
-
-function computeTheta(vel, tailVec) {
-	let phi = tailVec.angleTo (vel);
-	let cross = new THREE.Vector3();
-
-	if (cross.crossVectors(vel, tailVec).dot(new THREE.Vector3(0,1,0)) > 0) 
-		state[0] = phi; 
-	else
-		state[0] = 2*Math.PI - phi;
-}
-
-function PDupdate (dt) {
-
-	// compute feedback force
-	const KP = 50;
-	const KD = 20;
-	const thetaRef = Math.PI;
-
-	let f = -KP*(state[0] - thetaRef) - KD*state[1];
-
-	// Euler for state
-	state[1] += f*dt;
-	state[0] += state[1]*dt
 }
   
 function animate() {
@@ -380,8 +203,8 @@ function animate() {
 		theta += 0.02;  
     theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
     
-    leftfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)-8));
-    rightfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)+8));
+    car.leftfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)-8));
+    car.rightfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)+8));
     
 	//let msg = `theta: ${theta}; speed: ${this.speed}`;
 	//console.log (msg);
@@ -432,7 +255,7 @@ function animate() {
     if (thirdPV) {
 		let carEnd = car.localToWorld (new THREE.Vector3(-10,0,0));
 		camera.lookAt (carEnd);
-		camera.position.copy (tail.localToWorld (new THREE.Vector3 (0,20,-40)));
+		camera.position.copy (car.localToWorld (new THREE.Vector3 (0,30,-50)));
     } 
     else if(firstPV){
 		var tmp = car.localToWorld(new THREE.Vector3(1, 10, 0));
@@ -445,34 +268,34 @@ function animate() {
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
 
-    //parking // control 0 manual 1 auto parking 2 stop parking
-    if(control == 1){            //auto parking
-		if(status == 0){
+    //parking // parkingMode 0 manual 1 auto parking 2 stop parking
+    if(parkingMode == 1){            //auto parking
+		if(PPpart == 0){
 			this.speed += 1;
 			this.speed = Math.clamp (this.speed, -50, 50);
 			if(car.position.x >= 66.5){
-				status = 1;
+				PPpart = 1;
 				this.speed = 0;
 			}
 		}
-		if(status == 1){
+		if(PPpart == 1){
 			this.speed -= 1;
 			this.speed = Math.clamp (this.speed, -50, 50);
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.rotation.y >= Math.PI /4){
-				status = 2;
+				PPpart = 2;
 			}
 		}
-		if(status == 2){
+		if(PPpart == 2){
 			this.speed = 0;
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(theta == Math.PI/7){
-				status = 3;
+				PPpart = 3;
 			}
 		}
-		if(status == 3){
+		if(PPpart == 3){
 			this.speed -= 1;
 			this.speed = Math.clamp (this.speed, -50, 50);
 			theta += 0.02;
@@ -481,42 +304,12 @@ function animate() {
 				this.speed = 0;
 			}
 		}
-    }else if(control === 2){       //stop parking
+    }else if(parkingMode === 2){       //stop parking
 		this.speed = 0;
 	}else {                       //manual
-		status = 0;
+		PPpart = 0;
 	}
-	
-	if(auto === 1){
-		let dis = car.clone().position.sub(new THREE.Vector3(66.5, 13, 0));
-		let ang = Math.atan2(dis.z, dis.x);
-		//console.log(dis, ang);
-		
-		if(theta < ang)
-			theta += 0.02;
-		else if(theta > ang)
-			theta -= 0.02;
-		if(ang < 0) 
-			theta = Math.clamp (theta, ang/2, Math.PI/7);
-		else 
-			theta = Math.clamp (theta, -Math.PI/7, ang/2);
-		
-		if(dis.x > 0){
-			this.speed -= 1;
-			this.speed = Math.clamp (this.speed, -20, 20);
-		}
-		else if(dis.x < 0){
-			this.speed += 1;
-			this.speed = Math.clamp (this.speed, -20, 20);
-		}
-	}
-	
-    
-	////////////tail
-	var dt = clock.getDelta();
-	let tailAngle = moveTail (dt);
-	tail.rotation.y = tailAngle - Math.PI;
-  
+		  
     /////////////////////////////////////////////
     // purely cosmetic ...    wheel turn
     this.LFW += this.speed*deltaT/5;
@@ -524,10 +317,10 @@ function animate() {
     this.LRW += this.speed*deltaT/5;
     this.RRW += this.speed*deltaT/5;
   
-    leftfrontWheel.rotation.z = this.LFW;
-    rightfrontWheel.rotation.z = this.RFW;
-    leftRearWheel.rotation.z = this.LRW;
-    rightRearWheel.rotation.z = this.RRW;
+    car.leftfrontWheel.rotation.z = this.LFW;
+    car.rightfrontWheel.rotation.z = this.RFW;
+    car.leftRearWheel.rotation.z = this.LRW;
+    car.rightRearWheel.rotation.z = this.RRW;
   
     requestAnimationFrame(animate);
     render();
