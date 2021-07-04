@@ -1,4 +1,68 @@
-function buildCar() {
+class Car {
+	constructor(pos, size, colorName = 'white', materialArray) {
+		this.center = pos;
+		this.size = size; // array of halfwidth's
+		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0] * 2, size[1] * 2, size[2] * 2), materialArray);
+		this.mesh.position.x = pos.x;
+		this.mesh.position.y = pos.y;
+		this.mesh.position.z = pos.z;
+		
+		this.leftfrontWheel = new THREE.Group();
+		this.rightfrontWheel = new THREE.Group();
+		this.leftRearWheel = new THREE.Group();
+		this.rightRearWheel = new THREE.Group();
+		
+		this.mesh.add(this.leftfrontWheel, this.rightfrontWheel, this.leftRearWheel, this.rightRearWheel);
+		scene.add(this.mesh);
+		
+		this.rotate(0); // set initial axes
+	}
+
+	rotate(angle) {
+		this.angle = angle;
+
+		let yAxis = new THREE.Vector3(0, 1, 0);
+		this.axes = [];
+		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
+		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+		this.mesh.rotation.y = angle;
+	}
+
+	intersect(obbB) {
+		// four axes to check
+		let obbA = this;
+		let sepAxes = [];
+		sepAxes[0] = obbA.axes[0];
+		sepAxes[1] = obbA.axes[1];
+		sepAxes[2] = obbB.axes[0];
+		sepAxes[3] = obbB.axes[1];
+
+		let t = obbB.center.clone().sub(obbA.center);
+		for (let i = 0; i < 4; i++) {
+			let sHat = sepAxes[i];
+			let centerDis = Math.abs(t.dot(sHat));
+
+			let dA = obbA.size[0] * Math.abs(obbA.axes[0].dot(sHat)) 
+					+ obbA.size[1] * Math.abs(obbA.axes[1].dot(sHat));
+			let dB = obbB.size[0] * Math.abs(obbB.axes[0].dot(sHat)) 
+					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
+			if (centerDis > dA + dB)
+				return false;  // NOT intersect
+			
+			//console.log(centerDis, dA + dB);
+		}
+		return true;  // intersect
+	}
+	
+	move(pos){
+		this.mesh.position.x = pos.x;
+		this.mesh.position.y = pos.y;
+		this.mesh.position.z = pos.z;
+	}
+	
+}
+
+function buildCar(pos) {
     let loader = new THREE.TextureLoader();
     loader.setCrossOrigin('');
   
@@ -28,56 +92,43 @@ function buildCar() {
 		transparent: true, opacity: 0.7
 	}));
   
-    var carBodyGeometry = new THREE.BoxGeometry(38, 20, 20);
-    var carBodyMaterial = new THREE.MeshBasicMaterial({color: 0x0000ff});
-    let body = new THREE.Mesh(carBodyGeometry, materialArray);
-  
     let wheelGeometry = new THREE.CylinderGeometry(5, 5, 2, 32, 1, true);
     let wheelMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
     let circle = new THREE.Mesh(new THREE.CircleGeometry(5, 32), 
-    new THREE.MeshBasicMaterial({map: loader.load ('http://i.imgur.com/8enBd95.png'), 
-								transparent: true, 
-								side:THREE.DoubleSide}));
+								new THREE.MeshBasicMaterial({
+									map: loader.load ('http://i.imgur.com/8enBd95.png'), 
+									transparent: true, 
+									side:THREE.DoubleSide
+								}));
     circle.rotation.x = Math.PI/2;
     circle.position.y = 1;
     circle2 = circle.clone();
     circle2.position.y = -1;
   
     // assembly
-    car = new THREE.Group();
-    leftfrontWheel = new THREE.Group();
-    rightfrontWheel = new THREE.Group();
-    leftRearWheel = new THREE.Group();
-    rightRearWheel = new THREE.Group();
-  
-    car.add(body, leftfrontWheel, rightfrontWheel, leftRearWheel, rightRearWheel);
+    let car = new Car(pos, [19, 10, 10], 'red', materialArray);
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);
-    leftfrontWheel.position.set(13, -8, -8);
+    car.leftfrontWheel.position.set(13, -8, -8);
     mesh1.add(circle);
     mesh1.add(circle2);
-    leftfrontWheel.add(mesh1);
+    car.leftfrontWheel.add(mesh1);
     //important!!
     mesh1.rotation.x = Math.PI/2;
   
     let mesh2 = mesh1.clone();;
-    rightfrontWheel.position.set(13, -8, 8);
-    rightfrontWheel.add(mesh2);
+    car.rightfrontWheel.position.set(13, -8, 8);
+    car.rightfrontWheel.add(mesh2);
     
     let mesh3 = mesh1.clone();;
-    leftRearWheel.position.set(-13, -8, -8);
-    leftRearWheel.add(mesh3);
+    car.leftRearWheel.position.set(-13, -8, -8);
+    car.leftRearWheel.add(mesh3);
   
     let mesh4 = mesh1.clone();;
-    rightRearWheel.position.set(-13, -8, 8);
-    rightRearWheel.add(mesh4);
-	
-	car.leftfrontWheel = leftfrontWheel;
-	car.rightfrontWheel = rightfrontWheel;
-	car.leftRearWheel = leftRearWheel;
-	car.rightRearWheel = rightRearWheel;
-	
+    car.rightRearWheel.position.set(-13, -8, 8);
+    car.rightRearWheel.add(mesh4);
+		
     return car;
 }
 
@@ -125,5 +176,9 @@ function drawParkingSpace(){
 	var parkingSpace2 = parkingSpace1.clone();
 	parkingSpace2.position.x = 67;
 	scene.add(parkingSpace2);
+	
+	var parkingSpace3 = parkingSpace1.clone();
+	parkingSpace3.position.x = -67;
+	scene.add(parkingSpace3);
 
 }

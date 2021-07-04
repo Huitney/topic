@@ -62,7 +62,7 @@ var scene, renderer, camera;
 var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
-var car;
+var car, otherCar = [];
 var theta = 0.001;  // car orientation
 
 var sceneHUD;
@@ -136,20 +136,18 @@ function init() {
 	scene.add( axesHelper );
 
     ////////////////////////////////////////////////////////////
-    car = buildCar();  
-    car.position.set(-50, 13, 0);
-    car2 = car.clone();
-    car2.position.set (55, 13, 29);
-  
-    scene.add(car);
-    //scene.add(car2);
+    car = buildCar(new THREE.Vector3(-50, 13, 0));  
+    var car2 = buildCar(new THREE.Vector3(66.5, 13, 29));
+	var car3 = buildCar(new THREE.Vector3(-66.5, 13, 29));
+
+	otherCar.push(car2, car3);
+    //scene.add(car, car2, car3);
   
     window.addEventListener('resize', onWindowResize, false);
   
     ////////////////////////////
     RCmesh = new THREE.Mesh (new THREE.SphereGeometry(5,6,6), new THREE.MeshBasicMaterial());
     scene.add(RCmesh);
-
 
     //////////////////////////////////////////////
     renderer.autoClear = false;
@@ -211,19 +209,30 @@ function animate() {
   
     //////////////////////////////////////////////////////////////
     
-    RC = car.localToWorld (new THREE.Vector3(-12,0,-24/Math.tan(theta)));
+    RC = car.mesh.localToWorld (new THREE.Vector3(-12,0,-24/Math.tan(theta)));
     RCmesh.position.copy (RC);
     
     var omega = this.speed * Math.tan(theta)/24;
     var deltaT = clock.getDelta();
     
     // C is the center of car body
-    let C = car.position;
+    let C = car.mesh.position;
     
     var vv = C.clone().sub(RC).applyAxisAngle (new THREE.Vector3(0,1,0), omega*deltaT).add(RC);
-    car.position.copy(vv);
-    car.rotation.y += omega*deltaT;
-    
+	
+	let i = 0;
+	for(i = 0;i < otherCar.length;i++){
+		if(!otherCar[i].intersect(car)){
+			i = -1;
+			break;
+		}
+	}
+	if(i >= 0){
+		car.center = vv;
+		car.move(vv);
+		car.rotate(car.angle + omega*deltaT);
+	}
+	
     //////////////////////////////////////////////////////////////
     // slowing down    after keyboard up
     //
@@ -253,14 +262,14 @@ function animate() {
 
     //camera position
     if (thirdPV) {
-		let carEnd = car.localToWorld (new THREE.Vector3(-10,0,0));
+		let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10,0,0));
 		camera.lookAt (carEnd);
-		camera.position.copy (car.localToWorld (new THREE.Vector3 (0,30,-50)));
+		camera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-50,30,0)));
     } 
     else if(firstPV){
-		var tmp = car.localToWorld(new THREE.Vector3(1, 10, 0));
+		var tmp = car.mesh.localToWorld(new THREE.Vector3(1, 10, 0));
 		camera.position.copy(tmp);
-		tmp = car.localToWorld(new THREE.Vector3(6, 10, 0));
+		tmp = car.mesh.localToWorld(new THREE.Vector3(6, 10, 0));
 		camera.lookAt(tmp);
     }
     else {
@@ -273,7 +282,7 @@ function animate() {
 		if(PPpart == 0){
 			this.speed += 1;
 			this.speed = Math.clamp (this.speed, -50, 50);
-			if(car.position.x >= 66.5){
+			if(car.mesh.position.x >= 66.5){
 				PPpart = 1;
 				this.speed = 0;
 			}
@@ -283,7 +292,7 @@ function animate() {
 			this.speed = Math.clamp (this.speed, -50, 50);
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.rotation.y >= Math.PI /4){
+			if(car.angle >= Math.PI /4){
 				PPpart = 2;
 			}
 		}
@@ -300,7 +309,7 @@ function animate() {
 			this.speed = Math.clamp (this.speed, -50, 50);
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.rotation.y <= 0){
+			if(car.angle <= 0){
 				this.speed = 0;
 			}
 		}
