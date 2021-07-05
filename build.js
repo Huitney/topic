@@ -62,7 +62,7 @@ class Car {
 	
 }
 
-function buildCar(pos) {
+function buildCar() {
     let loader = new THREE.TextureLoader();
     loader.setCrossOrigin('');
   
@@ -106,7 +106,7 @@ function buildCar(pos) {
     circle2.position.y = -1;
   
     // assembly
-    let car = new Car(pos, [19, 10, 10], 'red', materialArray);
+    let car = new Car(new THREE.Vector3(0, 0, 0), [19, 10, 10], 'red', materialArray);
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);

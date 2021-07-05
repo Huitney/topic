@@ -136,9 +136,12 @@ function init() {
 	scene.add( axesHelper );
 
     ////////////////////////////////////////////////////////////
-    car = buildCar(new THREE.Vector3(-50, 13, 0));  
-    var car2 = buildCar(new THREE.Vector3(66.5, 13, 29));
-	var car3 = buildCar(new THREE.Vector3(-66.5, 13, 29));
+    car = buildCar();//new THREE.Vector3(-50, 13, 0)); 
+	car.mesh.position.set(-50, 13, 0);
+    var car2 = buildCar();//new THREE.Vector3(66.5, 13, 29));
+	car2.mesh.position.set(66.5, 13, 29);
+	var car3 = buildCar();//new THREE.Vector3(-66.5, 13, 29));
+	car3.mesh.position.set(-66.5, 13, 29);
 
 	otherCar.push(car2, car3);
     //scene.add(car, car2, car3);
@@ -228,7 +231,7 @@ function animate() {
 		}
 	}
 	if(i >= 0){
-		car.center = vv;
+		//car.center = vv;
 		car.move(vv);
 		car.rotate(car.angle + omega*deltaT);
 	}
