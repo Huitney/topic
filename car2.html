@@ -224,7 +224,7 @@ function animate() {
 	
 	let i = 0;
 	for(i = 0;i < otherCar.length;i++){
-		if(!otherCar[i].intersect(car)){
+		if(otherCar[i].intersect(car)){
 			i = -1;
 			break;
 		}

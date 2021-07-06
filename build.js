@@ -55,12 +55,8 @@ class Car {
 	}
 	
 	move(pos){
-		this.center.x = pos.x;
-		this.center.y = pos.y;
-		this.center.z = pos.z;
-		this.mesh.position.x = pos.x;
-		this.mesh.position.y = pos.y;
-		this.mesh.position.z = pos.z;
+		this.center.copy(pos);
+		this.mesh.position.copy(this.center);
 	}
 	
 }
