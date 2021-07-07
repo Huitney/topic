@@ -3,9 +3,7 @@ class Car {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0] * 2, size[1] * 2, size[2] * 2), materialArray);
-		this.mesh.position.x = pos.x;
-		this.mesh.position.y = pos.y;
-		this.mesh.position.z = pos.z;
+		this.mesh.position.copy(pos);
 		
 		this.leftfrontWheel = new THREE.Group();
 		this.rightfrontWheel = new THREE.Group();
@@ -61,7 +59,56 @@ class Car {
 	
 }
 
-function buildCar() {
+class Obstacle {
+	constructor(pos, size, colorName = 'white') {
+		this.center = pos;
+		this.size = size; // array of halfwidth's
+		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0]*2, size[1]*2, size[2]*2), new THREE.MeshLambertMaterial({color: colorName}));
+		this.mesh.position.copy(pos);
+				
+		scene.add(this.mesh);
+		
+		this.rotate(0); // set initial axes
+	}
+
+	rotate(angle) {
+		this.angle = angle;
+
+		let yAxis = new THREE.Vector3(0, 1, 0);
+		this.axes = [];
+		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
+		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+		this.mesh.rotation.y = angle;
+	}
+
+	intersect(obbB) {
+		// four axes to check
+		let obbA = this;
+		let sepAxes = [];
+		sepAxes[0] = obbA.axes[0];
+		sepAxes[1] = obbA.axes[1];
+		sepAxes[2] = obbB.axes[0];
+		sepAxes[3] = obbB.axes[1];
+
+		let t = obbB.center.clone().sub(obbA.center);
+		for (let i = 0; i < 4; i++) {
+			let sHat = sepAxes[i];
+			let centerDis = Math.abs(t.dot(sHat));
+
+			let dA = obbA.size[0] * Math.abs(obbA.axes[0].dot(sHat)) 
+					+ obbA.size[1] * Math.abs(obbA.axes[1].dot(sHat));
+			let dB = obbB.size[0] * Math.abs(obbB.axes[0].dot(sHat)) 
+					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
+			if (centerDis > dA + dB)
+				return false;  // NOT intersect
+			
+			//console.log(centerDis, dA + dB);
+		}
+		return true;  // intersect
+	}	
+}
+
+function buildCar(pos) {
     let loader = new THREE.TextureLoader();
     loader.setCrossOrigin('');
   
@@ -105,7 +152,7 @@ function buildCar() {
     circle2.position.y = -1;
   
     // assembly
-    let car = new Car(new THREE.Vector3(0, 0, 0), [19, 10, 10], 'red', materialArray);
+    let car = new Car(pos, [19, 10, 10], 'red', materialArray);
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);

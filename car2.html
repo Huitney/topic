@@ -63,7 +63,7 @@ var scene, renderer, camera;
 var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
-var car, otherCar = [];
+var car, obstacles = [];
 
 var sceneHUD;
 var topViewTurn = false, topControls;
@@ -149,15 +149,20 @@ function init() {
 	*/
 
     ////////////////////////////////////////////////////////////
-    car = buildCar();//new THREE.Vector3(-50, 13, 0)); 
-	car.move(new THREE.Vector3(-50, 13, 40));
-    var car2 = buildCar();//new THREE.Vector3(66.5, 13, 29));
-	car2.move(new THREE.Vector3(66.5, 13, 70));
-	var car3 = buildCar();//new THREE.Vector3(-66.5, 13, 29));
-	car3.move(new THREE.Vector3(-66.5, 13, 70));
+	//car
+    car = buildCar(new THREE.Vector3(-50, 13, 40));//new THREE.Vector3(-50, 13, 0)); 
+    var car2 = buildCar(new THREE.Vector3(66.5, 13, 70));//new THREE.Vector3(66.5, 13, 29));
+	var car3 = buildCar(new THREE.Vector3(-66.5, 13, 70));//new THREE.Vector3(-66.5, 13, 29));
 
-	otherCar.push(car2, car3);
-    //scene.add(car, car2, car3);
+	obstacles.push(car2, car3);
+	
+	//obstacles
+	let obs = new Obstacle(new THREE.Vector3(0, 10, 100), [100, 5, 5], 'gray');
+    obstacles.push(obs);
+	
+	//light
+	var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+	scene.add( light );
   
     window.addEventListener('resize', onWindowResize, false);
   
@@ -237,8 +242,8 @@ function animate() {
 	let p = car.mesh.position;
     var vv = C.clone().sub(RC).applyAxisAngle (new THREE.Vector3(0,1,0), omega*deltaT).add(RC);
 	
-	for(var i = 0;i < otherCar.length;i++){
-		if(otherCar[i].intersect(car)){    //intersect
+	for(var i = 0;i < obstacles.length;i++){
+		if(obstacles[i].intersect(car)){    //intersect
 			i = -1;
 			break;
 		}
