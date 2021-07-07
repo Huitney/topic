@@ -52,6 +52,7 @@ body {
 <script src="build.js"></script>
 
 <script>
+
 ( function() {
 	Math.clamp = function(val,min,max) {
 		return Math.min(Math.max(val,min),max);
@@ -126,20 +127,34 @@ function init() {
 	var light = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
 	light.position.set(0, 100, 0);
 	scene.add(light);
-
+	
+	//plane
+	let loader = new THREE.TextureLoader();
+	loader.crossOrigin = '';
+	var texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/H73hbwq.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var plane = new THREE.Mesh(new THREE.PlaneGeometry(700, 470), texMat);
+	scene.add(plane);
+	plane.rotation.y = Math.PI;
+	plane.rotation.x = -Math.PI/2;
+	
+	/*
 	var grid = new THREE.GridHelper (400,40,'red','white');
 	scene.add (grid);
-
 	const axesHelper = new THREE.AxesHelper( 25 );
 	scene.add( axesHelper );
+	*/
 
     ////////////////////////////////////////////////////////////
     car = buildCar();//new THREE.Vector3(-50, 13, 0)); 
-	car.move(new THREE.Vector3(-50, 13, 0));
+	car.move(new THREE.Vector3(-50, 13, 40));
     var car2 = buildCar();//new THREE.Vector3(66.5, 13, 29));
-	car2.move(new THREE.Vector3(66.5, 13, 29));
+	car2.move(new THREE.Vector3(66.5, 13, 70));
 	var car3 = buildCar();//new THREE.Vector3(-66.5, 13, 29));
-	car3.move(new THREE.Vector3(-66.5, 13, 29));
+	car3.move(new THREE.Vector3(-66.5, 13, 70));
 
 	otherCar.push(car2, car3);
     //scene.add(car, car2, car3);
@@ -161,7 +176,7 @@ function init() {
     cameraHUD.position.z = 500;
     topControls = new THREE.OrbitControls(topCamera, renderer.domElement);
 
-    drawParkingSpace();
+    //drawParkingSpace();
 	drawFrame();
 }
   
@@ -219,17 +234,16 @@ function animate() {
     
     // C is the center of car body
     let C = car.mesh.position;
-    
+	let p = car.mesh.position;
     var vv = C.clone().sub(RC).applyAxisAngle (new THREE.Vector3(0,1,0), omega*deltaT).add(RC);
 	
-	let i = 0;
-	for(i = 0;i < otherCar.length;i++){
-		if(otherCar[i].intersect(car)){
+	for(var i = 0;i < otherCar.length;i++){
+		if(otherCar[i].intersect(car)){    //intersect
 			i = -1;
 			break;
 		}
 	}
-	if(i >= 0){
+	if(i >= 0){    
 		car.move(vv);
 		car.rotate(car.angle + omega*deltaT);
 	}
