@@ -37,13 +37,20 @@ body {
 
 <body> 
 <div id="info">auto parking -> stop parking -> manual<br>
+	<h1 id="warning">no hit</h1>
 	<button id="parking"> auto parking </button>
 </div>
+
+<audio id="collisionsound" style="display:none">
+<source src="https://huitney.github.io/topic/sounds/Reversingradar.wav" type='audio/wav'>
+</audio>
 
 <script src="https://threejs.org/build/three.min.js"></script>
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
+<script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/MTLLoader.js%22%3E"></script>
+<script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/OBJLoader.js%22%3E"></script>
 
 <button id="topView"><img src ="https://i.imgur.com/96tj0yh.png?2" style="width:80px;height:80px;"></button>
 <button id="thirdPV"><img src="https://i.imgur.com/OvvIh4R.png?2" style="width:80px;height:80px;"></button>
@@ -64,9 +71,10 @@ var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
 var car, obstacles = [];
+var sound;
 
 var sceneHUD;
-var topViewTurn = false, topControls;
+var topViewTurn = false;
 var thirdPV = false, firstPV = false;
 var parkingMode = 0, auto = 0;
 var PPart = 0;
@@ -84,7 +92,6 @@ $("#thirdPV").click(function() {
 
 $("#firstPV").click(function() {
 	firstPV = !firstPV;
-	//console.log(firstPV);
 	if(firstPV)
 		thirdPV = false;
 });
@@ -105,7 +112,6 @@ $("#parking").click(function() {
 });
 
 $("#auto").click(function() {
-	//auto = 1;
 	if(auto == 1) auto = 0;
 	if(auto == 0) auto = 1;
 });
@@ -151,8 +157,8 @@ function init() {
     ////////////////////////////////////////////////////////////
 	//car
     car = buildCar(new THREE.Vector3(-50, 13, 40));//new THREE.Vector3(-50, 13, 0)); 
-    var car2 = buildCar(new THREE.Vector3(66.5, 13, 70));//new THREE.Vector3(66.5, 13, 29));
-	var car3 = buildCar(new THREE.Vector3(-66.5, 13, 70));//new THREE.Vector3(-66.5, 13, 29));
+    var car2 = buildCar(new THREE.Vector3(67, 13, 70));//new THREE.Vector3(66.5, 13, 29));
+	var car3 = buildCar(new THREE.Vector3(-69, 13, 70));//new THREE.Vector3(-66.5, 13, 29));
 
 	obstacles.push(car2, car3);
 	
@@ -176,13 +182,22 @@ function init() {
     //topCamera
     sceneHUD = new THREE.Scene();
     topCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-    topCamera.position.set(-10, 390, 0);
+    topCamera.position.y = 500;
+	topCamera.up.set(0, 0, -1);
+	topCamera.lookAt(0, 0, 0);
     cameraHUD = new THREE.OrthographicCamera(-10, 10, 10, -10, -10, 1000);
-    cameraHUD.position.z = 500;
-    topControls = new THREE.OrbitControls(topCamera, renderer.domElement);
-
+    cameraHUD.position.y = 100;
+	cameraHUD.up.set(0, 0, -1);
+	cameraHUD.lookAt(0, 0, 0);
+    //let topControls = new THREE.OrbitControls(topCamera, renderer.domElement);
+	
+	//sound
+	sound = document.getElementById('collisionsound');
+	sound.muted = true;
+	
     //drawParkingSpace();
 	drawFrame();
+	//readModel('GTR');
 }
   
 function onWindowResize() {
@@ -194,8 +209,7 @@ function onWindowResize() {
 function animate() {
   
     renderer.clear(true);
-    topControls.update();
-    topCamera.position.set(-10, 390, 0);
+    //topControls.update();
     
     keyboard.update();
   
@@ -238,20 +252,24 @@ function animate() {
     var deltaT = clock.getDelta();
     
     // C is the center of car body
-    let C = car.mesh.position;
-	let p = car.mesh.position;
+    let C = car.mesh.position.clone();
     var vv = C.clone().sub(RC).applyAxisAngle (new THREE.Vector3(0,1,0), omega*deltaT).add(RC);
 	
+	car.move(vv);
+	car.rotate(car.angle + omega*deltaT);
 	for(var i = 0;i < obstacles.length;i++){
 		if(obstacles[i].intersect(car)){    //intersect
 			i = -1;
+			sound.play();
 			break;
 		}
 	}
-	if(i >= 0){    
-		car.move(vv);
-		car.rotate(car.angle + omega*deltaT);
+	if(i == -1){    
+		car.move(C);
+		car.rotate(car.angle - omega*deltaT);
+		$('#warning').text("hit");
 	}
+	else $('#warning').text("no hit");
 	
     //////////////////////////////////////////////////////////////
     // slowing down    after keyboard up
