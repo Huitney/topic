@@ -41,8 +41,14 @@ body {
 	<button id="parking"> auto parking </button>
 </div>
 
-<audio id="collisionsound" style="display:none">
-<source src="https://huitney.github.io/topic/sounds/reversingRadar.wav" type='audio/wav'>
+<audio id="slowRadar" style="display:none">
+<source src="https://huitney.github.io/topic/sounds/slowRadar.wav" type='audio/wav'>
+</audio>
+<audio id="medianRadar" style="display:none">
+<source src="https://huitney.github.io/topic/sounds/medianRadar.wav" type='audio/wav'>
+</audio>
+<audio id="quickRadar" style="display:none">
+<source src="https://huitney.github.io/topic/sounds/quickRadar.wav" type='audio/wav'>
 </audio>
 
 <script src="https://threejs.org/build/three.min.js"></script>
@@ -71,7 +77,7 @@ var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
 var car, obstacles = [];
-var sound;
+var sSound, mSound, qSound;
 
 var sceneHUD;
 var topViewTurn = false;
@@ -192,8 +198,12 @@ function init() {
     //let topControls = new THREE.OrbitControls(topCamera, renderer.domElement);
 	
 	//sound
-	sound = document.getElementById('collisionsound');
-	sound.muted = true;
+	sSound = document.getElementById('slowRadar');
+	sSound.muted = false;
+	mSound = document.getElementById('medianRadar');
+	mSound.muted = false;
+	qSound = document.getElementById('quickRadar');
+	qSound.muted = false;
 	
     //drawParkingSpace();
 	drawFrame();
@@ -258,9 +268,9 @@ function animate() {
 	car.move(vv);
 	car.rotate(car.angle + omega*deltaT);
 	for(var i = 0;i < obstacles.length;i++){
-		if(obstacles[i].intersect(car)){    //intersect
+		if(car.intersect(obstacles[i])){    //intersect
 			i = -1;
-			sound.play();
+			//sound.play();
 			break;
 		}
 	}

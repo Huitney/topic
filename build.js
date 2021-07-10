@@ -44,8 +44,20 @@ class Car {
 					+ obbA.size[1] * Math.abs(obbA.axes[1].dot(sHat));
 			let dB = obbB.size[0] * Math.abs(obbB.axes[0].dot(sHat)) 
 					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
-			if (centerDis > dA + dB)
+			//radarsound
+			if (centerDis - dA + dB <= 10){
+				qSound.play();
+			}
+			else if (centerDis - dA + dB <= 20){
+				mSound.play();
+			}
+			else if (centerDis - dA + dB <= 30){
+				sSound.play();
+			}
+			
+			if (centerDis > dA + dB){
 				return false;  // NOT intersect
+			}
 			
 			//console.log(centerDis, dA + dB);
 		}
