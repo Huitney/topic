@@ -39,15 +39,16 @@ body {
 <div id="info">auto parking -> stop parking -> manual<br>
 	<h1 id="warning">no hit</h1>
 	<button id="parking"> auto parking </button>
+	<button id='soundBT'>Radar Sound Off</button>
 </div>
 
-<audio id="slowRadar" style="display:none">
+<audio id="slowRadar" style="display:none" muted>
 <source src="https://huitney.github.io/topic/sounds/slowRadar.wav" type='audio/wav'>
 </audio>
-<audio id="medianRadar" style="display:none">
+<audio id="medianRadar" style="display:none" muted>
 <source src="https://huitney.github.io/topic/sounds/medianRadar.wav" type='audio/wav'>
 </audio>
-<audio id="quickRadar" style="display:none">
+<audio id="quickRadar" style="display:none" muted>
 <source src="https://huitney.github.io/topic/sounds/quickRadar.wav" type='audio/wav'>
 </audio>
 
@@ -77,12 +78,13 @@ var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
 var car, obstacles = [];
+var dashboard;
 var sSound, mSound, qSound;
 
 var sceneHUD;
-var topViewTurn = false;
+var topViewTurn = false, soundBT = false;
 var thirdPV = false, firstPV = false;
-var parkingMode = 0, auto = 0;
+var parkingMode = 0;
 var PPart = 0;
 
 //button
@@ -117,9 +119,20 @@ $("#parking").click(function() {
 	}
 });
 
-$("#auto").click(function() {
-	if(auto == 1) auto = 0;
-	if(auto == 0) auto = 1;
+$("#soundBT").click(function() {
+	soundBT =! soundBT;
+	if(soundBT){
+		sSound.volume = 0;
+		mSound.volume = 0;
+		qSound.volume = 0;
+		$("#soundBT").text('Radar Sound On');
+	}
+	else{
+		sSound.volume = 1;
+		mSound.volume = 1;
+		qSound.volume = 1;
+		$("#soundBT").text('Radar Sound Off');
+	}
 });
 
 init();
@@ -199,11 +212,13 @@ function init() {
 	
 	//sound
 	sSound = document.getElementById('slowRadar');
-	sSound.muted = false;
 	mSound = document.getElementById('medianRadar');
-	mSound.muted = false;
 	qSound = document.getElementById('quickRadar');
-	qSound.muted = false;
+	
+	//dashboard
+	dashboard = buildDashboard();
+	scene.add(dashboard);
+	dashboard.visible = false;
 	
     //drawParkingSpace();
 	drawFrame();
@@ -235,10 +250,36 @@ function animate() {
   
     /////////////////////////////////////////////////////////////////
     //move car
-    if (keyboard.pressed('down')) 
+    if (keyboard.pressed('down')){
 		this.speed -= 1;
-	if (keyboard.pressed('up'))
+		
+		//dashboard number
+		if(this.speed > 0 & this.speed <= 50){
+			dashboard.children[3].material.map.offset.x -= 0.1;
+			if(this.speed % 10 == 0)
+				dashboard.children[2].material.map.offset.x -= 0.1;
+		}
+		if(this.speed <= 0 & this.speed >= -50){
+			dashboard.children[3].material.map.offset.x += 0.1;
+			if(this.speed % 10 == 0)
+				dashboard.children[2].material.map.offset.x += 0.1;
+		}
+	}
+	if (keyboard.pressed('up')){
 		this.speed += 1;
+		
+		//dashboard number
+		if(this.speed >= 0 & this.speed <= 50){
+			dashboard.children[3].material.map.offset.x += 0.1;
+			if(this.speed % 10 == 0)
+				dashboard.children[2].material.map.offset.x += 0.1;
+		}
+		if(this.speed < 0 & this.speed >= -50){
+			dashboard.children[3].material.map.offset.x -= 0.1;
+			if(this.speed % 10 == 0)
+				dashboard.children[2].material.map.offset.x -= 0.1;
+		}
+	}
 	this.speed = Math.clamp (this.speed, -50, 50);
   
     if (keyboard.pressed('right'))
@@ -270,7 +311,6 @@ function animate() {
 	for(var i = 0;i < obstacles.length;i++){
 		if(car.intersect(obstacles[i])){    //intersect
 			i = -1;
-			//sound.play();
 			break;
 		}
 	}
@@ -319,6 +359,11 @@ function animate() {
 		camera.position.copy(tmp);
 		tmp = car.mesh.localToWorld(new THREE.Vector3(6, 10, 0));
 		camera.lookAt(tmp);
+		dashboard.visible = true;
+		dashboard.position.copy(tmp);
+		dashboard.position.y -= 2;
+		dashboard.rotation.y = car.angle;
+		dashboard.children[0].rotation.z = this.theta * -10;
     }
     else {
 		camera.position.set(-200, 100, 0); // fixed camera, no orbitControl!

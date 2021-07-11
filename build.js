@@ -44,15 +44,25 @@ class Car {
 					+ obbA.size[1] * Math.abs(obbA.axes[1].dot(sHat));
 			let dB = obbB.size[0] * Math.abs(obbB.axes[0].dot(sHat)) 
 					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
+			
 			//radarsound
-			if (centerDis - dA + dB <= 10){
+			if (centerDis - dA + dB <= 8){
 				qSound.play();
+				qSound.muted = false;
+				mSound.muted = true;
+				sSound.muted = true;
 			}
-			else if (centerDis - dA + dB <= 20){
+			else if (centerDis - dA + dB <= 16){
 				mSound.play();
+				qSound.muted = true;
+				mSound.muted = false;
+				sSound.muted = true;
 			}
-			else if (centerDis - dA + dB <= 30){
+			else if (centerDis - dA + dB <= 24){
 				sSound.play();
+				qSound.muted = true;
+				mSound.muted = true;
+				sSound.muted = false;
 			}
 			
 			if (centerDis > dA + dB){
@@ -299,4 +309,77 @@ function unitize (object, targetSize) {
 	object.scale.set (scaleSet, scaleSet, scaleSet);
 	object.position.set (-center.x*scaleSet, center.y*scaleSet/6, -center.z*scaleSet);
 	return theObject;
+}
+
+function buildDashboard(){
+	
+	var dashboard = new THREE.Group();
+	
+	var circle = new THREE.Mesh(new THREE.CircleGeometry(1, 32), new THREE.MeshBasicMaterial({color: 'gray', side: THREE.DoubleSide}));
+	circle.position.z = 3;
+	circle.rotation.y = Math.PI/2;
+	
+	//steering wheel
+	let loader = new THREE.TextureLoader();
+	loader.crossOrigin = '';
+	var texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/AaejjAQ.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var steeringWheel = new THREE.Mesh(new THREE.CircleGeometry(2, 32), texMat);
+	steeringWheel.rotation.y = Math.PI/2;
+		
+	dashboard.add(steeringWheel, circle);
+
+	//number
+	loader.load(
+    'https://i.imgur.com/X0z0Ine.png?1',
+    // Function when resource is loaded
+    function(texture) {
+		// Plane with default texture coordinates [0,1]x[0,1]
+		var texMat = new THREE.MeshBasicMaterial({
+			map: texture,
+			alphaTest: 0.5,
+			side:THREE.DoubleSide,
+			polygonOffset: true,
+			polygonOffsetFactor: -1.0,
+			polygonOffsetUnits: -4.0
+		});
+		var numberL = new THREE.Mesh(buildNumberGeometry(), texMat);
+		var numberR = new THREE.Mesh(buildNumberGeometry(), texMat);
+		texture.wrapS = THREE.RepeatWrapping;
+		numberL.position.z = 2.6;
+		numberL.rotation.y = -Math.PI/2;
+		numberR.position.z = 3.4;
+		numberR.rotation.y = -Math.PI/2;
+		dashboard.add(numberL, numberR);
+    },
+	undefined,
+    // Function called when download errors
+    function(xhr) {
+		console.log('An error happened');
+    }
+	);
+	
+	
+	return dashboard;
+}
+
+function buildNumberGeometry() {
+	var geometry = new THREE.BufferGeometry();
+	let vertices = [];
+	let uvs = [];
+	let indices = [0,1,2, 0,2,3];
+	vertices.push(-0.5,-0.5,0, 0.5,-0.5,0, 0.5,0.5,0, -0.5,0.5,0);
+	uvs.push (0,0, 0.1,0, 0.1,1, 0,1);
+
+	geometry.setIndex(indices);
+	geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+	geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+
+	geometry.computeBoundingSphere();
+	geometry.computeFaceNormals();
+	geometry.computeVertexNormals();
+	return geometry;
 }
