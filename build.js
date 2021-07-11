@@ -328,9 +328,12 @@ function buildDashboard(){
 	speedometer.rotation.y = -Math.PI/2;
 	
 	//pointer
-	var pointer = new THREE.Mesh( new THREE.ConeGeometry( 0.05, 0.5, 32 ), new THREE.MeshBasicMaterial( {color: 'red'} ) );
-	pointer.position.z = 2.8;
-	pointer.rotation.x = -Math.PI/2 - Math.PI/15;
+	var cone = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.5, 32), new THREE.MeshBasicMaterial({color: 'red'}));
+	var pointer = new THREE.Group();
+	pointer.add(cone);
+	cone.position.z = -0.3;
+	cone.rotation.x = -Math.PI/2 - Math.PI/15;
+	pointer.position.z = 3;
 	
 	//steering wheel
 	var texMat = new THREE.MeshBasicMaterial({

@@ -250,10 +250,16 @@ function animate() {
   
     /////////////////////////////////////////////////////////////////
     //move car
-    if (keyboard.pressed('down'))
+    if (keyboard.pressed('down')){
 		this.speed -= 1;
-	if (keyboard.pressed('up'))
+		if(this.speed >= -50 & this.speed < 0)
+			dashboard.children[2].rotation.x += 0.04;
+	}
+	if (keyboard.pressed('up')){
 		this.speed += 1;
+		if(this.speed <= 50 & this.speed >= 0)
+			dashboard.children[2].rotation.x += 0.04;
+	}
 	this.speed = Math.clamp (this.speed, -50, 50);
   
     if (keyboard.pressed('right'))
@@ -309,16 +315,20 @@ function animate() {
     if (this.fSlowDown == 1) {
 		if(this.speed >= 0) {  // moving forward --> slow down gradually
 			this.speed -= 1;
+			dashboard.children[2].rotation.x -= 0.04;
 		} else if (this.speed <= 0) {  // moving backward --> stop immediately
 			this.speed = 0;
 			this.fSlowDown = 0;
+			dashboard.children[2].rotation.x = 0;
 		}
     } else if (this.bSlowDown == 1) {
 		if(this.speed <= 0) {
 			this.speed += 1;
+			dashboard.children[2].rotation.x -= 0.04;
 		} else if (this.speed >= 0) {
 			this.speed = 0;
 			this.bSlowDown = 0;
+			dashboard.children[2].rotation.x = 0;
 		}
     }
 
