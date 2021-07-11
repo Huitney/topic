@@ -315,13 +315,24 @@ function buildDashboard(){
 	
 	var dashboard = new THREE.Group();
 	
-	var circle = new THREE.Mesh(new THREE.CircleGeometry(1, 32), new THREE.MeshBasicMaterial({color: 'gray', side: THREE.DoubleSide}));
-	circle.position.z = 3;
-	circle.rotation.y = Math.PI/2;
-	
-	//steering wheel
+	//speedometer
 	let loader = new THREE.TextureLoader();
 	loader.crossOrigin = '';
+	var texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/CHfdlEr.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var speedometer = new THREE.Mesh(new THREE.CircleGeometry(1, 32), texMat);
+	speedometer.position.set(0, 0.2, 3);
+	speedometer.rotation.y = -Math.PI/2;
+	
+	//pointer
+	var pointer = new THREE.Mesh( new THREE.ConeGeometry( 0.05, 0.5, 32 ), new THREE.MeshBasicMaterial( {color: 'red'} ) );
+	pointer.position.z = 2.8;
+	pointer.rotation.x = -Math.PI/2 - Math.PI/15;
+	
+	//steering wheel
 	var texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/AaejjAQ.png'),
 		alphaTest: 0.5,
@@ -330,38 +341,8 @@ function buildDashboard(){
 	var steeringWheel = new THREE.Mesh(new THREE.CircleGeometry(2, 32), texMat);
 	steeringWheel.rotation.y = Math.PI/2;
 		
-	dashboard.add(steeringWheel, circle);
+	dashboard.add(steeringWheel, speedometer, pointer);
 
-	//number
-	loader.load(
-    'https://i.imgur.com/X0z0Ine.png?1',
-    // Function when resource is loaded
-    function(texture) {
-		// Plane with default texture coordinates [0,1]x[0,1]
-		var texMat = new THREE.MeshBasicMaterial({
-			map: texture,
-			alphaTest: 0.5,
-			side:THREE.DoubleSide,
-			polygonOffset: true,
-			polygonOffsetFactor: -1.0,
-			polygonOffsetUnits: -4.0
-		});
-		var numberL = new THREE.Mesh(buildNumberGeometry(), texMat);
-		var numberR = new THREE.Mesh(buildNumberGeometry(), texMat);
-		texture.wrapS = THREE.RepeatWrapping;
-		numberL.position.z = 2.6;
-		numberL.rotation.y = -Math.PI/2;
-		numberR.position.z = 3.4;
-		numberR.rotation.y = -Math.PI/2;
-		dashboard.add(numberL, numberR);
-    },
-	undefined,
-    // Function called when download errors
-    function(xhr) {
-		console.log('An error happened');
-    }
-	);
-	
 	
 	return dashboard;
 }

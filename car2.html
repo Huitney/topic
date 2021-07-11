@@ -250,36 +250,10 @@ function animate() {
   
     /////////////////////////////////////////////////////////////////
     //move car
-    if (keyboard.pressed('down')){
+    if (keyboard.pressed('down'))
 		this.speed -= 1;
-		
-		//dashboard number
-		if(this.speed > 0 & this.speed <= 50){
-			dashboard.children[3].material.map.offset.x -= 0.1;
-			if(this.speed % 10 == 0)
-				dashboard.children[2].material.map.offset.x -= 0.1;
-		}
-		if(this.speed <= 0 & this.speed >= -50){
-			dashboard.children[3].material.map.offset.x += 0.1;
-			if(this.speed % 10 == 0)
-				dashboard.children[2].material.map.offset.x += 0.1;
-		}
-	}
-	if (keyboard.pressed('up')){
+	if (keyboard.pressed('up'))
 		this.speed += 1;
-		
-		//dashboard number
-		if(this.speed >= 0 & this.speed <= 50){
-			dashboard.children[3].material.map.offset.x += 0.1;
-			if(this.speed % 10 == 0)
-				dashboard.children[2].material.map.offset.x += 0.1;
-		}
-		if(this.speed < 0 & this.speed >= -50){
-			dashboard.children[3].material.map.offset.x -= 0.1;
-			if(this.speed % 10 == 0)
-				dashboard.children[2].material.map.offset.x -= 0.1;
-		}
-	}
 	this.speed = Math.clamp (this.speed, -50, 50);
   
     if (keyboard.pressed('right'))
