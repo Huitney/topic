@@ -1,9 +1,12 @@
 class Car {
-	constructor(pos, size, colorName = 'white', materialArray) {
+	constructor(pos, size, colorName = 'white', materialArray, materialArray2) {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0] * 2, size[1] * 2, size[2] * 2), materialArray);
 		this.mesh.position.copy(pos);
+		
+		this.materialArray = materialArray;
+		this.materialArray2 = materialArray2;
 		
 		this.leftfrontWheel = new THREE.Group();
 		this.rightfrontWheel = new THREE.Group();
@@ -77,6 +80,13 @@ class Car {
 	move(pos){
 		this.center.copy(pos);
 		this.mesh.position.copy(this.center);
+	}
+	
+	changeColor(signal){
+		if(signal)
+			this.mesh.material = this.materialArray2;
+		else
+			this.mesh.material = this.materialArray;
 	}
 	
 }
@@ -159,6 +169,32 @@ function buildCar(pos) {
 		map: loader.load ('http://i.imgur.com/oWaSyZJ.png'),
 		transparent: true, opacity: 0.7
 	}));
+	
+	var materialArray2 = [];
+    materialArray2.push(new THREE.MeshLambertMaterial({
+		map: loader.load ('https://i.imgur.com/t4l7Tci.png'),
+		transparent: true, opacity: 0.7
+	}));
+    materialArray2.push(new THREE.MeshLambertMaterial({
+		map: loader.load ('https://i.imgur.com/Xv46HdL.png'),
+		transparent: true, opacity: 0.7
+	}));
+    materialArray2.push(new THREE.MeshLambertMaterial({
+		map: loader.load ('https://i.imgur.com/bBnU4nu.png'),
+		transparent: true, opacity: 0.7
+	}));
+    materialArray2.push(new THREE.MeshLambertMaterial({
+		map: loader.load ('https://i.imgur.com/bBnU4nu.png'),
+		transparent: true, opacity: 0.7
+	}));
+    materialArray2.push(new THREE.MeshLambertMaterial({
+		map: loader.load ('https://i.imgur.com/CjfzrQR.png'),
+		transparent: true, opacity: 0.7
+	}));
+    materialArray2.push(new THREE.MeshLambertMaterial({
+		map: loader.load ('https://i.imgur.com/CjfzrQR.png'),
+		transparent: true, opacity: 0.7
+	}));
   
     let wheelGeometry = new THREE.CylinderGeometry(5, 5, 2, 32, 1, true);
     let wheelMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
@@ -174,7 +210,7 @@ function buildCar(pos) {
     circle2.position.y = -1;
   
     // assembly
-    let car = new Car(pos, [19, 10, 10], 'red', materialArray);
+    let car = new Car(pos, [19, 10, 10], 'white', materialArray, materialArray2);
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);

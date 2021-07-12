@@ -298,8 +298,12 @@ function animate() {
 		car.move(C);
 		car.rotate(car.angle - omega*deltaT);
 		$('#warning').text("hit");
+		car.changeColor(true);
 	}
-	else $('#warning').text("no hit");
+	else {
+		$('#warning').text("no hit");
+		car.changeColor(false);
+	}
 	
     //////////////////////////////////////////////////////////////
     // slowing down    after keyboard up
@@ -353,6 +357,23 @@ function animate() {
 		camera.position.set(-200, 100, 0); // fixed camera, no orbitControl!
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
+	
+	if(topViewTurn){    ////topView move
+		if (keyboard.down ('W')) {
+			topCamera.position.z -= 10;
+		} else if (keyboard.down ('S')) {
+			topCamera.position.z += 10;
+		} else if (keyboard.down ('D')) {
+			topCamera.position.x += 10;
+		} else if (keyboard.down ('A')) {
+			topCamera.position.x -= 10;
+		} 
+		if(keyboard.down ('I')){
+			topCamera.position.y -= 10;
+		} else if(keyboard.down ('O')){
+			topCamera.position.y += 10;
+		}
+	}
 
     //parking 
 	//parkingMode 0 manual 1 auto parking 2 stop parking
