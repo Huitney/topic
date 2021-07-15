@@ -3,6 +3,7 @@ class Car {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0] * 2, size[1] * 2, size[2] * 2), materialArray);
+		//this.mesh = readModel(modelName);
 		this.mesh.position.copy(pos);
 		
 		this.materialArray = materialArray;
@@ -140,7 +141,7 @@ class Obstacle {
 	}	
 }
 
-function buildCar(pos) {
+function buildCar(pos, modelName) {
     let loader = new THREE.TextureLoader();
     loader.setCrossOrigin('');
   
@@ -210,7 +211,7 @@ function buildCar(pos) {
     circle2.position.y = -1;
   
     // assembly
-    let car = new Car(pos, [19, 10, 10], 'white', materialArray, materialArray2);
+    let car = new Car(pos, [19, 10, 10], 'white', materialArray);
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);
@@ -296,30 +297,31 @@ function readModel (modelName, targetSize=40) {
 	};
 
 	var onError = function(xhr) {};
-
+	
+	var model
 	var mtlLoader =  new THREE.MTLLoader();
 	mtlLoader.setPath('models/');
 	mtlLoader.load(modelName+'.mtl', function(materials) {
 		materials.preload();
 
-		var objLoader =  new OBJLoader();
+		var objLoader =  new THREE.OBJLoader();
 		objLoader.setMaterials(materials);
 		objLoader.setPath('models/');
 		objLoader.load(modelName+'.obj', function(object) {
 
-		let theObject =  unitize (object, targetSize);
-		theObject.add(new THREE.BoxHelper(theObject));
-		theObject.name = 'OBJ'
+			let theObject =  unitize (object, targetSize);
+			//theObject.add(new THREE.BoxHelper(theObject));
+			theObject.name = 'OBJ';
 
-		truck = new THREE.Object3D();
-		truck.add(theObject);
-		truck.rotation.y = Math.PI/2;
+			model = new THREE.Object3D();
+			model.add(theObject);
+			model.rotation.y = Math.PI/2;
 
-		scene.add (truck);
 
 		}, onProgress, onError);
 
 	});
+	return model;
 
 }
 

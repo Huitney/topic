@@ -32,6 +32,27 @@ body {
 	top: 86.5%;
 	left : 25%;
 }
+
+#turnRight {
+	position: absolute;
+	border-radius: 100px;
+	top: 5%;
+	left : 95%;
+}
+
+#zoomIn {
+	position: absolute;
+	border-radius: 100px;
+	top: 15%;
+	left : 95%;
+}
+
+#zoomOut {
+	position: absolute;
+	border-radius: 100px;
+	top: 25%;
+	left : 95%;
+}
 </style>
 </head>
 
@@ -56,12 +77,16 @@ body {
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
-<script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/MTLLoader.js%22%3E"></script>
-<script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/OBJLoader.js%22%3E"></script>
+<script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/MTLLoader.js"></script>
+<script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/OBJLoader.js"></script>
 
 <button id="topView"><img src ="https://i.imgur.com/96tj0yh.png?2" style="width:80px;height:80px;"></button>
 <button id="thirdPV"><img src="https://i.imgur.com/OvvIh4R.png?2" style="width:80px;height:80px;"></button>
 <button id="firstPV"><img src="https://i.imgur.com/AX5vRqY.png" style="width:80px;height:80px;"></button>
+
+<button id="turnRight"><img src="https://i.imgur.com/rNCP4q9.png" style="width:40px;height:45px;"></button>
+<button id="zoomIn"><img src="https://i.imgur.com/Or603WK.png" style="width:40px;height:45px;"></button>
+<button id="zoomOut"><img src="https://i.imgur.com/PIEYHkm.png" style="width:40px;height:45px;"></button>
 
 <script src="build.js"></script>
 
@@ -90,6 +115,43 @@ var PPart = 0;
 //button
 $("#topView").click(function() {
 	topViewTurn = !topViewTurn;
+	if(topViewTurn){
+		turnRight.style.visibility='visible';
+		zoomIn.style.visibility='visible';
+		zoomOut.style.visibility='visible';
+	}else{
+		turnRight.style.visibility='hidden';
+		zoomIn.style.visibility='hidden';
+		zoomOut.style.visibility='hidden';
+	}
+});
+
+$("#turnRight").click(function() {
+	topCamera.rotation.y += Math.PI/2;
+	if(topCamera.rotation.y % Math.PI/2 == 0){
+		topCamera.up.set(0, 0, -1);
+		topCamera.lookAt(0, 0, 0);
+	}
+	else if(topCamera.rotation.y % Math.PI/2 == 1){
+		topCamera.up.set(-1, 0, 0);
+		topCamera.lookAt(0, 0, 0);
+	}
+	else if(topCamera.rotation.y % Math.PI/2 == 2){
+		topCamera.up.set(0, 0, 1);
+		topCamera.lookAt(0, 0, 0);
+	}
+	else if(topCamera.rotation.y % Math.PI/2 == 3){
+		topCamera.up.set(1, 0, 0);
+		topCamera.lookAt(0, 0, 0);
+	}
+});
+
+$("#zoomIn").click(function() {
+	topCamera.position.y -= 10;
+});
+
+$("#zoomOut").click(function() {
+	topCamera.position.y += 10;
 });
 
 $("#thirdPV").click(function() {
@@ -175,9 +237,9 @@ function init() {
 
     ////////////////////////////////////////////////////////////
 	//car
-    car = buildCar(new THREE.Vector3(-50, 13, 40));//new THREE.Vector3(-50, 13, 0)); 
-    var car2 = buildCar(new THREE.Vector3(67, 13, 70));//new THREE.Vector3(66.5, 13, 29));
-	var car3 = buildCar(new THREE.Vector3(-69, 13, 70));//new THREE.Vector3(-66.5, 13, 29));
+    car = buildCar(new THREE.Vector3(-50, 13, 40));//, 'Hyundai');//new THREE.Vector3(-50, 13, 0)); 
+    var car2 = buildCar(new THREE.Vector3(67, 13, 70));//, 'Hyundai');//new THREE.Vector3(66.5, 13, 29));
+	var car3 = buildCar(new THREE.Vector3(-69, 13, 70));//, 'Hyundai');//new THREE.Vector3(-66.5, 13, 29));
 
 	obstacles.push(car2, car3);
 	
@@ -201,7 +263,7 @@ function init() {
     //topCamera
     sceneHUD = new THREE.Scene();
     topCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-    topCamera.position.y = 500;
+    topCamera.position.y = 200;
 	topCamera.up.set(0, 0, -1);
 	topCamera.lookAt(0, 0, 0);
     cameraHUD = new THREE.OrthographicCamera(-10, 10, 10, -10, -10, 1000);
@@ -209,6 +271,9 @@ function init() {
 	cameraHUD.up.set(0, 0, -1);
 	cameraHUD.lookAt(0, 0, 0);
     //let topControls = new THREE.OrbitControls(topCamera, renderer.domElement);
+	turnRight.style.visibility='hidden';
+	zoomIn.style.visibility='hidden';
+	zoomOut.style.visibility='hidden';
 	
 	//sound
 	sSound = document.getElementById('slowRadar');
@@ -222,7 +287,7 @@ function init() {
 	
     //drawParkingSpace();
 	drawFrame();
-	//readModel('GTR');
+	//readModel('Hyundai');
 }
   
 function onWindowResize() {
@@ -250,6 +315,16 @@ function animate() {
   
     /////////////////////////////////////////////////////////////////
     //move car
+	/*
+	if(car.mesh & car.mesh.position != car.center){
+		car.mesh.position.copy(car.center);
+	}
+	for(var i = 0;i < obstacles.length;i++){
+		if(obstacles[i].mesh & obstacles[i].mesh.position != obstacles[i].center){    //intersect
+			obstacles[i].mesh.position.copy(obstacles[i].center);
+		}
+	}*/
+	
     if (keyboard.pressed('down')){
 		this.speed -= 1;
 		if(this.speed >= -50 & this.speed < 0)
@@ -368,6 +443,10 @@ function animate() {
 		} else if (keyboard.down ('A')) {
 			topCamera.position.x -= 10;
 		} 
+		else{
+			topCamera.position.x = car.center.x;
+			topCamera.position.z = car.center.z;
+		}
 		if(keyboard.down ('I')){
 			topCamera.position.y -= 10;
 		} else if(keyboard.down ('O')){
@@ -449,8 +528,8 @@ function render() {
 
     if (topViewTurn) {
 		renderer.render(sceneHUD, cameraHUD);
-		renderer.setViewport(WW/1.43, HH/1.41, WW/3.5, HH/3.5);
-		renderer.setScissor(WW/1.43, HH/1.41, WW/3.5, HH/3.5);
+		renderer.setViewport(WW/1.35, HH/1.5, WW/5, HH/3.5);
+		renderer.setScissor(WW/1.35, HH/1.5, WW/5, HH/3.5);
 		renderer.clear();
 		renderer.render(scene, topCamera);
     }
