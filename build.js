@@ -1,5 +1,5 @@
 class Car {
-	constructor(pos, size, colorName = 'white', materialArray, materialArray2) {
+	constructor(pos, size, colorName = 'white', materialArray, materialArray2, dashboard) {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0] * 2, size[1] * 2, size[2] * 2), materialArray);
@@ -8,6 +8,9 @@ class Car {
 		
 		this.materialArray = materialArray;
 		this.materialArray2 = materialArray2;
+		this.dashboard = dashboard;
+		scene.add(this.dashboard);
+		this.dashboard.visible = false;
 		
 		this.leftfrontWheel = new THREE.Group();
 		this.rightfrontWheel = new THREE.Group();
@@ -209,9 +212,12 @@ function buildCar(pos, modelName) {
     circle.position.y = 1;
     circle2 = circle.clone();
     circle2.position.y = -1;
+	
+	//dashboard
+	let dashboard = buildDashboard();
   
     // assembly
-    let car = new Car(pos, [19, 10, 10], 'white', materialArray);
+    let car = new Car(pos, [19, 10, 10], 'white', materialArray, materialArray2, dashboard);
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);

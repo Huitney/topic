@@ -103,13 +103,12 @@ var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
 var car, obstacles = [];
-var dashboard;
 var sSound, mSound, qSound;
 
 var sceneHUD;
 var topViewTurn = false, soundBT = false;
 var thirdPV = false, firstPV = false;
-var parkingMode = 0;
+var parkingMode = 0, parkingAngle;
 var PPart = 0;
 
 //button
@@ -175,6 +174,7 @@ $("#parking").click(function() {
 	}
 	else if(parkingMode == 1){
 		$("#parking").text('stop parking');
+		parkingAngle = car.angle;
 	}
 	else{
 		$("#parking").text('manual');
@@ -280,11 +280,6 @@ function init() {
 	mSound = document.getElementById('medianRadar');
 	qSound = document.getElementById('quickRadar');
 	
-	//dashboard
-	dashboard = buildDashboard();
-	scene.add(dashboard);
-	dashboard.visible = false;
-	
     //drawParkingSpace();
 	drawFrame();
 	//readModel('Hyundai');
@@ -328,12 +323,12 @@ function animate() {
     if (keyboard.pressed('down')){
 		this.speed -= 1;
 		if(this.speed >= -50 & this.speed < 0)
-			dashboard.children[2].rotation.x += 0.04;
+			car.dashboard.children[2].rotation.x += 0.04;
 	}
 	if (keyboard.pressed('up')){
 		this.speed += 1;
 		if(this.speed <= 50 & this.speed >= 0)
-			dashboard.children[2].rotation.x += 0.04;
+			car.dashboard.children[2].rotation.x += 0.04;
 	}
 	this.speed = Math.clamp (this.speed, -50, 50);
   
@@ -394,23 +389,24 @@ function animate() {
     if (this.fSlowDown == 1) {
 		if(this.speed >= 0) {  // moving forward --> slow down gradually
 			this.speed -= 1;
-			dashboard.children[2].rotation.x -= 0.04;
+			car.dashboard.children[2].rotation.x -= 0.04;
 		} else if (this.speed <= 0) {  // moving backward --> stop immediately
 			this.speed = 0;
 			this.fSlowDown = 0;
-			dashboard.children[2].rotation.x = 0;
+			car.dashboard.children[2].rotation.x = 0;
 		}
     } else if (this.bSlowDown == 1) {
 		if(this.speed <= 0) {
 			this.speed += 1;
-			dashboard.children[2].rotation.x -= 0.04;
+			car.dashboard.children[2].rotation.x -= 0.04;
 		} else if (this.speed >= 0) {
 			this.speed = 0;
 			this.bSlowDown = 0;
-			dashboard.children[2].rotation.x = 0;
+			car.dashboard.children[2].rotation.x = 0;
 		}
     }
-
+	
+	car.dashboard.visible = false;
     //camera position
     if (thirdPV) {
 		let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10,0,0));
@@ -422,11 +418,11 @@ function animate() {
 		camera.position.copy(tmp);
 		tmp = car.mesh.localToWorld(new THREE.Vector3(6, 10, 0));
 		camera.lookAt(tmp);
-		dashboard.visible = true;
-		dashboard.position.copy(tmp);
-		dashboard.position.y -= 2;
-		dashboard.rotation.y = car.angle;
-		dashboard.children[0].rotation.z = this.theta * -10;
+		car.dashboard.visible = true;
+		car.dashboard.position.copy(tmp);
+		car.dashboard.position.y -= 2;
+		car.dashboard.rotation.y = car.angle;
+		car.dashboard.children[0].rotation.z = this.theta * -10;
     }
     else {
 		camera.position.set(-200, 100, 0); // fixed camera, no orbitControl!
@@ -456,39 +452,39 @@ function animate() {
 
     //parking 
 	//parkingMode 0 manual 1 auto parking 2 stop parking
-	//PPart 0 go straight 1 turn right 2 change direction 3 turn left
+	//PPart 0 turn right 1 change direction 2 turn left
     if(parkingMode == 1){            //auto parking
-		if(PPart == 0){             //go straight
+		/*if(PPart == 0){             //go straight////////////////
 			this.speed += 1;
 			this.speed = Math.clamp (this.speed, -50, 50);
 			if(car.mesh.position.x >= 66.5){
 				PPart = 1;
 				this.speed = 0;
 			}
-		}
-		if(PPart == 1){             //turn right
+		}*/
+		if(PPart == 0){             //turn right
 			this.speed -= 1;
 			this.speed = Math.clamp (this.speed, -50, 50);
 			this.theta -= 0.02;
 			this.theta = Math.clamp (this.theta, -Math.PI/7, Math.PI/7);
-			if(car.angle >= Math.PI /4){
-				PPart = 2;
+			if(car.angle >= Math.PI /4 + parkingAngle){
+				PPart = 1;
 			}
 		}
-		if(PPart == 2){             //change direction
+		if(PPart == 1){             //change direction
 			this.speed = 0;
 			this.theta += 0.02;
 			this.theta = Math.clamp (this.theta, -Math.PI/7, Math.PI/7);
 			if(this.theta == Math.PI/7){
-				PPart = 3;
+				PPart = 2;
 			}
 		}
-		if(PPart == 3){             //turn left
+		if(PPart == 2){             //turn left
 			this.speed -= 1;
 			this.speed = Math.clamp (this.speed, -50, 50);
 			this.theta += 0.02;
 			this.theta = Math.clamp (this.theta, -Math.PI/7, Math.PI/7);
-			if(car.angle <= 0){
+			if(car.angle <= 0 + parkingAngle){
 				this.speed = 0;
 			}
 		}
