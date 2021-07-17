@@ -1,13 +1,12 @@
 <html><head>
-
 <link rel="stylesheet" type="text/css" href="carStyle.css">
-
 </head>
 
 <body style='overflow:hidden'> 
 <div id="info">auto parking -> stop parking -> manual<br>
 	<h2 id="warning">no hit</h2>
 	<button id="parking"> auto parking </button>
+	<button id="parkingModeButton"> Mode 1</button>
 	<button id='soundBT'>Radar Sound Off</button>
 </div>
 
@@ -52,6 +51,8 @@ var topViewTurn = false, soundBT = false;
 var thirdPV = false, firstPV = false;
 var parkingMode = 0, parkingAngle;
 var PPart = 0;
+var rearMirrorControls, reversingCameraControls;
+var parkingModeButton = false, rearMirror;
 
 //button
 $("#topView").click(function() {
@@ -135,6 +136,20 @@ $("#soundBT").click(function() {
 	}
 });
 
+$("#parkingModeButton").click(function() {
+	parkingModeButton = !parkingModeButton;
+	if(parkingModeButton){
+		$("#parkingModeButton").text('Mode 2');
+		car.mesh.position.z = 30;
+	}
+
+	else{
+		$("#parkingModeButton").text('Mode 1');
+		car.mesh.position.z = 40;
+	}
+		
+});
+
 init();
 animate();
   
@@ -156,15 +171,28 @@ function init() {
 	//plane
 	let loader = new THREE.TextureLoader();
 	loader.crossOrigin = '';
-	var texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/H73hbwq.png?1'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var plane = new THREE.Mesh(new THREE.PlaneGeometry(700, 470), texMat);
-	scene.add(plane);
-	plane.rotation.y = Math.PI;
+	texture = loader.load('https://i.imgur.com/uatNsoh.png');
+	texture.repeat.set(14, 14);
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+	var plane = new THREE.Mesh(new THREE.PlaneGeometry(700, 260), new THREE.MeshBasicMaterial({map: texture}));
 	plane.rotation.x = -Math.PI/2;
+	
+	texture1 = loader.load('https://i.imgur.com/EB8HFqt.jpg?1');
+	var plane1 = new THREE.Mesh(new THREE.PlaneGeometry(700, 120), new THREE.MeshBasicMaterial({map: texture1}));
+	texture1.repeat.set(3,1);
+	texture1.wrapS = THREE.RepeatWrapping;
+	texture1.wrapT = THREE.RepeatWrapping;
+	plane1.rotation.x = -Math.PI/2;
+	plane1.position.y = 0.2;
+
+	scene.add(plane, plane1);
+	
+	let texture3 = loader.load('https://i.imgur.com/cNqeEt2.png');
+	let trafficLight = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshBasicMaterial({map: texture3, transparent:true}));
+	trafficLight.rotation.y = -Math.PI/2;
+	trafficLight.position.set(200, 25, -35);
+	scene.add(trafficLight);
 	
 	/*
 	var grid = new THREE.GridHelper (400,40,'red','white');
@@ -178,10 +206,13 @@ function init() {
     car = buildCar(new THREE.Vector3(-50, 13, 40));
 	
 	//obstacles
-	var car2 = buildCar(new THREE.Vector3(67, 13, 70));
-	var car3 = buildCar(new THREE.Vector3(-69, 13, 70));
-	let obs = new Obstacle(new THREE.Vector3(0, 10, 100), [100, 5, 5], 'gray');
-    obstacles.push(car2, car3, obs);
+	var car2 = buildCar(new THREE.Vector3(55, 13, 70));
+	var car3 = buildCar(new THREE.Vector3(-55, 13, 70));
+	
+	let texture4 = loader.load('https://i.imgur.com/dKpYAbl.jpg');
+	let obs = new Obstacle(new THREE.Vector3(0, 7, 100), [300, 2, 20], texture4);
+	let obs2 = new Obstacle(new THREE.Vector3(0, 7, -100), [300, 2, 20], texture4);
+    obstacles.push(car2, car3, obs, obs2);
 	
 	//light
 	var light = new THREE.AmbientLight( 0x404040 ); // soft white light
@@ -206,10 +237,22 @@ function init() {
 	zoomIn.style.visibility='hidden';
 	zoomOut.style.visibility='hidden';
 	
+	//rear mirror
+	sceneHUD1 = new THREE.Scene();
+    rearMirror = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+    rearMirror.position.set(-60, 23, 40);
+	rearMirrorControls = new THREE.OrbitControls(rearMirror, renderer.domElement);
+	
+	//Reversing camera
+	sceneHUD2= new THREE.Scene();
+    reversingCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+    reversingCamera.position.set(-60, 23, 40);
+	reversingCameraControls = new THREE.OrbitControls(reversingCamera, renderer.domElement);
+	
 	//sound
 	radarSound = document.getElementById('radarSound');
 	
-    //drawParkingSpace();
+    drawParkingSpace();
 	drawFrame();
 }
   
@@ -321,6 +364,22 @@ function render() {
 		renderer.clear();
 		renderer.render(scene, topCamera);
     }
+	if(firstPV){
+		renderer.render(sceneHUD1, rearMirror);
+		renderer.setViewport(WW/1.43, HH/1.44, WW/3.5, HH/7.3);
+		renderer.setScissor(WW/1.43, HH/1.44, WW/3.5, HH/7.3);
+		renderer.clear();
+		renderer.render(scene, rearMirror);
+
+		//reversing Camera
+		if(this.speed < 0){
+			renderer.render(sceneHUD2, reversingCamera);
+			renderer.setViewport(WW/1.43, HH/1.44, WW/7.5, HH/7.4);
+			renderer.setScissor(WW/1.43, HH/1.44, WW/7.5, HH/7.4);
+			renderer.clear();
+			renderer.render(scene, reversingCamera);			
+		}
+	}
 	renderer.setScissorTest( false );
 }
 </script></body></html>

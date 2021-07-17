@@ -70,8 +70,6 @@ class Car {
 			if (centerDis > dA + dB){
 				return false;  // NOT intersect
 			}
-			
-			//console.log(centerDis, dA + dB);
 		}
 		return true;  // intersect
 	}
@@ -91,10 +89,10 @@ class Car {
 }
 
 class Obstacle {
-	constructor(pos, size, colorName = 'white') {
+	constructor(pos, size, texture) {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
-		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0]*2, size[1]*2, size[2]*2), new THREE.MeshLambertMaterial({color: colorName}));
+		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0]*2, size[1]*2, size[2]*2), new THREE.MeshBasicMaterial({map: texture, transparent:true}));
 		this.mesh.position.copy(pos);
 				
 		scene.add(this.mesh);
@@ -258,32 +256,28 @@ function drawFrame(){
     var fright = fframe2.clone();
     fright.rotation.z = Math.PI/2;
     fright.position.set (9.7,7,0);
-    sceneHUD.add(fup);
-    sceneHUD.add(fdown);
-    sceneHUD.add(fleft);
-    sceneHUD.add(fright);
+    sceneHUD.add(fup, fdown, fleft, fright);
 }
 
 function drawParkingSpace(){
-	const material = new THREE.LineBasicMaterial( { color: 0xffff00 } );
+	const material = new THREE.LineBasicMaterial( { linewidth: 6, color: 0xffffff } );
 	const points = [];
-	points.push( new THREE.Vector3( 25, 0, 18 ) );
-	points.push( new THREE.Vector3( 25, 0, 42 ) );
-	points.push( new THREE.Vector3( -25, 0, 42 ) );
-	points.push( new THREE.Vector3( -25, 0, 18 ) );
-	points.push( new THREE.Vector3( 25, 0, 18 ) );
+	points.push( new THREE.Vector3( 27, 0, 18 ) );
+	points.push( new THREE.Vector3( 27, 0, 42 ) );
+	points.push( new THREE.Vector3( -27, 0, 42 ) );
+	points.push( new THREE.Vector3( -27, 0, 18 ) );
+	points.push( new THREE.Vector3( 27, 0, 18 ) );
 
 	const geometry = new THREE.BufferGeometry().setFromPoints( points );
 	const parkingSpace1 = new THREE.Line( geometry, material );
-	scene.add( parkingSpace1 );
+	parkingSpace1.position.set(0, 0.4, 40);
 
 	var parkingSpace2 = parkingSpace1.clone();
-	parkingSpace2.position.x = 67;
-	scene.add(parkingSpace2);
+	parkingSpace2.position.x = 54;
 	
 	var parkingSpace3 = parkingSpace1.clone();
-	parkingSpace3.position.x = -67;
-	scene.add(parkingSpace3);
+	parkingSpace3.position.x = -54;
+	scene.add(parkingSpace1 , parkingSpace2, parkingSpace3);
 
 }
 
@@ -297,7 +291,7 @@ function readModel (modelName, targetSize=40) {
 
 	var onError = function(xhr) {};
 	
-	var model
+	var model;
 	var mtlLoader =  new THREE.MTLLoader();
 	mtlLoader.setPath('models/');
 	mtlLoader.load(modelName+'.mtl', function(materials) {
@@ -316,12 +310,10 @@ function readModel (modelName, targetSize=40) {
 			model.add(theObject);
 			model.rotation.y = Math.PI/2;
 
-
 		}, onProgress, onError);
 
 	});
 	return model;
-
 }
 
 function unitize (object, targetSize) {  
@@ -362,27 +354,18 @@ function buildDashboard(){
 	});
 	var steeringWheel = new THREE.Mesh(new THREE.CircleGeometry(2, 32), texMat);
 	steeringWheel.rotation.y = Math.PI/2;
+	
+	//Rear mirror
+	var texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/SQe7VBz.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var rearMirror = new THREE.Mesh(new THREE.PlaneGeometry(5, 2.5, 3), texMat);
+	rearMirror.position.set(0, 3.2, 3);
+	rearMirror.rotation.y = -Math.PI/2;
 		
-	dashboard.add(steeringWheel);
-
+	dashboard.add(steeringWheel, rearMirror);
 	
 	return dashboard;
-}
-
-function buildNumberGeometry() {
-	var geometry = new THREE.BufferGeometry();
-	let vertices = [];
-	let uvs = [];
-	let indices = [0,1,2, 0,2,3];
-	vertices.push(-0.5,-0.5,0, 0.5,-0.5,0, 0.5,0.5,0, -0.5,0.5,0);
-	uvs.push (0,0, 0.1,0, 0.1,1, 0,1);
-
-	geometry.setIndex(indices);
-	geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-	geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-
-	geometry.computeBoundingSphere();
-	geometry.computeFaceNormals();
-	geometry.computeVertexNormals();
-	return geometry;
 }

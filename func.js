@@ -1,6 +1,7 @@
 function parking(theta){
-	//parkingMode 0 manual 1 auto parking 2 stop parking      PPart 0 turn right 1 change direction 2 turn left
-    if(parkingMode == 1){            //auto parking
+	//parkingMode 0 manual 1 auto parking 2 stop parking      
+	//PPart 0 turn right 1 change direction 2 turn left
+    if(parkingMode == 1 && parkingModeButton == false){            //auto parking Mode 1
 		if(PPart == 0){             //turn right
 			car.speed -= 1;
 			car.speed = Math.clamp (car.speed, -50, 50);
@@ -24,6 +25,65 @@ function parking(theta){
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.angle <= 0 + parkingAngle){
+				car.speed = 0;
+			}
+		}
+    }else if(parkingMode == 1 && parkingModeButton == true){            //auto parking Mode 2
+		if(PPart == 0){             //turn right
+			car.speed -= 1;
+			car.speed = Math.clamp (car.speed, -50, 50);
+			theta -= 0.02;
+			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
+			if(car.angle >= Math.PI /4){
+				PPart = 1;
+			}
+		}
+		if(PPart == 1){             //change direction
+			car.speed = 0;
+			theta += 0.02;
+			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
+			if(theta >= 0){
+				PPart = 2;
+			}
+		}
+		if(PPart == 2){             //go straight backward
+			car.speed  -= 1;
+			car.speed = Math.clamp (car.speed, -50, 50);
+			if(car.mesh.position.z >= 45){
+				car.speed = 0;
+				PPart = 3;
+			}
+		}
+		if(PPart == 3){             //change direction
+			car.speed = 0;
+			theta += 0.02;
+			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
+			if(theta == Math.PI/7){
+				PPart = 4;
+			}
+		}
+		if(PPart == 4){             //turn left
+			car.speed -= 1;
+			car.speed = Math.clamp (car.speed, -50, 50);
+			theta += 0.02;
+			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
+			if(car.angle <= 0){
+				car.speed = 0;
+				PPart = 5;
+			}
+		}
+		if(PPart == 5){             //change direction
+			car.speed = 0;
+			theta -= 0.02;
+			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
+			if(theta <= 0){
+				PPart = 6;
+			}
+		}
+		if(PPart == 6){             //go straight forward
+			car.speed  += 1;
+			car.speed = Math.clamp (car.speed, -50, 50);
+			if(car.mesh.position.x >= 0){
 				car.speed = 0;
 			}
 		}
@@ -69,6 +129,19 @@ function cameraUpdate(theta){
 		camera.position.copy(tmp);
 		tmp = car.mesh.localToWorld(new THREE.Vector3(6, 10, 0));
 		camera.lookAt(tmp);
+		
+		//rear mirror
+		let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10, 0, 0));
+		rearMirror.lookAt(carEnd);
+		rearMirror.position.copy (car.mesh.localToWorld (new THREE.Vector3 (6,10,3)));
+		if(this.speed < 0){
+			let carEnd = car.mesh.localToWorld (new THREE.Vector3(-30, 0, 0));
+			reversingCamera.lookAt(carEnd);
+			reversingCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-10,0,0)));
+			console.log(reversingCamera.position);
+		}
+		
+		//dashboard
 		car.dashboard.visible = true;
 		car.dashboard.position.copy(tmp);
 		car.dashboard.position.y -= 2;
