@@ -1,0 +1,44 @@
+#info {
+	position: absolute;
+	top: 2%;
+	width: 100%;
+	padding: 10px;
+	text-align: center;
+	color: #ff0000;
+}
+#topView {
+	position: absolute;
+	border-radius: 100px;
+	top: 86.5%;
+	left : 5%;
+}
+#thirdPV {
+	position: absolute;
+	border-radius: 100px;
+	top: 86.5%;
+	left : 15%;
+}
+#firstPV {
+	position: absolute;
+	border-radius: 100px;
+	top: 86.5%;
+	left : 25%;
+}
+#CCW {
+	position: absolute;
+	border-radius: 100px;
+	top: 5%;
+	left : 95%;
+}
+#zoomIn {
+	position: absolute;
+	border-radius: 100px;
+	top: 15%;
+	left : 95%;
+}
+#zoomOut {
+	position: absolute;
+	border-radius: 100px;
+	top: 25%;
+	left : 95%;
+}

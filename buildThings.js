@@ -132,8 +132,6 @@ class Obstacle {
 					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
 			if (centerDis > dA + dB)
 				return false;  // NOT intersect
-			
-			//console.log(centerDis, dA + dB);
 		}
 		return true;  // intersect
 	}	

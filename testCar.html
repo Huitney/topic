@@ -17,13 +17,14 @@
 	<h3 style = "color:red">Car</h3>
 </div>
 
-<script type ="module">
+<script src="https://threejs.org/build/three.min.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
+
+<script>
 javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='https://mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
 
-import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import { OrbitControls } from 'https://unpkg.com/three/examples/jsm/controls/OrbitControls.js';
-import { MTLLoader } from 'https://unpkg.com/three/examples/jsm/loaders/MTLLoader.js';
-import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
 // my script
 
 var camera, scene, renderer;
@@ -54,7 +55,7 @@ function init() {
 	renderer.setClearColor(0x888888);
 	window.addEventListener('resize', onWindowResize, false);
 	document.body.appendChild(renderer.domElement);
-	let controls = new OrbitControls(camera, renderer.domElement);
+	let controls = new THREE.OrbitControls(camera, renderer.domElement);
 		
 	var gridXZ = new THREE.GridHelper(200, 20, 'red', 'white');
     scene.add(gridXZ);
