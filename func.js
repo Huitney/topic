@@ -166,5 +166,14 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 }
 
 function radarPlay(){
+	
 	radarSound.play();
+	let min;
+	for(let i = 0;i < obstacles.length;i++){
+		let tmp = car.calculateCloseDistance(obstacles[i]);
+		if(i == 0) min = tmp;
+		else if(min > tmp) min = tmp;
+	}
+	//console.log(min);
+	setTimeout(radarPlay, min * 500);
 }

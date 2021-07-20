@@ -54,7 +54,10 @@ class Car {
 					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
 			
 			//radarsound
-			setTimeout(radarPlay(), Math.abs(centerDis - (dA + dB))*10);
+			if(radarSound.muted & Math.abs(centerDis - (dA + dB)) <= 15){
+				radarSound.muted = false;
+				setTimeout(radarPlay, Math.abs(centerDis - (dA + dB))*500);
+			}
 			//console.log(Math.abs(centerDis - (dA + dB))*5);
 			
 			if (centerDis > dA + dB){
@@ -76,6 +79,35 @@ class Car {
 			this.mesh.material = this.materialArray;
 	}
 	
+	calculateCloseDistance(obbB){
+		// four axes to check
+		let obbA = this;
+		let sepAxes = [];
+		sepAxes[0] = obbA.axes[0];
+		sepAxes[1] = obbA.axes[1];
+		sepAxes[2] = obbB.axes[0];
+		sepAxes[3] = obbB.axes[1];
+		
+		let closeDis;
+
+		let t = obbB.center.clone().sub(obbA.center);
+		for (let i = 0; i < 4; i++) {
+			let sHat = sepAxes[i];
+			let centerDis = Math.abs(t.dot(sHat));
+
+			let dA = obbA.size[0] * Math.abs(obbA.axes[0].dot(sHat)) 
+					+ obbA.size[1] * Math.abs(obbA.axes[1].dot(sHat));
+			let dB = obbB.size[0] * Math.abs(obbB.axes[0].dot(sHat)) 
+					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
+			
+			let dis = Math.abs(centerDis - (dA + dB))
+			if(i == 0)
+				closeDis = dis;
+			else if(dis < closeDis)
+				closeDis = dis;
+		}
+		return closeDis;
+	}
 }
 
 class Obstacle {
