@@ -46,10 +46,10 @@ var clock = new THREE.Clock();
 var car, obstacles = [];
 var radarSound;
 
-var sceneHUD, topCamera;
+var sceneHUD, topCamera, cameraHUD;
 var topViewTurn = false, soundBT = false;
 var thirdPV = false, firstPV = false;
-var parkingMode = 0, parkingAngle;
+var parkingMode = 0, parkingLocate = [];
 var PPart = 0;
 var rearMirrorControls, reversingCameraControls;
 var parkingModeButton = false, rearMirror;
@@ -70,21 +70,26 @@ $("#topView").click(function() {
 
 $("#CCW").click(function() {
 	topCamera.rotation.y += Math.PI/2;
-	if(topCamera.rotation.y % Math.PI/2 == 0){
-		topCamera.up.set(0, 0, -1);
-		topCamera.lookAt(0, 0, 0);
-	}
-	else if(topCamera.rotation.y % Math.PI/2 == 1){
+	let cameraAngle = topCamera.clone().rotation.y % (Math.PI*2);
+	if(cameraAngle == Math.PI/2){
 		topCamera.up.set(-1, 0, 0);
 		topCamera.lookAt(0, 0, 0);
+		topCamera.rotation.y = Math.PI/2;
 	}
-	else if(topCamera.rotation.y % Math.PI/2 == 2){
+	else if(cameraAngle == Math.PI){
 		topCamera.up.set(0, 0, 1);
 		topCamera.lookAt(0, 0, 0);
+		topCamera.rotation.y = Math.PI;
 	}
-	else if(topCamera.rotation.y % Math.PI/2 == 3){
+	else if(cameraAngle == Math.PI*3/2){
 		topCamera.up.set(1, 0, 0);
 		topCamera.lookAt(0, 0, 0);
+		topCamera.rotation.y = Math.PI*3/2;
+	}
+	else if(cameraAngle == 0){
+		topCamera.up.set(0, 0, -1);
+		topCamera.lookAt(0, 0, 0);
+		topCamera.rotation.y = 0;
 	}
 });
 
@@ -117,7 +122,7 @@ $("#parking").click(function() {
 	}
 	else if(parkingMode == 1){
 		$("#parking").text('stop parking');
-		parkingAngle = car.angle;
+		parkingLocate.push(car.angle, car.center);
 	}
 	else{
 		$("#parking").text('manual');
@@ -140,12 +145,12 @@ $("#parkingModeButton").click(function() {
 	parkingModeButton = !parkingModeButton;
 	if(parkingModeButton){
 		$("#parkingModeButton").text('Mode 2');
-		car.mesh.position.z = 30;
+		//car.mesh.position.z = 30;
 	}
 
 	else{
 		$("#parkingModeButton").text('Mode 1');
-		car.mesh.position.z = 40;
+		//car.mesh.position.z = 40;
 	}
 		
 });
@@ -154,6 +159,7 @@ init();
 animate();
   
 function init() {
+
 	scene = new THREE.Scene();
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -168,31 +174,7 @@ function init() {
 	light.position.set(0, 100, 0);
 	scene.add(light);
 	
-	//plane
-	let loader = new THREE.TextureLoader();
-	loader.crossOrigin = '';
-	texture = loader.load('https://i.imgur.com/uatNsoh.png');
-	texture.repeat.set(14, 14);
-	texture.wrapS = THREE.RepeatWrapping;
-	texture.wrapT = THREE.RepeatWrapping;
-	var plane = new THREE.Mesh(new THREE.PlaneGeometry(700, 260), new THREE.MeshBasicMaterial({map: texture}));
-	plane.rotation.x = -Math.PI/2;
-	
-	texture1 = loader.load('https://i.imgur.com/EB8HFqt.jpg?1');
-	var plane1 = new THREE.Mesh(new THREE.PlaneGeometry(700, 120), new THREE.MeshBasicMaterial({map: texture1}));
-	texture1.repeat.set(3,1);
-	texture1.wrapS = THREE.RepeatWrapping;
-	texture1.wrapT = THREE.RepeatWrapping;
-	plane1.rotation.x = -Math.PI/2;
-	plane1.position.y = 0.2;
-
-	scene.add(plane, plane1);
-	
-	let texture3 = loader.load('https://i.imgur.com/cNqeEt2.png');
-	let trafficLight = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshBasicMaterial({map: texture3, transparent:true}));
-	trafficLight.rotation.y = -Math.PI/2;
-	trafficLight.position.set(200, 25, -35);
-	scene.add(trafficLight);
+	buildScenes();
 	
 	/*
 	var grid = new THREE.GridHelper (400,40,'red','white');
@@ -209,9 +191,11 @@ function init() {
 	var car2 = buildCar(new THREE.Vector3(55, 13, 70));
 	var car3 = buildCar(new THREE.Vector3(-55, 13, 70));
 	
-	let texture4 = loader.load('https://i.imgur.com/dKpYAbl.jpg');
-	let obs = new Obstacle(new THREE.Vector3(0, 7, 100), [300, 2, 20], texture4);
-	let obs2 = new Obstacle(new THREE.Vector3(0, 7, -100), [300, 2, 20], texture4);
+	let loader = new THREE.TextureLoader();
+	loader.crossOrigin = '';
+	let texture = loader.load('https://i.imgur.com/dKpYAbl.jpg');
+	let obs = new Obstacle(new THREE.Vector3(0, 7, 100), [300, 2, 20], texture);
+	let obs2 = new Obstacle(new THREE.Vector3(0, 7, -100), [300, 2, 20], texture);
     obstacles.push(car2, car3, obs, obs2);
 	
 	//light
@@ -251,6 +235,7 @@ function init() {
 	
 	//sound
 	radarSound = document.getElementById('radarSound');
+	radarSound.muted = false;
 	
     drawParkingSpace();
 	drawFrame();
@@ -263,7 +248,7 @@ function onWindowResize() {
 }
   
 function animate() {
-  
+	
     renderer.clear(true);
     //topControls.update();
     
@@ -331,7 +316,7 @@ function animate() {
     }
 	
     //camera position
-	cameraUpdate(this.theta);
+	cameraUpdate(this.theta, this.fSlowDown, this.bSlowDown);
 	
     //parking 
 	this.theta = parking(this.theta);

@@ -54,18 +54,8 @@ class Car {
 					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
 			
 			//radarsound
-			if (centerDis - dA + dB <= 8){
-				radarSound.play();
-				radarSound.muted = false;
-			}
-			else if (centerDis - dA + dB <= 16){
-				radarSound.play();
-				radarSound.muted = false;
-			}
-			else if (centerDis - dA + dB <= 24){
-				radarSound.play();
-				radarSound.muted = false;
-			}
+			setTimeout(radarPlay(), Math.abs(centerDis - (dA + dB))*5);
+			//console.log(Math.abs(centerDis - (dA + dB))*5);
 			
 			if (centerDis > dA + dB){
 				return false;  // NOT intersect
@@ -344,9 +334,10 @@ function buildDashboard(){
 	
 	var dashboard = new THREE.Group();
 	
-	//steering wheel
 	let loader = new THREE.TextureLoader();
 	loader.crossOrigin = '';
+	
+	//steering wheel
 	var texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/AaejjAQ.png'),
 		alphaTest: 0.5,
@@ -364,8 +355,57 @@ function buildDashboard(){
 	var rearMirror = new THREE.Mesh(new THREE.PlaneGeometry(5, 2.5, 3), texMat);
 	rearMirror.position.set(0, 3.2, 3);
 	rearMirror.rotation.y = -Math.PI/2;
+	
+	//accelerator
+	var texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/C1UKYm6.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var accelerator = new THREE.Mesh(new THREE.PlaneGeometry(1, 2, 1), texMat);
+	accelerator.position.z = 4;
+	accelerator.rotation.y = -Math.PI/2;
+	
+	//brakes
+	var texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/70xXdul.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var brakes = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 1), texMat);
+	brakes.position.z = 3;
+	brakes.rotation.y = -Math.PI/2;
 		
-	dashboard.add(steeringWheel, rearMirror);
+	dashboard.add(steeringWheel, rearMirror, accelerator, brakes);
 	
 	return dashboard;
+}
+
+function buildScenes(){
+	
+	let loader = new THREE.TextureLoader();
+	loader.crossOrigin = '';
+	let texture = loader.load('https://i.imgur.com/uatNsoh.png');
+	texture.repeat.set(14, 14);
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+	var plane = new THREE.Mesh(new THREE.PlaneGeometry(700, 260), new THREE.MeshBasicMaterial({map: texture}));
+	plane.rotation.x = -Math.PI/2;
+	
+	let texture1 = loader.load('https://i.imgur.com/EB8HFqt.jpg?1');
+	var plane1 = new THREE.Mesh(new THREE.PlaneGeometry(700, 120), new THREE.MeshBasicMaterial({map: texture1}));
+	texture1.repeat.set(3,1);
+	texture1.wrapS = THREE.RepeatWrapping;
+	texture1.wrapT = THREE.RepeatWrapping;
+	plane1.rotation.x = -Math.PI/2;
+	plane1.position.y = 0.2;
+
+	scene.add(plane, plane1);
+	
+	let texture3 = loader.load('https://i.imgur.com/cNqeEt2.png');
+	let trafficLight = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshBasicMaterial({map: texture3, transparent:true}));
+	trafficLight.rotation.y = -Math.PI/2;
+	trafficLight.position.set(200, 25, -35);
+	scene.add(trafficLight);
+	
 }

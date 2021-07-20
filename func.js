@@ -7,7 +7,7 @@ function parking(theta){
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.angle >= Math.PI /4 + parkingAngle){
+			if(car.angle >= Math.PI /4 + parkingLocate[0]){
 				PPart = 1;
 			}
 		}
@@ -24,7 +24,7 @@ function parking(theta){
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.angle <= 0 + parkingAngle){
+			if(car.angle <= 0 + parkingLocate[0]){
 				car.speed = 0;
 			}
 		}
@@ -33,8 +33,9 @@ function parking(theta){
 			car.speed -= 1;
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta -= 0.02;
+			console.log(car.mesh.position, 0);////////////////////
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.angle >= Math.PI /4){
+			if(car.angle >= Math.PI /4 + parkingLocate[0]){
 				PPart = 1;
 			}
 		}
@@ -50,6 +51,7 @@ function parking(theta){
 			car.speed  -= 1;
 			car.speed = Math.clamp (car.speed, -50, 50);
 			if(car.mesh.position.z >= 45){
+				console.log(car.mesh.position, 1);////////////////////
 				car.speed = 0;
 				PPart = 3;
 			}
@@ -67,7 +69,7 @@ function parking(theta){
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.angle <= 0){
+			if(car.angle <= 0 + parkingLocate[0]){
 				car.speed = 0;
 				PPart = 5;
 			}
@@ -117,7 +119,7 @@ function moveCar(RC, omega, deltaT){
 	}
 }
 
-function cameraUpdate(theta){
+function cameraUpdate(theta, fSlowDown, bSlowDown){
 	car.dashboard.visible = false;
     if (thirdPV) {
 		let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10,0,0));
@@ -147,9 +149,22 @@ function cameraUpdate(theta){
 		car.dashboard.position.y -= 2;
 		car.dashboard.rotation.y = car.angle;
 		car.dashboard.children[0].rotation.z = theta * -10;
+		
+		if (keyboard.pressed('down') | keyboard.pressed('up'))
+			car.dashboard.children[2].rotation.z = Math.PI/12;
+		if (keyboard.up("down") | keyboard.up("up")) 
+			car.dashboard.children[2].rotation.z = 0;
+		if(bSlowDown == 1 | fSlowDown == 1)
+			car.dashboard.children[3].rotation.z = Math.PI/12;
+		else 
+			car.dashboard.children[3].rotation.z = 0;
     }
     else {
 		camera.position.set(-200, 100, 0); // fixed camera, no orbitControl!
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
+}
+
+function radarPlay(){
+	radarSound.play();
 }
