@@ -54,7 +54,7 @@ class Car {
 					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
 			
 			//radarsound
-			setTimeout(radarPlay(), Math.abs(centerDis - (dA + dB))*5);
+			setTimeout(radarPlay(), Math.abs(centerDis - (dA + dB))*10);
 			//console.log(Math.abs(centerDis - (dA + dB))*5);
 			
 			if (centerDis > dA + dB){
