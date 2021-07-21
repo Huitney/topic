@@ -53,6 +53,7 @@ var parkingMode = 0, parkingLocate = [];
 var PPart = 0;
 var rearMirrorControls, reversingCameraControls;
 var parkingModeButton = false, rearMirror;
+var CCWBT = 0;
 
 //button
 $("#topView").click(function() {
@@ -69,27 +70,22 @@ $("#topView").click(function() {
 });
 
 $("#CCW").click(function() {
-	topCamera.rotation.y += Math.PI/2;
-	let cameraAngle = topCamera.clone().rotation.y % (Math.PI*2);
-	if(cameraAngle == Math.PI/2){
-		topCamera.up.set(-1, 0, 0);
-		topCamera.lookAt(0, 0, 0);
-		topCamera.rotation.y = Math.PI/2;
-	}
-	else if(cameraAngle == Math.PI){
-		topCamera.up.set(0, 0, 1);
-		topCamera.lookAt(0, 0, 0);
-		topCamera.rotation.y = Math.PI;
-	}
-	else if(cameraAngle == Math.PI*3/2){
-		topCamera.up.set(1, 0, 0);
-		topCamera.lookAt(0, 0, 0);
-		topCamera.rotation.y = Math.PI*3/2;
-	}
-	else if(cameraAngle == 0){
+	CCWBT++;
+	if(CCWBT % 4 == 1){
 		topCamera.up.set(0, 0, -1);
-		topCamera.lookAt(0, 0, 0);
-		topCamera.rotation.y = 0;
+		topCamera.lookAt(car.center);
+	}
+	else if(CCWBT % 4 == 2){
+		topCamera.up.set(-1, 0, 0);
+		topCamera.lookAt(car.center);
+	}
+	else if(CCWBT % 4 == 3){
+		topCamera.up.set(0, 0, 1);
+		topCamera.lookAt(car.center);
+	}
+	else if(CCWBT % 4 == 0){
+		topCamera.up.set(1, 0, 0);
+		topCamera.lookAt(car.center);
 	}
 });
 
@@ -215,7 +211,7 @@ function init() {
     sceneHUD = new THREE.Scene();
     topCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
     topCamera.position.y = 200;
-	topCamera.up.set(0, 0, -1);
+	topCamera.up.set(1, 0, 0);
 	topCamera.lookAt(0, 0, 0);
 	CCW.style.visibility='hidden';
 	zoomIn.style.visibility='hidden';

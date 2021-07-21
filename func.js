@@ -117,6 +117,8 @@ function moveCar(RC, omega, deltaT){
 			break;
 		}
 	}
+	topCamera.position.x = car.center.x;
+	topCamera.position.z = car.center.z;
 }
 
 function cameraUpdate(theta, fSlowDown, bSlowDown){
@@ -150,14 +152,22 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 		car.dashboard.rotation.y = car.angle;
 		car.dashboard.children[0].rotation.z = theta * -10;
 		
-		if (keyboard.pressed('down') | keyboard.pressed('up'))
+		if (keyboard.pressed('down') | keyboard.pressed('up')){
 			car.dashboard.children[2].rotation.z = Math.PI/12;
-		if (keyboard.up("down") | keyboard.up("up")) 
+			car.dashboard.children[2].position.y = -0.1;
+		}
+		if (keyboard.up("down") | keyboard.up("up")){
 			car.dashboard.children[2].rotation.z = 0;
-		if(bSlowDown == 1 | fSlowDown == 1)
+			car.dashboard.children[2].position.y = 0;
+		}
+		if(bSlowDown == 1 | fSlowDown == 1){
 			car.dashboard.children[3].rotation.z = Math.PI/12;
-		else 
+			car.dashboard.children[3].position.y = -0.1;
+		}
+		else{
 			car.dashboard.children[3].rotation.z = 0;
+			car.dashboard.children[3].position.y = 0;
+		}
     }
     else {
 		camera.position.set(-200, 100, 0); // fixed camera, no orbitControl!
