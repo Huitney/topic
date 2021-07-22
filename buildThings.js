@@ -6,6 +6,7 @@ class Car {
 		//this.mesh = readModel(modelName);
 		this.mesh.position.copy(pos);
 		this.speed = 0;
+		this.minDis = 0;
 		
 		this.materialArray = materialArray;
 		this.materialArray2 = materialArray2;
@@ -53,13 +54,6 @@ class Car {
 			let dB = obbB.size[0] * Math.abs(obbB.axes[0].dot(sHat)) 
 					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
 			
-			//radarsound
-			if(radarSound.muted & Math.abs(centerDis - (dA + dB)) <= 15){
-				radarSound.muted = false;
-				setTimeout(radarPlay, Math.abs(centerDis - (dA + dB))*500);
-			}
-			//console.log(Math.abs(centerDis - (dA + dB))*5);
-			
 			if (centerDis > dA + dB){
 				return false;  // NOT intersect
 			}
@@ -101,10 +95,11 @@ class Car {
 					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
 			
 			let dis = Math.abs(centerDis - (dA + dB))
-			if(i == 0)
-				closeDis = dis;
-			else if(dis < closeDis)
-				closeDis = dis;
+			if(dis >= 0){
+				closeDis = (closeDis === undefined) ? dis : closeDis;
+				if(closeDis > dis)
+					closeDis = dis;
+			}
 		}
 		return closeDis;
 	}
@@ -131,30 +126,6 @@ class Obstacle {
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 		this.mesh.rotation.y = angle;
 	}
-
-	intersect(obbB) {
-		// four axes to check
-		let obbA = this;
-		let sepAxes = [];
-		sepAxes[0] = obbA.axes[0];
-		sepAxes[1] = obbA.axes[1];
-		sepAxes[2] = obbB.axes[0];
-		sepAxes[3] = obbB.axes[1];
-
-		let t = obbB.center.clone().sub(obbA.center);
-		for (let i = 0; i < 4; i++) {
-			let sHat = sepAxes[i];
-			let centerDis = Math.abs(t.dot(sHat));
-
-			let dA = obbA.size[0] * Math.abs(obbA.axes[0].dot(sHat)) 
-					+ obbA.size[1] * Math.abs(obbA.axes[1].dot(sHat));
-			let dB = obbB.size[0] * Math.abs(obbB.axes[0].dot(sHat)) 
-					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
-			if (centerDis > dA + dB)
-				return false;  // NOT intersect
-		}
-		return true;  // intersect
-	}	
 }
 
 function buildCar(pos) {
@@ -331,11 +302,12 @@ function readModel (modelName, targetSize=40) {
 			model = new THREE.Object3D();
 			model.add(theObject);
 			model.rotation.y = Math.PI/2;
-
+			scene.add(model);
 		}, onProgress, onError);
 
 	});
-	return model;
+	
+	//return model;
 }
 
 function unitize (object, targetSize) {  

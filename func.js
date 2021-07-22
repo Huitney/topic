@@ -7,7 +7,7 @@ function parking(theta){
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.angle >= Math.PI /4 + parkingLocate[0]){
+			if(car.angle >= Math.PI /4 + parkingAngle){
 				PPart = 1;
 			}
 		}
@@ -24,7 +24,7 @@ function parking(theta){
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.angle <= 0 + parkingLocate[0]){
+			if(car.angle <= parkingAngle){
 				car.speed = 0;
 			}
 		}
@@ -35,7 +35,7 @@ function parking(theta){
 			theta -= 0.02;
 			console.log(car.mesh.position, 0);////////////////////
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.angle >= Math.PI /4 + parkingLocate[0]){
+			if(car.angle >= Math.PI /4 + parkingAngle){
 				PPart = 1;
 			}
 		}
@@ -69,7 +69,7 @@ function parking(theta){
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
-			if(car.angle <= 0 + parkingLocate[0]){
+			if(car.angle <= 0 + parkingAngle){
 				car.speed = 0;
 				PPart = 5;
 			}
@@ -175,15 +175,35 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
     }
 }
 
-function radarPlay(){
+setInterval (poll, 200);
+
+function poll(){
 	
-	radarSound.play();
 	let min;
 	for(let i = 0;i < obstacles.length;i++){
 		let tmp = car.calculateCloseDistance(obstacles[i]);
 		if(i == 0) min = tmp;
 		else if(min > tmp) min = tmp;
 	}
-	//console.log(min);
-	setTimeout(radarPlay, min * 500);
+	car.minDis = min;
+	
+	if(min < 15){
+		beeper = true;
+		if (radarOn === false) 
+			setTimeout(radarPlay,0);
+	}
+	else 
+		beeper = false;
+	
+}
+
+function radarPlay(){
+	console.log(car.minDis);
+	radarSound.play();
+	if (beeper) {
+		setTimeout (radarPlay, car.minDis * 100);
+		radarOn = true;
+	} else {
+		radarOn = false
+	}
 }

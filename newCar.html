@@ -45,11 +45,12 @@ var clock = new THREE.Clock();
 
 var car, obstacles = [];
 var radarSound;
+var beeper = false, radarOn = false;
 
 var sceneHUD, topCamera, cameraHUD;
 var topViewTurn = false, soundBT = false;
 var thirdPV = false, firstPV = false;
-var parkingMode = 0, parkingLocate = [];
+var parkingMode = 0, parkingAngle;
 var PPart = 0;
 var rearMirrorControls, reversingCameraControls;
 var parkingModeButton = false, rearMirror;
@@ -118,7 +119,7 @@ $("#parking").click(function() {
 	}
 	else if(parkingMode == 1){
 		$("#parking").text('stop parking');
-		parkingLocate.push(car.angle, car.center);
+		parkingAngle = car.angle;
 	}
 	else{
 		$("#parking").text('manual');
@@ -231,10 +232,11 @@ function init() {
 	
 	//sound
 	radarSound = document.getElementById('radarSound');
-	//radarSound.muted = false;
+	radarSound.muted = false;
 	
     drawParkingSpace();
 	drawFrame();
+	//readModel('Hyundai');
 }
   
 function onWindowResize() {
