@@ -122,7 +122,7 @@ function moveCar(RC, omega, deltaT){
 }
 
 function cameraUpdate(theta, fSlowDown, bSlowDown){
-	car.dashboard.visible = false;
+	car.dashboard.mesh.visible = false;
     if (thirdPV) {
 		let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10,0,0));
 		camera.lookAt (carEnd);
@@ -135,38 +135,48 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 		camera.lookAt(tmp);
 		
 		//rear mirror
-		let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10, 0, 0));
-		rearMirror.lookAt(carEnd);
-		rearMirror.position.copy (car.mesh.localToWorld (new THREE.Vector3 (6,10,3)));
-		if(this.speed < 0){
-			let carEnd = car.mesh.localToWorld (new THREE.Vector3(-30, 0, 0));
+		//let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10, 0, 0));
+		//rearMirror.lookAt(carEnd);
+		//rearMirror.position.copy (car.mesh.localToWorld (new THREE.Vector3 (6,10,3)));
+		if(car.speed < 0){
+			let carEnd = car.mesh.localToWorld (new THREE.Vector3 (-20,0,0));
+			reversingCamera.position.copy (carEnd);
+			carEnd = car.mesh.localToWorld (new THREE.Vector3(-30, -1, 0));
 			reversingCamera.lookAt(carEnd);
-			reversingCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-10,0,0)));
-			console.log(reversingCamera.position);
+			console.log(reversingCamera.position, carEnd);
 		}
 		
 		//dashboard
-		car.dashboard.visible = true;
-		car.dashboard.position.copy(tmp);
-		car.dashboard.position.y -= 2;
-		car.dashboard.rotation.y = car.angle;
-		car.dashboard.children[0].rotation.z = theta * -10;
+		car.dashboard.mesh.visible = true;
+		car.dashboard.mesh.position.copy(tmp);
+		car.dashboard.mesh.position.y -= 2;
+		car.dashboard.mesh.rotation.y = car.angle;
+		car.dashboard.steeringWheel.rotation.z = theta * -10;
 		
-		if (keyboard.pressed('down') | keyboard.pressed('up')){
-			car.dashboard.children[2].rotation.z = Math.PI/12;
-			car.dashboard.children[2].position.y = -0.1;
+		if (keyboard.pressed('down')){
+			car.dashboard.accelerator.position.x = 0.2;
+			car.dashboard.accelerator.position.y = -0.1;
+			car.dashboard.gearFrame.position.y = 1.25;
+		}
+		else if(keyboard.pressed('up')){
+			car.dashboard.accelerator.position.x = 0.2;
+			car.dashboard.accelerator.position.y = -0.1;
+			car.dashboard.gearFrame.position.y = 0.88;
 		}
 		if (keyboard.up("down") | keyboard.up("up")){
-			car.dashboard.children[2].rotation.z = 0;
-			car.dashboard.children[2].position.y = 0;
+			car.dashboard.accelerator.position.x = 0;
+			car.dashboard.accelerator.position.y = 0;
 		}
 		if(bSlowDown == 1 | fSlowDown == 1){
-			car.dashboard.children[3].rotation.z = Math.PI/12;
-			car.dashboard.children[3].position.y = -0.1;
+			car.dashboard.brakes.position.x = 0.2;
+			car.dashboard.brakes.position.y = -0.1;
 		}
 		else{
-			car.dashboard.children[3].rotation.z = 0;
-			car.dashboard.children[3].position.y = 0;
+			car.dashboard.brakes.position.x = 0;
+			car.dashboard.brakes.position.y = 0;
+		}
+		if(car.speed == 0){
+			car.dashboard.gearFrame.position.y = 1.45;
 		}
     }
     else {
@@ -198,7 +208,7 @@ function poll(){
 }
 
 function radarPlay(){
-	console.log(car.minDis);
+	
 	radarSound.play();
 	if (beeper) {
 		setTimeout (radarPlay, car.minDis * 100);
@@ -206,4 +216,33 @@ function radarPlay(){
 	} else {
 		radarOn = false
 	}
+}
+
+function onMouseDown (event) {
+	console.log ('in mouse down')
+	event.preventDefault();
+	let ndcX = (event.clientX / window.innerWidth) * 2 - 1;
+	let ndcY = -(event.clientY / window.innerHeight) * 2 + 1;
+
+	pickCompute (ndcX, ndcY);	
+	
+	
+}	
+
+function pickCompute(ndcX, ndcY){
+	var whRatio = window.innerWidth / window.innerHeight;
+	var halfH = 10;
+	var halfW = whRatio * halfH;
+	
+	let HUD_coord = [halfW*ndcX, halfH*ndcY];
+	
+	//let dist = button1.d2To(HUD_coord);
+	//let printStr = [dist.toFixed(2), HUD_coord[0].toFixed(2), HUD_coord[1].toFixed(2)];
+	
+	//if(dist <= button1.size){
+	//	console.log('picked');
+	//	click = true;
+	//} else {
+	//	console.log('no hit');
+	//}
 }

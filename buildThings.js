@@ -11,8 +11,8 @@ class Car {
 		this.materialArray = materialArray;
 		this.materialArray2 = materialArray2;
 		this.dashboard = dashboard;
-		scene.add(this.dashboard);
-		this.dashboard.visible = false;
+		
+		this.dashboard.mesh.visible = false;
 		
 		this.leftfrontWheel = new THREE.Group();
 		this.rightfrontWheel = new THREE.Group();
@@ -125,6 +125,24 @@ class Obstacle {
 		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 		this.mesh.rotation.y = angle;
+	}
+}
+
+class Dashboard{
+	constructor(steeringWheel, accelerator, brakes, board, screen, gear, gearFrame, autoBT){
+		this.steeringWheel = steeringWheel;
+		this.accelerator = accelerator;
+		this.brakes = brakes;
+		this.board = board;
+		this.screen = screen;
+		this.gear = gear;
+		this.gearFrame = gearFrame;
+		this.autoBT = autoBT;
+		
+		this.mesh = new THREE.Group();
+		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, 
+						this.screen, this.gear, this.gearFrame, this.autoBT);
+		sceneHUD.add(this.mesh);
 	}
 }
 
@@ -336,22 +354,22 @@ function unitize (object, targetSize) {
 
 function buildDashboard(){
 	
-	var dashboard = new THREE.Group();
-	
 	let loader = new THREE.TextureLoader();
 	loader.crossOrigin = '';
 	
 	//steering wheel
-	var texMat = new THREE.MeshBasicMaterial({
+	let texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/AaejjAQ.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var steeringWheel = new THREE.Mesh(new THREE.CircleGeometry(2, 32), texMat);
+	var steeringWheel = new THREE.Mesh(new THREE.CircleGeometry(1.9, 32), texMat);
 	steeringWheel.rotation.y = Math.PI/2;
+	steeringWheel.position.z = -2.9;
+	steeringWheel.position.y = -0.5;
 	
 	//Rear mirror
-	var texMat = new THREE.MeshBasicMaterial({
+	texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/SQe7VBz.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
@@ -361,7 +379,7 @@ function buildDashboard(){
 	rearMirror.rotation.y = -Math.PI/2;
 	
 	//accelerator
-	var texMat = new THREE.MeshBasicMaterial({
+	texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/C1UKYm6.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
@@ -371,7 +389,7 @@ function buildDashboard(){
 	accelerator.rotation.y = -Math.PI/2;
 	
 	//brakes
-	var texMat = new THREE.MeshBasicMaterial({
+	texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/70xXdul.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
@@ -379,8 +397,66 @@ function buildDashboard(){
 	var brakes = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 1), texMat);
 	brakes.position.z = 3;
 	brakes.rotation.y = -Math.PI/2;
+	
+	//dashboard
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/KV143SQ.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var board = new THREE.Mesh(new THREE.PlaneGeometry(12.6, 4, 25.2), texMat);
+	board.position.y = 1.2;
+	board.position.x = 1;
+	board.rotation.y = -Math.PI/2;
+	
+	//screen
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/DLYSvCe.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var screen = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 3.2, 6.4), texMat);
+	screen.position.y = 1;
+	screen.position.x = 0.5;
+	screen.position.z = -0.1;
+	screen.rotation.y = -Math.PI/2;
+	
+	//gear
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/FVKuYLa.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var gear = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.8, 1), texMat);
+	gear.position.y = 1.15;
+	gear.position.z = -1;
+	screen.position.x = 0.1;
+	gear.rotation.y = -Math.PI/2;
+	
+	//gear
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/oTfN2ti.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var gearFrame = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	gearFrame.position.y = 1.45;
+	gearFrame.position.z = -1;
+	gearFrame.rotation.y = -Math.PI/2;
+	
+	//autoBT
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/AlHYNp3.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var autoBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	autoBT.position.y = 1.44;
+	autoBT.position.z = 0.91;
+	autoBT.rotation.y = -Math.PI/2;
 		
-	dashboard.add(steeringWheel, rearMirror, accelerator, brakes);
+	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, 
+								screen, gear, gearFrame, autoBT);
 	
 	return dashboard;
 }
