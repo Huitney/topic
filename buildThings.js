@@ -188,12 +188,13 @@ class Button {
 	constructor (cx, cy, cz, size, map){
 		this.centerX = cx;  // HUD-coord
 		this.centerY = cy;
-		this.size = size;  // circle radius
+		this.size = size;  
 		let material = new THREE.MeshBasicMaterial({transparent: true, opacity:0.7});
 		if (map) 
 		   material.map = map;
-		this.mesh = new THREE.Mesh (new THREE.CircleGeometry (size*2, 32), material );
+		this.mesh = new THREE.Mesh (new THREE.PlaneGeometry (size*2, size*2, 1), material );
 	    this.mesh.position.set (cx, cy, cz);
+		this.mesh.rotation.y = -Math.PI/2;
 	}
 	
 	setLocation (lx, ly, lz) { // 2D-HUD 

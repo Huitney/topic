@@ -227,8 +227,8 @@ function init() {
 	
     //topCamera
 	scene1 = new THREE.Scene();
-    topCamera = new THREE.OrthographicCamera(-window.innerWidth/8, window.innerWidth/8, 
-											window.innerHeight/8, -window.innerHeight/8, 1, 1000);
+    topCamera = new THREE.OrthographicCamera(-window.innerWidth/8, window.innerWidth/8
+											, window.innerHeight/8, -window.innerHeight/8, 1, 1000);
     topCamera.position.y = 200;
 	topCamera.up.set(1, 0, 0);
 	topCamera.lookAt(0, 0, 0);
@@ -241,8 +241,8 @@ function init() {
     rearMirror.position.set(-60, 23, 40);
 	
 	//Reversing camera
-    reversingCamera = new THREE.OrthographicCamera(-window.innerWidth/48, window.innerWidth/48, 
-											window.innerHeight/48, -window.innerHeight/48, 0.1, 1000);
+    reversingCamera = new THREE.OrthographicCamera(-window.innerWidth/48, window.innerWidth/48
+												, window.innerHeight/48, -window.innerHeight/48, 0.1, 1000);
     reversingCamera.position.set(-60, 23, 40);
 	
 	//sound

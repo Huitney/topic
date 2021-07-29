@@ -229,7 +229,7 @@ function addObstacles(){
 }
 
 function onMouseDown (event) {
-	console.log ('in mouse down')
+	//console.log ('in mouse down')
 	event.preventDefault();
 	let ndcX = (event.clientX / window.innerWidth) * 2 - 1;
 	let ndcY = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -241,17 +241,18 @@ function onMouseDown (event) {
 
 function pickCompute(ndcX, ndcY){
 	var whRatio = window.innerWidth / window.innerHeight;
-	var halfH = 10;
+	var halfH = 2;
 	var halfW = whRatio * halfH;
 	
 	let HUD_coord = [halfW*ndcX, halfH*ndcY];
 	
-	//let dist = button1.d2To(HUD_coord);
+	//let dist = car.dashboard.autoBT.d2To(HUD_coord);
 	//let printStr = [dist.toFixed(2), HUD_coord[0].toFixed(2), HUD_coord[1].toFixed(2)];
+	//console.log(printStr);
 	
-	//if(dist <= button1.size){
+	//if(dist <= car.dashboard.autoBT.size){
 	//	console.log('picked');
-	//	click = true;
+		//click = true;
 	//} else {
 	//	console.log('no hit');
 	//}
