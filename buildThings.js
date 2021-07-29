@@ -212,27 +212,27 @@ function buildCar(pos) {
   
     var materialArray = [];
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/3hnQcus.png'),
+		map: loader.load ('https://i.imgur.com/c85515c.png'),
 		transparent: true, opacity: 0.7
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/oPWLR0Y.png'),
+		map: loader.load ('https://i.imgur.com/Klhgeai.png'),
 		transparent: true, opacity: 0.7
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/qTj48LD.png'),
+		map: loader.load ('https://i.imgur.com/vjq6Rm5.png'),
 		transparent: true, opacity: 0.7
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/qTj48LD.png'),
+		map: loader.load ('https://i.imgur.com/vjq6Rm5.png'),
 		transparent: true, opacity: 0.7
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/oWaSyZJ.png'),
+		map: loader.load ('https://i.imgur.com/wxiZvUo.png'),
 		transparent: true, opacity: 0.7
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('http://i.imgur.com/oWaSyZJ.png'),
+		map: loader.load ('https://i.imgur.com/wxiZvUo.png'),
 		transparent: true, opacity: 0.7
 	}));
 	
@@ -266,7 +266,7 @@ function buildCar(pos) {
     let wheelMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
     let circle = new THREE.Mesh(new THREE.CircleGeometry(5, 32), 
 								new THREE.MeshBasicMaterial({
-									map: loader.load ('http://i.imgur.com/8enBd95.png'), 
+									map: loader.load ('https://i.imgur.com/ZeYqhuv.png'), 
 									transparent: true, 
 									side:THREE.DoubleSide
 								}));
