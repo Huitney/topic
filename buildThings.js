@@ -362,7 +362,7 @@ function readModel (modelName, targetSize=40) {
 
 	var onError = function(xhr) {};
 	
-	var model;
+	//var model;
 	var mtlLoader =  new THREE.MTLLoader();
 	mtlLoader.setPath('models/');
 	mtlLoader.load(modelName+'.mtl', function(materials) {
@@ -377,14 +377,15 @@ function readModel (modelName, targetSize=40) {
 			//theObject.add(new THREE.BoxHelper(theObject));
 			theObject.name = 'OBJ';
 
-			model = new THREE.Object3D();
+			var model = new THREE.Object3D();
 			model.add(theObject);
 			model.rotation.y = Math.PI/2;
+			return model;
 		}, onProgress, onError);
 
 	});
 	
-	return model;
+	
 }
 
 function unitize (object, targetSize) {  

@@ -206,7 +206,7 @@ function init() {
 	
 	let loader = new THREE.TextureLoader();
 	loader.crossOrigin = '';
-	let texture = loader.load('https://i.imgur.com/dKpYAbl.jpg');
+	let texture = loader.load('https://i.imgur.com/dKpYAbl.jpg?1');
 	let obs = new Obstacle(new THREE.Vector3(0, 7, 100), [300, 2, 20], texture);
 	let obs2 = new Obstacle(new THREE.Vector3(0, 7, -100), [300, 2, 20], texture);
     

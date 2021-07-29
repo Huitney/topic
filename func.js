@@ -223,6 +223,7 @@ function radarPlay(){
 function addObstacles(){
 	if(alternateObs[0].mesh){
 		obstacles.push(alternateObs[0]);
+		console.log(alternateObs[0].mesh.position);
 		alternateObs.shift();
 	}
 }
