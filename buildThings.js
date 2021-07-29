@@ -113,7 +113,6 @@ class Obstacle {
 		this.mesh.position.copy(pos);
 				
 		scene.add(this.mesh);
-		
 		this.rotate(0); // set initial axes
 	}
 
@@ -128,8 +127,31 @@ class Obstacle {
 	}
 }
 
+class ObstacleCar {
+	constructor(pos, modelName) {
+		this.center = pos;
+		this.mesh = readModel(modelName);
+		
+		if(this.mesh){
+			this.mesh.position.copy(pos);
+			scene.add(this.mesh);
+			this.rotate(0); // set initial axes
+		}
+	}
+
+	rotate(angle) {
+		this.angle = angle;
+
+		let yAxis = new THREE.Vector3(0, 1, 0);
+		this.axes = [];
+		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
+		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+		this.mesh.rotation.y = angle;
+	}
+}
+
 class Dashboard{
-	constructor(steeringWheel, accelerator, brakes, board, screen, gear, gearFrame, autoBT){
+	constructor(steeringWheel, accelerator, brakes, board, screen, gear, gearFrame, autoBT, CCWBT, zoomInBT, zoomOutBT){
 		this.steeringWheel = steeringWheel;
 		this.accelerator = accelerator;
 		this.brakes = brakes;
@@ -137,12 +159,50 @@ class Dashboard{
 		this.screen = screen;
 		this.gear = gear;
 		this.gearFrame = gearFrame;
-		this.autoBT = autoBT;
-		
+				
 		this.mesh = new THREE.Group();
-		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, 
-						this.screen, this.gear, this.gearFrame, this.autoBT);
+		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.gear, this.gearFrame);
+		
+		//if(autoBT.mesh.material.map){
+			this.autoBT = autoBT;
+			this.mesh.add(this.autoBT);
+		//}
+		if(CCWBT){
+			this.CCWBT = CCWBT;
+			this.mesh.add(this.CCWBT);
+		}
+		if(zoomInBT){
+			this.zoomInBT = zoomInBT;
+			this.mesh.add(this.zoomInBT);
+		}
+		if(zoomOutBT){
+			this.zoomOutBT = zoomOutBT;
+			this.mesh.add(this.zoomOutBT);
+		}
+		
 		sceneHUD.add(this.mesh);
+	}
+}
+
+class Button {
+	constructor (cx, cy, cz, size, map){
+		this.centerX = cx;  // HUD-coord
+		this.centerY = cy;
+		this.size = size;  // circle radius
+		let material = new THREE.MeshBasicMaterial({transparent: true, opacity:0.7});
+		if (map) 
+		   material.map = map;
+		this.mesh = new THREE.Mesh (new THREE.CircleGeometry (size*2, 32), material );
+	    this.mesh.position.set (cx, cy, cz);
+	}
+	
+	setLocation (lx, ly, lz) { // 2D-HUD 
+	    this.mesh.position.set (lx, ly, lz);
+	}
+	
+	d2To (v) { // 2-norm
+		return Math.sqrt ( (v[0]-this.centerX)*(v[0]-this.centerX) 
+				+ (v[1]-this.centerY)*(v[1]-this.centerY) );
 	}
 }
 
@@ -294,8 +354,8 @@ function drawParkingSpace(){
 
 function readModel (modelName, targetSize=40) {
 	var onProgress = function(xhr) {
-	if (xhr.lengthComputable) {
-		var percentComplete = xhr.loaded / xhr.total * 100;
+		if (xhr.lengthComputable) {
+			var percentComplete = xhr.loaded / xhr.total * 100;
 			console.log(Math.round(percentComplete, 2) + '% downloaded');
 		}
 	};
@@ -320,12 +380,11 @@ function readModel (modelName, targetSize=40) {
 			model = new THREE.Object3D();
 			model.add(theObject);
 			model.rotation.y = Math.PI/2;
-			scene.add(model);
 		}, onProgress, onError);
 
 	});
 	
-	//return model;
+	return model;
 }
 
 function unitize (object, targetSize) {  
@@ -450,13 +509,47 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
+	//var autoBT = new Button(0, 1.44, 0.91, 0.1, texMat);
 	var autoBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
 	autoBT.position.y = 1.44;
 	autoBT.position.z = 0.91;
 	autoBT.rotation.y = -Math.PI/2;
+	
+	//CCW
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/c7ynEsQ.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var CCWBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	CCWBT.position.y = 1.25;
+	CCWBT.position.z = 0.91;
+	CCWBT.rotation.y = -Math.PI/2;
+	
+	//zoomIn
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/sCRnAtH.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var zoomInBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	zoomInBT.position.y = 1.05;
+	zoomInBT.position.z = 0.91;
+	zoomInBT.rotation.y = -Math.PI/2;
+	
+	//zoomOut
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/7bB1vvo.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var zoomOutBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	zoomOutBT.position.y = 0.85;
+	zoomOutBT.position.z = 0.91;
+	zoomOutBT.rotation.y = -Math.PI/2;
 		
-	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, 
-								screen, gear, gearFrame, autoBT);
+	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, 
+									gear, gearFrame, autoBT, CCWBT, zoomInBT, zoomOutBT);
 	
 	return dashboard;
 }

@@ -138,12 +138,14 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 		//let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10, 0, 0));
 		//rearMirror.lookAt(carEnd);
 		//rearMirror.position.copy (car.mesh.localToWorld (new THREE.Vector3 (6,10,3)));
+		
+		car.dashboard.CCWBT.visible = car.dashboard.zoomInBT.visible = car.dashboard.zoomOutBT.visible = true;
 		if(car.speed < 0){
 			let carEnd = car.mesh.localToWorld (new THREE.Vector3 (-20,0,0));
 			reversingCamera.position.copy (carEnd);
 			carEnd = car.mesh.localToWorld (new THREE.Vector3(-30, -1, 0));
 			reversingCamera.lookAt(carEnd);
-			console.log(reversingCamera.position, carEnd);
+			car.dashboard.CCWBT.visible = car.dashboard.zoomInBT.visible = car.dashboard.zoomOutBT.visible = false;
 		}
 		
 		//dashboard
@@ -215,6 +217,13 @@ function radarPlay(){
 		radarOn = true;
 	} else {
 		radarOn = false
+	}
+}
+
+function addObstacles(){
+	if(alternateObs[0].mesh){
+		obstacles.push(alternateObs[0]);
+		alternateObs.shift();
 	}
 }
 
