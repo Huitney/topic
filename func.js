@@ -2,24 +2,31 @@ function parking(theta){
 	//parkingMode 0 manual 1 auto parking 2 stop parking      
 	//PPart 0 turn right 1 change direction 2 turn left
     if(parkingMode == 1 && parkingModeButton == false){            //auto parking Mode 1
-		if(PPart == 0){             //turn right
+		if(PPart == 0){             //change direction
+			theta -= 0.02;
+			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
+			if(theta == -Math.PI/7){
+				PPart = 1;
+			}
+		}
+		if(PPart == 1){             //turn right
 			car.speed -= 1;
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.angle >= Math.PI /4 + parkingAngle){
-				PPart = 1;
+				PPart = 2;
 			}
 		}
-		if(PPart == 1){             //change direction
+		if(PPart == 2){             //change direction
 			car.speed = 0;
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(this.theta == Math.PI/7){
-				PPart = 2;
+				PPart = 3;
 			}
 		}
-		if(PPart == 2){             //turn left
+		if(PPart == 3){             //turn left
 			car.speed -= 1;
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta += 0.02;
@@ -33,7 +40,6 @@ function parking(theta){
 			car.speed -= 1;
 			car.speed = Math.clamp (car.speed, -50, 50);
 			theta -= 0.02;
-			console.log(car.mesh.position, 0);////////////////////
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.angle >= Math.PI /4 + parkingAngle){
 				PPart = 1;
@@ -51,7 +57,6 @@ function parking(theta){
 			car.speed  -= 1;
 			car.speed = Math.clamp (car.speed, -50, 50);
 			if(car.mesh.position.z >= 45){
-				console.log(car.mesh.position, 1);////////////////////
 				car.speed = 0;
 				PPart = 3;
 			}
@@ -159,11 +164,15 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 			car.dashboard.accelerator.position.x = 0.2;
 			car.dashboard.accelerator.position.y = -0.1;
 			car.dashboard.gearFrame.position.y = 1.25;
+			car.dashboard.P.visible = false;
+			car.dashboard.R.visible = true;
 		}
 		else if(keyboard.pressed('up')){
 			car.dashboard.accelerator.position.x = 0.2;
 			car.dashboard.accelerator.position.y = -0.1;
 			car.dashboard.gearFrame.position.y = 0.88;
+			car.dashboard.P.visible = false;
+			car.dashboard.D.visible = true;
 		}
 		if (keyboard.up("down") | keyboard.up("up")){
 			car.dashboard.accelerator.position.x = 0;
@@ -179,6 +188,8 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 		}
 		if(car.speed == 0){
 			car.dashboard.gearFrame.position.y = 1.45;
+			car.dashboard.P.visible = true;
+			car.dashboard.R.visible = car.dashboard.N.visible = car.dashboard.D.visible = false;
 		}
     }
     else {
@@ -230,30 +241,78 @@ function addObstacles(){
 
 function onMouseDown (event) {
 	//console.log ('in mouse down')
-	event.preventDefault();
-	let ndcX = (event.clientX / window.innerWidth) * 2 - 1;
-	let ndcY = -(event.clientY / window.innerHeight) * 2 + 1;
+	event.preventDefault();  // may not be necessary
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-	pickCompute (ndcX, ndcY);	
-	
-	
+	// find intersections
+	raycaster.setFromCamera(mouse, camera);
+	var intersects = raycaster.intersectObjects(pickables, true);
+	if (intersects.length > 0) {
+		if(intersects[0].object.name == 'autoBT'){
+			console.log('autoBT');
+			autoBTClicked();
+		}else if(intersects[0].object.name == 'CCWBT'){
+			console.log('CCWBT');
+			CCWBTClicked();
+		}else if(intersects[0].object.name == 'zoomInBT'){
+			console.log('zoomInBT');
+			zoomInBTClicked();
+		}else if(intersects[0].object.name == 'zoomOutBT'){
+			console.log('zoomOutBT');
+			zoomOutBTClicked();
+		}
+	}
 }	
 
-function pickCompute(ndcX, ndcY){
-	var whRatio = window.innerWidth / window.innerHeight;
-	var halfH = 2;
-	var halfW = whRatio * halfH;
+function autoBTClicked(){
+	parkingMode++;
+	if(parkingMode > 2) parkingMode = 0;
 	
-	let HUD_coord = [halfW*ndcX, halfH*ndcY];
-	
-	//let dist = car.dashboard.autoBT.d2To(HUD_coord);
-	//let printStr = [dist.toFixed(2), HUD_coord[0].toFixed(2), HUD_coord[1].toFixed(2)];
-	//console.log(printStr);
-	
-	//if(dist <= car.dashboard.autoBT.size){
-	//	console.log('picked');
-		//click = true;
-	//} else {
-	//	console.log('no hit');
-	//}
+	if(parkingMode == 0){
+		//$("#parking").text('auto parking');
+	}
+	else if(parkingMode == 1){
+		//$("#parking").text('stop parking');
+		parkingAngle = car.angle;
+	}
+	else{
+		//$("#parking").text('manual');
+	}
+}
+
+function CCWBTClicked(){
+	CCW++;
+	if(CCW % 4 == 1){
+		topCamera.up.set(0, 0, -1);
+		topCamera.lookAt(car.center);
+	}
+	else if(CCW % 4 == 2){
+		topCamera.up.set(-1, 0, 0);
+		topCamera.lookAt(car.center);
+	}
+	else if(CCW % 4 == 3){
+		topCamera.up.set(0, 0, 1);
+		topCamera.lookAt(car.center);
+	}
+	else if(CCW % 4 == 0){
+		topCamera.up.set(1, 0, 0);
+		topCamera.lookAt(car.center);
+	}
+}
+
+function zoomInBTClicked(){
+	topCamera.left += window.innerWidth/60;
+	topCamera.right -= window.innerWidth/60;
+	topCamera.top -= window.innerHeight/60;
+	topCamera.bottom += window.innerHeight/60;
+	topCamera.updateProjectionMatrix();
+}
+
+function zoomOutBTClicked(){
+	topCamera.left -= window.innerWidth/60;
+	topCamera.right += window.innerWidth/60;
+	topCamera.top += window.innerHeight/60;
+	topCamera.bottom -= window.innerHeight/60;
+	topCamera.updateProjectionMatrix();
 }

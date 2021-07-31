@@ -11,11 +11,9 @@
 </div>
 
 <audio id="radarSound" style="display:none" muted>
-<source src="https://huitney.github.io/topic/sounds/radar.wav" type='audio/wav'>
-</audio>
+<source src="https://huitney.github.io/topic/sounds/radar.wav" type='audio/wav'></audio>
 
 <script src="https://threejs.org/build/three.min.js"></script>
-<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
 <script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/MTLLoader.js"></script>
@@ -26,10 +24,6 @@
 <button id="topView"><img src ="https://i.imgur.com/96tj0yh.png?2" style="width:80px;height:80px;"></button>
 <button id="thirdPV"><img src="https://i.imgur.com/OvvIh4R.png?2" style="width:80px;height:80px;"></button>
 <button id="firstPV"><img src="https://i.imgur.com/AX5vRqY.png" style="width:80px;height:80px;"></button>
-
-<button id="CCW"><img src="https://i.imgur.com/rNCP4q9.png" style="width:40px;height:45px;"></button>
-<button id="zoomIn"><img src="https://i.imgur.com/Or603WK.png" style="width:40px;height:45px;"></button>
-<button id="zoomOut"><img src="https://i.imgur.com/PIEYHkm.png" style="width:40px;height:45px;"></button>
 
 <script>
 
@@ -46,7 +40,9 @@ var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
 var car, obstacles = [], alternateObs = [];
-var radarSound;
+var raycaster, pickables = [];
+var mouse = new THREE.Vector2();
+var radarSound, RCmesh;
 var beeper = false, radarOn = false;
 
 var topCamera, scene1;
@@ -56,7 +52,7 @@ var parkingMode = 0, parkingAngle;
 var PPart = 0;
 var reversingCamera, rearMirror;
 var parkingModeButton = false;
-//var CCWBT = 0;
+var CCW = 0;
 
 //button
 $("#topView").click(function() {
@@ -72,42 +68,6 @@ $("#topView").click(function() {
 	}
 });
 
-$("#CCW").click(function() {
-	/*CCWBT++;
-	if(CCWBT % 4 == 1){
-		topCamera.up.set(0, 0, -1);
-		topCamera.lookAt(car.center);
-	}
-	else if(CCWBT % 4 == 2){
-		topCamera.up.set(-1, 0, 0);
-		topCamera.lookAt(car.center);
-	}
-	else if(CCWBT % 4 == 3){
-		topCamera.up.set(0, 0, 1);
-		topCamera.lookAt(car.center);
-	}
-	else if(CCWBT % 4 == 0){
-		topCamera.up.set(1, 0, 0);
-		topCamera.lookAt(car.center);
-	}*/
-});
-
-$("#zoomIn").click(function() {
-	topCamera.left += 10;
-	topCamera.right -= 10;
-	topCamera.top -= 10;
-	topCamera.bottom += 10;
-	topCamera.updateProjectionMatrix();
-});
-
-$("#zoomOut").click(function() {
-	topCamera.left -= 10;
-	topCamera.right += 10;
-	topCamera.top += 10;
-	topCamera.bottom -= 10;
-	topCamera.updateProjectionMatrix();
-});
-
 $("#thirdPV").click(function() {
 	thirdPV = !thirdPV;
 	if(thirdPV)
@@ -118,6 +78,18 @@ $("#firstPV").click(function() {
 	firstPV = !firstPV;
 	if(firstPV)
 		thirdPV = false;
+});
+
+$("#soundBT").click(function() {
+	soundBT =! soundBT;
+	if(soundBT){
+		radarSound.volume = 0;
+		$("#soundBT").text('Radar Sound On');
+	}
+	else{
+		radarSound.volume = 1;
+		$("#soundBT").text('Radar Sound Off');
+	}
 });
 
 $("#parking").click(function() {
@@ -133,18 +105,6 @@ $("#parking").click(function() {
 	}
 	else{
 		$("#parking").text('manual');
-	}
-});
-
-$("#soundBT").click(function() {
-	soundBT =! soundBT;
-	if(soundBT){
-		radarSound.volume = 0;
-		$("#soundBT").text('Radar Sound On');
-	}
-	else{
-		radarSound.volume = 1;
-		$("#soundBT").text('Radar Sound Off');
 	}
 });
 
@@ -180,7 +140,6 @@ function init() {
 	camera.position.set(-200, 100, 0);
 	cameraHUD = new THREE.OrthographicCamera(window.innerWidth / -2,window.innerWidth / 2,
 											window.innerHeight / 2,window.innerHeight / -2, 1, 1000);
-	let controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 	var light = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
 	light.position.set(0, 100, 0);
@@ -211,6 +170,7 @@ function init() {
 	let obs2 = new Obstacle(new THREE.Vector3(0, 7, -100), [300, 2, 20], texture);
     
 	obstacles.push(obs, obs2);
+	scene.add(alternateObs, obstacles);
 	
 	//light
 	var light = new THREE.AmbientLight( 0x404040 ); // soft white light
@@ -227,14 +187,11 @@ function init() {
 	
     //topCamera
 	scene1 = new THREE.Scene();
-    topCamera = new THREE.OrthographicCamera(-window.innerWidth/8, window.innerWidth/8
-											, window.innerHeight/8, -window.innerHeight/8, 1, 1000);
+    topCamera = new THREE.OrthographicCamera(-window.innerWidth/6, window.innerWidth/6
+											, window.innerHeight/6, -window.innerHeight/6, 1, 1000);
     topCamera.position.y = 200;
 	topCamera.up.set(1, 0, 0);
 	topCamera.lookAt(0, 0, 0);
-	CCW.style.visibility='hidden';
-	zoomIn.style.visibility='hidden';
-	zoomOut.style.visibility='hidden';
 	
 	//rear mirror
     rearMirror = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
@@ -249,7 +206,8 @@ function init() {
 	radarSound = document.getElementById('radarSound');
 	radarSound.muted = false;
 	
-	window.addEventListener ('mousedown', onMouseDown, false);
+	window.addEventListener ('pointerdown', onMouseDown, false);
+	raycaster = new THREE.Raycaster();
 	
     drawParkingSpace();
 	//drawFrame();

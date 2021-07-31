@@ -151,59 +151,30 @@ class ObstacleCar {
 }
 
 class Dashboard{
-	constructor(steeringWheel, accelerator, brakes, board, screen, gear, gearFrame, autoBT, CCWBT, zoomInBT, zoomOutBT){
+	constructor(steeringWheel, accelerator, brakes, board, screen, circleFrame, gear, gearFrame, autoBT, CCWBT, zoomInBT, zoomOutBT, P, R, N, D){
 		this.steeringWheel = steeringWheel;
 		this.accelerator = accelerator;
 		this.brakes = brakes;
 		this.board = board;
 		this.screen = screen;
+		this.circleFrame = circleFrame;
 		this.gear = gear;
 		this.gearFrame = gearFrame;
+		this.autoBT = autoBT;
+		this.CCWBT = CCWBT;
+		this.zoomInBT = zoomInBT;
+		this.zoomOutBT = zoomOutBT;
+		this.P = P;
+		this.R = R;
+		this.N = N;
+		this.D = D;
+		this.R.visible = this.N.visible = this.D.visible = false;
 				
 		this.mesh = new THREE.Group();
-		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.gear, this.gearFrame);
-		
-		//if(autoBT.mesh.material.map){
-			this.autoBT = autoBT;
-			this.mesh.add(this.autoBT);
-		//}
-		if(CCWBT){
-			this.CCWBT = CCWBT;
-			this.mesh.add(this.CCWBT);
-		}
-		if(zoomInBT){
-			this.zoomInBT = zoomInBT;
-			this.mesh.add(this.zoomInBT);
-		}
-		if(zoomOutBT){
-			this.zoomOutBT = zoomOutBT;
-			this.mesh.add(this.zoomOutBT);
-		}
+		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.circleFrame, this.gear, this.gearFrame
+					, this.autoBT, this.CCWBT, this.zoomInBT, this.zoomOutBT, this.P, this.R, this.N, this.D);
 		
 		sceneHUD.add(this.mesh);
-	}
-}
-
-class Button {
-	constructor (cx, cy, cz, size, map){
-		this.centerX = cx;  // HUD-coord
-		this.centerY = cy;
-		this.size = size;  
-		let material = new THREE.MeshBasicMaterial({transparent: true, opacity:0.7});
-		if (map) 
-		   material.map = map;
-		this.mesh = new THREE.Mesh (new THREE.PlaneGeometry (size*2, size*2, 1), material );
-	    this.mesh.position.set (cx, cy, cz);
-		this.mesh.rotation.y = -Math.PI/2;
-	}
-	
-	setLocation (lx, ly, lz) { // 2D-HUD 
-	    this.mesh.position.set (lx, ly, lz);
-	}
-	
-	d2To (v) { // 2-norm
-		return Math.sqrt ( (v[0]-this.centerX)*(v[0]-this.centerX) 
-				+ (v[1]-this.centerY)*(v[1]-this.centerY) );
 	}
 }
 
@@ -482,6 +453,66 @@ function buildDashboard(){
 	screen.position.z = -0.1;
 	screen.rotation.y = -Math.PI/2;
 	
+	//circleFrame
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/1XGtMFk.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var circleFrame = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.4, 1), texMat);
+	circleFrame.position.y = 0.3;
+	circleFrame.position.x = 0.3;
+	circleFrame.position.z = -2.3;
+	circleFrame.rotation.y = -Math.PI/2;
+	
+	//P
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/OxAvn0W.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var P = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3, 1), texMat);
+	P.position.y = 0.38;
+	P.position.x = 0.2;
+	P.position.z = -2.26;
+	P.rotation.y = -Math.PI/2;
+	
+	//R
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/DAK4p2v.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var R = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3, 1), texMat);
+	R.position.y = 0.38;
+	R.position.x = 0.2;
+	R.position.z = -2.26;
+	R.rotation.y = -Math.PI/2;
+	
+	//N
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/Q2oANfM.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var N = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3, 1), texMat);
+	N.position.y = 0.38;
+	N.position.x = 0.2;
+	N.position.z = -2.26;
+	N.rotation.y = -Math.PI/2;
+	
+	//D
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/OavbmW6.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var D = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3, 1), texMat);
+	D.position.y = 0.38;
+	D.position.x = 0.2;
+	D.position.z = -2.26;
+	D.rotation.y = -Math.PI/2;
+	
 	//gear
 	texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/FVKuYLa.png'),
@@ -494,7 +525,7 @@ function buildDashboard(){
 	screen.position.x = 0.1;
 	gear.rotation.y = -Math.PI/2;
 	
-	//gear
+	//gearFrame
 	texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/oTfN2ti.png'),
 		alphaTest: 0.5,
@@ -511,11 +542,11 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	//var autoBT = new Button(0, 1.44, 0.91, 0.1, texMat);
 	var autoBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
 	autoBT.position.y = 1.44;
 	autoBT.position.z = 0.91;
 	autoBT.rotation.y = -Math.PI/2;
+	autoBT.name = 'autoBT';
 	
 	//CCW
 	texMat = new THREE.MeshBasicMaterial({
@@ -527,6 +558,7 @@ function buildDashboard(){
 	CCWBT.position.y = 1.25;
 	CCWBT.position.z = 0.91;
 	CCWBT.rotation.y = -Math.PI/2;
+	CCWBT.name = 'CCWBT';
 	
 	//zoomIn
 	texMat = new THREE.MeshBasicMaterial({
@@ -538,6 +570,7 @@ function buildDashboard(){
 	zoomInBT.position.y = 1.05;
 	zoomInBT.position.z = 0.91;
 	zoomInBT.rotation.y = -Math.PI/2;
+	zoomInBT.name = 'zoomInBT';
 	
 	//zoomOut
 	texMat = new THREE.MeshBasicMaterial({
@@ -549,9 +582,12 @@ function buildDashboard(){
 	zoomOutBT.position.y = 0.85;
 	zoomOutBT.position.z = 0.91;
 	zoomOutBT.rotation.y = -Math.PI/2;
+	zoomOutBT.name = 'zoomOutBT';
 		
-	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, 
-									gear, gearFrame, autoBT, CCWBT, zoomInBT, zoomOutBT);
+	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, circleFrame,
+									gear, gearFrame, autoBT, CCWBT, zoomInBT, zoomOutBT, P, R, N, D);
+	
+	pickables = [ dashboard.autoBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT ];
 	
 	return dashboard;
 }
