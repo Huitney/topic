@@ -5,9 +5,6 @@
 <body style='overflow:hidden'> 
 <div id="info">
 	<h2 id="warning">no hit</h2>
-	<button id="parking"> auto parking </button>
-	<button id="parkingModeButton"> Mode 1</button>
-	<button id='soundBT'>Radar Sound Off</button>
 </div>
 
 <audio id="radarSound" style="display:none" muted>
@@ -20,8 +17,8 @@
 <script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/OBJLoader.js"></script>
 <script src="buildThings.js"></script>
 <script src="func.js"></script>
+<script src="buttonFunc.js"></script>
 
-<button id="topView"><img src ="https://i.imgur.com/96tj0yh.png?2" style="width:80px;height:80px;"></button>
 <button id="thirdPV"><img src="https://i.imgur.com/OvvIh4R.png?2" style="width:80px;height:80px;"></button>
 <button id="firstPV"><img src="https://i.imgur.com/AX5vRqY.png" style="width:80px;height:80px;"></button>
 
@@ -46,7 +43,7 @@ var radarSound, RCmesh;
 var beeper = false, radarOn = false;
 
 var topCamera, scene1;
-var topViewTurn = false, soundBT = false;
+var soundBT = false;
 var thirdPV = false, firstPV = false;
 var parkingMode = 0, parkingAngle;
 var PPart = 0;
@@ -55,19 +52,6 @@ var parkingModeButton = false;
 var CCW = 0;
 
 //button
-$("#topView").click(function() {
-	topViewTurn = !topViewTurn;
-	if(topViewTurn){
-		CCW.style.visibility='visible';
-		zoomIn.style.visibility='visible';
-		zoomOut.style.visibility='visible';
-	}else{
-		CCW.style.visibility='hidden';
-		zoomIn.style.visibility='hidden';
-		zoomOut.style.visibility='hidden';
-	}
-});
-
 $("#thirdPV").click(function() {
 	thirdPV = !thirdPV;
 	if(thirdPV)
@@ -78,50 +62,6 @@ $("#firstPV").click(function() {
 	firstPV = !firstPV;
 	if(firstPV)
 		thirdPV = false;
-});
-
-$("#soundBT").click(function() {
-	soundBT =! soundBT;
-	if(soundBT){
-		radarSound.volume = 0;
-		$("#soundBT").text('Radar Sound On');
-	}
-	else{
-		radarSound.volume = 1;
-		$("#soundBT").text('Radar Sound Off');
-	}
-});
-
-$("#parking").click(function() {
-	parkingMode++;
-	if(parkingMode > 2) parkingMode = 0;
-	
-	if(parkingMode == 0){
-		$("#parking").text('auto parking');
-	}
-	else if(parkingMode == 1){
-		$("#parking").text('stop parking');
-		parkingAngle = car.angle;
-	}
-	else{
-		$("#parking").text('manual');
-	}
-});
-
-$("#parkingModeButton").click(function() {
-	parkingModeButton = !parkingModeButton;
-	if(parkingModeButton){
-		$("#parkingModeButton").text('Mode 2');
-		car.move(new THREE.Vector3(70, 13, 30));
-		car.rotate(0);
-	}
-
-	else{
-		$("#parkingModeButton").text('Mode 1');
-		car.move(new THREE.Vector3(66.5, 13, 40));
-		car.rotate(0);
-	}
-		
 });
 
 init();
@@ -315,31 +255,18 @@ function render() {
     renderer.clear();
     renderer.render(scene, camera);
 
-    if (topViewTurn) {
-		renderer.setViewport(WW/1.3, HH/1.5, 200, 200);
-		renderer.setScissor(WW/1.3, HH/1.5, 200, 200);
-		renderer.clear();
-		renderer.render(scene, topCamera);
-    }
 	if(firstPV){
 		renderer.render(sceneHUD, camera);
-		/*renderer.render(scene1, rearMirror);
-		renderer.setViewport(WW/1.44, HH/1.44, WW/4, HH/7.3);
-		renderer.setScissor(WW/1.44, HH/1.44, WW/4, HH/7.3);
-		renderer.clear();
-		renderer.render(scene, rearMirror);
-		*/
 		//reversing Camera
 		if(car.speed < 0){
-			//renderer.render(sceneHUD, reversingCamera);
-			renderer.setViewport(WW/2.42, HH/4.15, WW/6, HH/6);
-			renderer.setScissor(WW/2.42, HH/4.15, WW/6, HH/6);
+			renderer.setViewport(WW/2.42, HH/4.2, WW/6, HH/6);
+			renderer.setScissor(WW/2.42, HH/4.2, WW/6, HH/6);
 			renderer.clear();
 			renderer.render(scene, reversingCamera);			
 		}
 		else{
-			renderer.setViewport(WW/2.42, HH/4.15, WW/6, HH/6);
-			renderer.setScissor(WW/2.42, HH/4.15, WW/6, HH/6);
+			renderer.setViewport(WW/2.42, HH/4.2, WW/6, HH/6);
+			renderer.setScissor(WW/2.42, HH/4.2, WW/6, HH/6);
 			renderer.clear();
 			renderer.render(scene, topCamera);
 		}
