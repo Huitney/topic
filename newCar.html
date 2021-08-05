@@ -8,7 +8,7 @@
 </div>
 
 <audio id="radarSound" style="display:none" muted>
-<source src="https://huitney.github.io/topic/sounds/radar.wav" type='audio/wav'></audio>
+<source src="https://huitney.github.io/topic/sounds/beep.wav" type='audio/wav'></audio>
 
 <script src="https://threejs.org/build/three.min.js"></script>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -146,12 +146,12 @@ function init() {
 	radarSound = document.getElementById('radarSound');
 	radarSound.muted = false;
 	
-	window.addEventListener ('pointerdown', onMouseDown, false);
+	window.addEventListener ('pointerdown', onPointerDown, false);
+	window.addEventListener ('pointerup', onPointerUp, false);
 	raycaster = new THREE.Raycaster();
 	
     drawParkingSpace();
 	//drawFrame();
-	//readModel('Hyundai');
 }
   
 function onWindowResize() {
@@ -175,58 +175,14 @@ function animate() {
     /////////////////////////////////////////////////////////////////
     //move car	
 	
-	if (keyboard.pressed('down')){
-		car.speed -= 1;
-	}
-	if (keyboard.pressed('up')){
-		car.speed += 1;
-	}
-	car.speed = Math.clamp (car.speed, -50, 50);
-  
-    if (keyboard.pressed('right'))
-		this.theta -= 0.02;
-    if (keyboard.pressed('left'))
-		this.theta += 0.02;  
-    this.theta = Math.clamp (this.theta, -Math.PI/7, Math.PI/7);
-	
-	car.leftfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(this.theta)-8));
-    car.rightfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(this.theta)+8));
-
-    //////////////////////////////////////////////////////////////
+	let paraArray = keyboardAndRC(this.theta, this.fSlowDown, this.bSlowDown);
+	this.theta = paraArray[0];
+	this.fSlowDown = paraArray[1];
+	this.bSlowDown = paraArray[2];
     
-    RC = car.mesh.localToWorld (new THREE.Vector3(-12,0,-24/Math.tan(this.theta)));
-    RCmesh.position.copy (RC);
-    
-    var omega = car.speed * Math.tan(this.theta)/24;
     var deltaT = clock.getDelta();
     
-    moveCar(RC, omega, deltaT);
-	
-    //////////////////////////////////////////////////////////////
-    // slowing down    after keyboard up
-    if (keyboard.up("up")) 
-		this.fSlowDown = 1; 
-    else if (keyboard.up("down"))	
-		this.bSlowDown = 1;
-       
-    if (keyboard.down("up") ||  keyboard.down("down"))
-		this.fSlowDown = this.bSlowDown = 0;
-      
-    if (this.fSlowDown == 1) {
-		if(car.speed >= 0) {  // moving forward --> slow down gradually
-			car.speed -= 1;
-		} else if (car.speed <= 0) {  // moving backward --> stop immediately
-			car.speed = 0;
-			this.fSlowDown = 0;
-		}
-    } else if (this.bSlowDown == 1) {
-		if(car.speed <= 0) {
-			car.speed += 1;
-		} else if (car.speed >= 0) {
-			car.speed = 0;
-			this.bSlowDown = 0;
-		}
-    }
+    moveCar(RC, (car.speed * Math.tan(this.theta)/24), deltaT);
 	
     //camera position
 	cameraUpdate(this.theta, this.fSlowDown, this.bSlowDown);

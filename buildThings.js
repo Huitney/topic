@@ -425,6 +425,7 @@ function buildDashboard(){
 	var accelerator = new THREE.Mesh(new THREE.PlaneGeometry(1, 2, 1), texMat);
 	accelerator.position.z = 4;
 	accelerator.rotation.y = -Math.PI/2;
+	accelerator.name = 'accelerator';
 	
 	//brakes
 	texMat = new THREE.MeshBasicMaterial({
@@ -435,6 +436,7 @@ function buildDashboard(){
 	var brakes = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 1), texMat);
 	brakes.position.z = 3;
 	brakes.rotation.y = -Math.PI/2;
+	brakes.name = 'brakes';
 	
 	//dashboard
 	texMat = new THREE.MeshBasicMaterial({
@@ -470,6 +472,7 @@ function buildDashboard(){
 	circleFrame.position.x = 0.3;
 	circleFrame.position.z = -2.3;
 	circleFrame.rotation.y = -Math.PI/2;
+	circleFrame.name = 'circleFrame';
 	
 	//P
 	texMat = new THREE.MeshBasicMaterial({
@@ -654,7 +657,8 @@ function buildDashboard(){
 	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, circleFrame,autoBT, manuBT
 								, mode1BT, mode2BT, parkBT, CCWBT, zoomInBT, zoomOutBT, P, R, N, D, radarOn, radarOff);
 	
-	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT, dashboard.radarOn);
+	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
+					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.circleFrame);
 	
 	return dashboard;
 }

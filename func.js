@@ -105,6 +105,59 @@ function parking(theta){
 	return theta;
 }
 
+function keyboardAndRC(theta, fSlowDown, bSlowDown){
+	
+	if (keyboard.pressed('down')){
+		car.speed -= 1;
+	}
+	if (keyboard.pressed('up')){
+		car.speed += 1;
+	}
+	car.speed = Math.clamp (car.speed, -50, 50);
+  
+    if (keyboard.pressed('right'))
+		theta -= 0.02;
+    if (keyboard.pressed('left'))
+		theta += 0.02;  
+    theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
+	
+	car.leftfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)-8));
+    car.rightfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)+8));
+
+    //////////////////////////////////////////////////////////////
+    
+    RC = car.mesh.localToWorld (new THREE.Vector3(-12,0,-24/Math.tan(theta)));
+    RCmesh.position.copy (RC);
+	
+	//////////////////////////////////////////////////////////////
+    // slowing down    after keyboard up
+    if (keyboard.up("up")) 
+		fSlowDown = 1; 
+    else if (keyboard.up("down"))	
+		bSlowDown = 1;
+       
+    if (keyboard.down("up") ||  keyboard.down("down"))
+		fSlowDown = bSlowDown = 0;
+      
+    if (fSlowDown == 1) {
+		if(car.speed >= 0) {  // moving forward --> slow down gradually
+			car.speed -= 1;
+		} else if (car.speed <= 0) {  // moving backward --> stop immediately
+			car.speed = 0;
+			fSlowDown = 0;
+		}
+    } else if (bSlowDown == 1) {
+		if(car.speed <= 0) {
+			car.speed += 1;
+		} else if (car.speed >= 0) {
+			car.speed = 0;
+			bSlowDown = 0;
+		}
+    }
+	
+	return [theta, fSlowDown, bSlowDown];
+}
+
 function moveCar(RC, omega, deltaT){
 	
 	// C is the center of car body
@@ -209,7 +262,7 @@ function poll(){
 	}
 	car.minDis = min;
 	
-	if(min < 15){
+	if(min < 20){
 		beeper = true;
 		if (radarOn === false) 
 			setTimeout(radarPlay,0);
@@ -223,7 +276,7 @@ function radarPlay(){
 	
 	radarSound.play();
 	if (beeper) {
-		setTimeout (radarPlay, car.minDis * 100);
+		setTimeout (radarPlay, car.minDis * 70);
 		radarOn = true;
 	} else {
 		radarOn = false

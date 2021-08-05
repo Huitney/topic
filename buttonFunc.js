@@ -1,4 +1,4 @@
-function onMouseDown (event) {
+function onPointerDown (event) {
 	//console.log ('in mouse down')
 	event.preventDefault();  // may not be necessary
 	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -9,40 +9,65 @@ function onMouseDown (event) {
 	var intersects = raycaster.intersectObjects(pickables, true);
 	if (intersects.length > 0) {
 		if(intersects[0].object.name == 'parkBT'){
-			parkBTClicked();
-		}else if(intersects[0].object.name == 'CCWBT'){
-			CCWBTClicked();
-		}else if(intersects[0].object.name == 'zoomInBT'){
-			zoomInBTClicked();
-		}else if(intersects[0].object.name == 'zoomOutBT'){
-			zoomOutBTClicked();
-		}else if(intersects[0].object.name == 'autoBT'){
-			if(car.dashboard.autoBT.visible == true)
-				autoBTClicked();
-			else if(car.dashboard.manuBT.visible == true)
-				manuBTClicked();
-		}else if(intersects[0].object.name == 'mode1BT'){
-			if(car.dashboard.mode1BT.visible == true)
-				mode1BTClicked();
-			else if(car.dashboard.mode2BT.visible == true)
-				mode2BTClicked();
-		}else if(intersects[0].object.name == 'radarOn'){
-			if(car.dashboard.radarOn.visible == true)
-				radarOnClicked();
-			else if(car.dashboard.radarOff.visible == true)
-				radarOffClicked();
+			parkBTDown();
 		}
+		
+		if(intersects[0].object.name == 'CCWBT'){
+			CCWBTDown();
+		}
+		
+		if(intersects[0].object.name == 'zoomInBT'){
+			zoomInBTDown();
+		}
+		
+		if(intersects[0].object.name == 'zoomOutBT'){
+			zoomOutBTDown();
+		}
+		
+		if(intersects[0].object.name == 'autoBT'){
+			if(car.dashboard.autoBT.visible == true)
+				autoBTDown();
+			else if(car.dashboard.manuBT.visible == true)
+				manuBTDown();
+		}
+		
+		if(intersects[0].object.name == 'mode1BT'){
+			if(car.dashboard.mode1BT.visible == true)
+				mode1BTDown();
+			else if(car.dashboard.mode2BT.visible == true)
+				mode2BTDown();
+		}
+		
+		if(intersects[0].object.name == 'radarOn'){
+			if(car.dashboard.radarOn.visible == true)
+				radarOnDown();
+			else if(car.dashboard.radarOff.visible == true)
+				radarOffDown();
+		}
+		
+		if(intersects[0].object.name == 'accelerator'){
+			acceleratorDown();
+		}
+		
+		if(intersects[0].object.name == 'brakes'){
+			brakesDown();
+		}
+		
+		if(intersects[0].object.name == 'circleFrame'){
+			circleFrameDown();
+		}
+		
 	}
 }	
 
-function parkBTClicked(){
+function parkBTDown(){
 	parkingMode = 1;
 	parkingAngle = car.angle;
 	car.dashboard.autoBT.visible = true;
 	car.dashboard.manuBT.visible = false;
 }
 
-function CCWBTClicked(){
+function CCWBTDown(){
 	CCW++;
 	if(CCW % 4 == 1){
 		topCamera.up.set(0, 0, -1);
@@ -62,7 +87,7 @@ function CCWBTClicked(){
 	}
 }
 
-function zoomInBTClicked(){
+function zoomInBTDown(){
 	topCamera.left += window.innerWidth/60;
 	topCamera.right -= window.innerWidth/60;
 	topCamera.top -= window.innerHeight/60;
@@ -70,7 +95,7 @@ function zoomInBTClicked(){
 	topCamera.updateProjectionMatrix();
 }
 
-function zoomOutBTClicked(){
+function zoomOutBTDown(){
 	topCamera.left -= window.innerWidth/60;
 	topCamera.right += window.innerWidth/60;
 	topCamera.top += window.innerHeight/60;
@@ -78,19 +103,19 @@ function zoomOutBTClicked(){
 	topCamera.updateProjectionMatrix();
 }
 
-function autoBTClicked(){
+function autoBTDown(){
 	parkingMode = 0;
 	car.dashboard.autoBT.visible = false;
 	car.dashboard.manuBT.visible = true;
 }
 
-function manuBTClicked(){
+function manuBTDown(){
 	parkingMode = 2;
 	car.dashboard.autoBT.visible = true;
 	car.dashboard.manuBT.visible = false;
 }
 
-function mode1BTClicked(){
+function mode1BTDown(){
 	parkingModeButton = true;
 	car.move(new THREE.Vector3(70, 13, 30));
 	car.rotate(0);
@@ -98,7 +123,7 @@ function mode1BTClicked(){
 	car.dashboard.mode2BT.visible = true;
 }
 
-function mode2BTClicked(){
+function mode2BTDown(){
 	parkingModeButton = false;
 	car.move(new THREE.Vector3(66.5, 13, 40));
 	car.rotate(0);
@@ -106,16 +131,86 @@ function mode2BTClicked(){
 	car.dashboard.mode2BT.visible = false;
 }
 
-function radarOnClicked(){
+function radarOnDown(){
 	soundBT = true;
 	radarSound.volume = 0;
 	car.dashboard.radarOn.visible = false;
 	car.dashboard.radarOff.visible = true;
 }
 
-function radarOffClicked(){
+function radarOffDown(){
 	soundBT = false;
 	radarSound.volume = 1;
 	car.dashboard.radarOn.visible = true;
 	car.dashboard.radarOff.visible = false;
+}
+
+function acceleratorDown(){
+	car.dashboard.accelerator.position.x = 0.2;
+	car.dashboard.accelerator.position.y = -0.1;
+	if(car.dashboard.R.visible){
+		car.dashboard.R.visible = false;
+		car.dashboard.N.visible = true;
+		console.log('R');
+		car.speed -= 1;
+	}else if(car.dashboard.D.visible){
+		car.dashboard.D.visible = false;
+		car.dashboard.P.visible = true;
+		console.log('D');
+		car.speed += 1;
+	}
+}
+
+function brakesDown(){
+	car.dashboard.brakes.position.x = 0.2;
+	car.dashboard.brakes.position.y = -0.1;
+	console.log(car.dashboard.brakes.position);
+}
+
+function circleFrameDown(){
+	if(car.dashboard.P.visible){
+		car.dashboard.P.visible = false;
+		car.dashboard.R.visible = true;
+		console.log('P');
+	}else if(car.dashboard.R.visible){
+		car.dashboard.R.visible = false;
+		car.dashboard.N.visible = true;
+		console.log('R');
+	}else if(car.dashboard.N.visible){
+		car.dashboard.N.visible = false;
+		car.dashboard.D.visible = true;
+		console.log('N');
+	}else if(car.dashboard.D.visible){
+		car.dashboard.D.visible = false;
+		car.dashboard.P.visible = true;
+		console.log('D');
+	}
+}
+
+function onPointerUp (event) {
+	event.preventDefault();  // may not be necessary
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+	// find intersections
+	raycaster.setFromCamera(mouse, camera);
+	var intersects = raycaster.intersectObjects(pickables, true);
+	if (intersects.length > 0) {
+		if(intersects[0].object.name == 'accelerator'){
+			acceleratorUp();
+		}else if(intersects[0].object.name == 'brakes'){
+			brakesUp();
+		}
+	}
+}
+
+function acceleratorUp(){
+	car.dashboard.accelerator.position.x = 0;
+	car.dashboard.accelerator.position.y = 0;
+}
+
+function brakesUp(){
+	car.dashboard.brakes.position.x = 0;
+	car.dashboard.brakes.position.y = 0;
+	console.log(car.dashboard.brakes.position);
 }
