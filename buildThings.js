@@ -82,7 +82,7 @@ class Car {
 		sepAxes[2] = obbB.axes[0];
 		sepAxes[3] = obbB.axes[1];
 		
-		let closeDis;
+		let closeDis = [];
 
 		let t = obbB.center.clone().sub(obbA.center);
 		for (let i = 0; i < 4; i++) {
@@ -96,9 +96,11 @@ class Car {
 			
 			let dis = Math.abs(centerDis - (dA + dB))
 			if(dis >= 0){
-				closeDis = (closeDis === undefined) ? dis : closeDis;
-				if(closeDis > dis)
-					closeDis = dis;
+				closeDis[0] = (closeDis[0] === undefined) ? dis : closeDis[0];
+				if(closeDis[0] > dis){
+					closeDis[0] = dis;
+					closeDis[1] = sHat;
+				}
 			}
 		}
 		return closeDis;
@@ -151,33 +153,31 @@ class ObstacleCar {
 }
 
 class Dashboard{
-	constructor(steeringWheel, accelerator, brakes, board, screen, circleFrame, autoBT, manuBT
-				, mode1BT, mode2BT, parkBT, CCWBT, zoomInBT, zoomOutBT, P, R, N, D, radarOn, radarOff){
+	constructor(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
+				, mode1BT, mode2BT, parkBT, topViewBT, wave, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff){
 		this.steeringWheel = steeringWheel;
 		this.accelerator = accelerator;
 		this.brakes = brakes;
 		this.board = board;
 		this.screen = screen;
-		this.circleFrame = circleFrame;
+		this.gear = gear;
+		this.gearFrame = gearFrame;
 		this.autoBT = autoBT;
 		this.manuBT = manuBT;
 		this.parkBT = parkBT;
 		this.mode1BT = mode1BT;
 		this.mode2BT = mode2BT;
+		this.topViewBT = topViewBT;
+		this.wave = wave;
 		this.CCWBT = CCWBT;
 		this.zoomInBT = zoomInBT;
 		this.zoomOutBT = zoomOutBT;
-		this.P = P;
-		this.R = R;
-		this.N = N;
-		this.D = D;
-		this.R.visible = this.N.visible = this.D.visible = false;
 		this.radarOn = radarOn;
 		this.radarOff = radarOff;
 				
 		this.mesh = new THREE.Group();
-		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.circleFrame, this.autoBT, this.manuBT
-					, this.mode1BT, this.mode2BT, this.parkBT, this.CCWBT, this.zoomInBT, this.zoomOutBT, this.P, this.R, this.N, this.D
+		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.autoBT, this.manuBT, this.gear
+					, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.wave, this.CCWBT, this.zoomInBT, this.zoomOutBT, this.gearFrame
 					, this.radarOn, this.radarOff);
 		
 		sceneHUD.add(this.mesh);
@@ -404,7 +404,7 @@ function buildDashboard(){
 	var steeringWheel = new THREE.Mesh(new THREE.CircleGeometry(1.9, 32), texMat);
 	steeringWheel.rotation.y = Math.PI/2;
 	steeringWheel.position.z = -2.9;
-	steeringWheel.position.y = -0.5;
+	steeringWheel.position.y = -0.8;
 	
 	//Rear mirror
 	texMat = new THREE.MeshBasicMaterial({
@@ -451,89 +451,52 @@ function buildDashboard(){
 	
 	//screen
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/DLYSvCe.png?1'),
+		map: loader.load('https://i.imgur.com/Yzp5Nmi.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var screen = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 3.2, 6.4), texMat);
-	screen.position.y = 1;
+	var screen = new THREE.Mesh(new THREE.PlaneGeometry(3.5, 3.5, 7), texMat);
+	screen.position.y = 0.93;
 	screen.position.x = 0.5;
 	screen.position.z = -0.1;
 	screen.rotation.y = -Math.PI/2;
 	
-	//circleFrame
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/1XGtMFk.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var circleFrame = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.4, 1), texMat);
-	circleFrame.position.y = 0.3;
-	circleFrame.position.x = 0.3;
-	circleFrame.position.z = -2.3;
-	circleFrame.rotation.y = -Math.PI/2;
-	circleFrame.name = 'circleFrame';
-	
-	//P
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/OxAvn0W.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var P = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3, 1), texMat);
-	P.position.y = 0.38;
-	P.position.x = 0.2;
-	P.position.z = -2.26;
-	P.rotation.y = -Math.PI/2;
-	
-	//R
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/DAK4p2v.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var R = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3, 1), texMat);
-	R.position.y = 0.38;
-	R.position.x = 0.2;
-	R.position.z = -2.26;
-	R.rotation.y = -Math.PI/2;
-	
-	//N
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/Q2oANfM.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var N = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3, 1), texMat);
-	N.position.y = 0.38;
-	N.position.x = 0.2;
-	N.position.z = -2.26;
-	N.rotation.y = -Math.PI/2;
-	
-	//D
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/OavbmW6.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var D = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3, 1), texMat);
-	D.position.y = 0.38;
-	D.position.x = 0.2;
-	D.position.z = -2.26;
-	D.rotation.y = -Math.PI/2;
-	
 	//gear
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/FVKuYLa.png'),
+		map: loader.load('https://i.imgur.com/gzWiMRh.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var gear = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.8, 1), texMat);
-	gear.position.y = 1.15;
-	gear.position.z = -1;
-	screen.position.x = 0.1;
+	var gear = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.2, 1), texMat);
+	gear.position.y = 0.85;
+	gear.position.x = 0.1;
+	gear.position.z = -0.05;
 	gear.rotation.y = -Math.PI/2;
+	gear.name = 'gear';
 	
+	//gearFrame
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/oTfN2ti.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var gearFrame = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.2, 1), texMat);
+	gearFrame.position.y = 0.88;
+	gearFrame.position.z = -0.28;
+	gearFrame.rotation.y = -Math.PI/2;
+	
+	//parkBT
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/AlHYNp3.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var parkBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	parkBT.position.y = 1.48;
+	parkBT.position.z = -1.04;
+	parkBT.rotation.y = -Math.PI/2;
+	parkBT.name = 'parkBT';
+
 	//autoBT
 	texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/2wkfSV9.png'),
@@ -541,8 +504,8 @@ function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var autoBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	autoBT.position.y = 1.25;
-	autoBT.position.z = -1;
+	autoBT.position.y = 1.29;
+	autoBT.position.z = -1.04;
 	autoBT.rotation.y = -Math.PI/2;
 	autoBT.name = 'autoBT';
 	autoBT.visible = false;
@@ -554,21 +517,9 @@ function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var manuBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	manuBT.position.y = 1.25;
-	manuBT.position.z = -1;
+	manuBT.position.y = 1.29;
+	manuBT.position.z = -1.04;
 	manuBT.rotation.y = -Math.PI/2;
-	
-	//parkBT
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/AlHYNp3.png?1'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var parkBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	parkBT.position.y = 1.44;
-	parkBT.position.z = -1;
-	parkBT.rotation.y = -Math.PI/2;
-	parkBT.name = 'parkBT';
 	
 	//mode1BT
 	texMat = new THREE.MeshBasicMaterial({
@@ -577,8 +528,8 @@ function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var mode1BT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	mode1BT.position.y = 1.05;
-	mode1BT.position.z = -1;
+	mode1BT.position.y = 1.09;
+	mode1BT.position.z = -1.04;
 	mode1BT.rotation.y = -Math.PI/2;
 	mode1BT.name = 'mode1BT';
 	
@@ -589,8 +540,8 @@ function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var mode2BT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	mode2BT.position.y = 1.05;
-	mode2BT.position.z = -1;
+	mode2BT.position.y = 1.09;
+	mode2BT.position.z = -1.04;
 	mode2BT.rotation.y = -Math.PI/2;
 	mode2BT.visible = false;
 	
@@ -601,8 +552,8 @@ function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var radarOn = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	radarOn.position.y = 0.85;
-	radarOn.position.z = -1;
+	radarOn.position.y = 0.89;
+	radarOn.position.z = -1.04;
 	radarOn.rotation.y = -Math.PI/2;
 	radarOn.name = 'radarOn';
 	
@@ -613,10 +564,38 @@ function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var radarOff = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	radarOff.position.y = 0.85;
-	radarOff.position.z = -1;
+	radarOff.position.y = 0.89;
+	radarOff.position.z = -1.04;
 	radarOff.rotation.y = -Math.PI/2;
 	radarOff.visible = false;
+	
+	//topViewBT
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/6tm7czI.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var topViewBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	topViewBT.position.y = 1.48;
+	topViewBT.position.z = 0.96;
+	topViewBT.rotation.y = -Math.PI/2;
+	topViewBT.name = 'topViewBT';
+	
+	//wave
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var waveMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.04, 1), texMat);
+	var wave = new THREE.Group();
+	wave.add(waveMesh);
+	wave.position.y = 1.48;
+	wave.position.z = 0.96;
+	wave.rotation.y = -Math.PI/2;
+	waveMesh.position.y = -0.1;
+	waveMesh.position.z = -0.005;
+	wave.visible = false;
 	
 	//CCW
 	texMat = new THREE.MeshBasicMaterial({
@@ -625,9 +604,10 @@ function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var CCWBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	CCWBT.position.y = 1.25;
-	CCWBT.position.z = 0.91;
+	CCWBT.position.y = 1.29;
+	CCWBT.position.z = 0.96;
 	CCWBT.rotation.y = -Math.PI/2;
+	CCWBT.visible = false;
 	CCWBT.name = 'CCWBT';
 	
 	//zoomIn
@@ -637,9 +617,10 @@ function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var zoomInBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	zoomInBT.position.y = 1.05;
-	zoomInBT.position.z = 0.91;
+	zoomInBT.position.y = 1.09;
+	zoomInBT.position.z = 0.96;
 	zoomInBT.rotation.y = -Math.PI/2;
+	zoomInBT.visible = false;
 	zoomInBT.name = 'zoomInBT';
 	
 	//zoomOut
@@ -649,45 +630,17 @@ function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var zoomOutBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
-	zoomOutBT.position.y = 0.85;
-	zoomOutBT.position.z = 0.91;
+	zoomOutBT.position.y = 0.89;
+	zoomOutBT.position.z = 0.96;
 	zoomOutBT.rotation.y = -Math.PI/2;
+	zoomOutBT.visible = false;
 	zoomOutBT.name = 'zoomOutBT';
 		
-	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, circleFrame,autoBT, manuBT
-								, mode1BT, mode2BT, parkBT, CCWBT, zoomInBT, zoomOutBT, P, R, N, D, radarOn, radarOff);
+	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
+								, mode1BT, mode2BT, parkBT, topViewBT, wave, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff);
 	
 	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
-					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.circleFrame);
+					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.topViewBT, dashboard.gear);
 	
 	return dashboard;
-}
-
-function buildScenes(){
-	
-	let loader = new THREE.TextureLoader();
-	loader.crossOrigin = '';
-	let texture = loader.load('https://i.imgur.com/uatNsoh.png');
-	texture.repeat.set(14, 14);
-	texture.wrapS = THREE.RepeatWrapping;
-	texture.wrapT = THREE.RepeatWrapping;
-	var plane = new THREE.Mesh(new THREE.PlaneGeometry(700, 260), new THREE.MeshBasicMaterial({map: texture}));
-	plane.rotation.x = -Math.PI/2;
-	
-	let texture1 = loader.load('https://i.imgur.com/EB8HFqt.jpg?1');
-	var plane1 = new THREE.Mesh(new THREE.PlaneGeometry(700, 120), new THREE.MeshBasicMaterial({map: texture1}));
-	texture1.repeat.set(3,1);
-	texture1.wrapS = THREE.RepeatWrapping;
-	texture1.wrapT = THREE.RepeatWrapping;
-	plane1.rotation.x = -Math.PI/2;
-	plane1.position.y = 0.2;
-
-	scene.add(plane, plane1);
-	
-	let texture3 = loader.load('https://i.imgur.com/cNqeEt2.png');
-	let trafficLight = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshBasicMaterial({map: texture3, transparent:true}));
-	trafficLight.rotation.y = -Math.PI/2;
-	trafficLight.position.set(200, 25, -35);
-	scene.add(trafficLight);
-	
 }

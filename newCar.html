@@ -16,6 +16,7 @@
 <script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/MTLLoader.js"></script>
 <script src="https://raw.githack.com/mrdoob/three.js/dev/examples/js/loaders/OBJLoader.js"></script>
 <script src="buildThings.js"></script>
+<script src="buildScenes.js"></script>
 <script src="func.js"></script>
 <script src="buttonFunc.js"></script>
 
@@ -43,13 +44,14 @@ var radarSound, RCmesh;
 var beeper = false, radarOn = false;
 
 var topCamera, scene1;
-var soundBT = false;
+var soundBT = false, topView = false;
 var thirdPV = false, firstPV = false;
-var parkingMode = 0, parkingAngle;
+var parkingMode = 0, parkingAngle = 0;
 var PPart = 0;
 var reversingCamera, rearMirror;
 var parkingModeButton = false;
 var CCW = 0;
+var traceMeshes = [];
 
 //button
 $("#thirdPV").click(function() {
@@ -77,7 +79,7 @@ function init() {
 	document.body.appendChild(renderer.domElement);
 
 	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-	camera.position.set(-200, 100, 0);
+	camera.position.set(-300, 200, 0);
 	cameraHUD = new THREE.OrthographicCamera(window.innerWidth / -2,window.innerWidth / 2,
 											window.innerHeight / 2,window.innerHeight / -2, 1, 1000);
 
@@ -96,7 +98,7 @@ function init() {
 
     ////////////////////////////////////////////////////////////
 	//car
-    car = buildCar(new THREE.Vector3(66.5, 13, 40));
+    car = buildCar(new THREE.Vector3(-116, 13, 23.5));
 	
 	//obstacles
 	var car2 = new ObstacleCar(new THREE.Vector3(55, 13, 70), 'Hyundai');
@@ -106,11 +108,11 @@ function init() {
 	let loader = new THREE.TextureLoader();
 	loader.crossOrigin = '';
 	let texture = loader.load('https://i.imgur.com/dKpYAbl.jpg?1');
-	let obs = new Obstacle(new THREE.Vector3(0, 7, 100), [300, 2, 20], texture);
-	let obs2 = new Obstacle(new THREE.Vector3(0, 7, -100), [300, 2, 20], texture);
+	//let obs = new Obstacle(new THREE.Vector3(0, 7, 100), [300, 2, 20], texture);
+	//let obs2 = new Obstacle(new THREE.Vector3(0, 7, -100), [300, 2, 20], texture);
     
-	obstacles.push(obs, obs2);
-	scene.add(alternateObs, obstacles);
+	//obstacles.push(obs, obs2);
+	//scene.add(alternateObs, obstacles);
 	
 	//light
 	var light = new THREE.AmbientLight( 0x404040 ); // soft white light
@@ -150,8 +152,9 @@ function init() {
 	window.addEventListener ('pointerup', onPointerUp, false);
 	raycaster = new THREE.Raycaster();
 	
-    drawParkingSpace();
+    //drawParkingSpace();
 	//drawFrame();
+	drawReversingLine();
 }
   
 function onWindowResize() {
@@ -171,7 +174,7 @@ function animate() {
     this.fSlowDown = (this.fSlowDown === undefined) ? 0 : this.fSlowDown;
     this.bSlowDown = (this.bSlowDown === undefined) ? 0 : this.bSlowDown;
 	
-	addObstacles();
+	//addObstacles();
     /////////////////////////////////////////////////////////////////
     //move car	
 	
@@ -214,15 +217,15 @@ function render() {
 	if(firstPV){
 		renderer.render(sceneHUD, camera);
 		//reversing Camera
-		if(car.speed < 0){
-			renderer.setViewport(WW/2.42, HH/4.2, WW/6, HH/6);
-			renderer.setScissor(WW/2.42, HH/4.2, WW/6, HH/6);
+		if(car.dashboard.gearFrame.position.z == -0.13){
+			renderer.setViewport(WW/2.41, HH/4.15, WW/6, HH/6);
+			renderer.setScissor(WW/2.41, HH/4.15, WW/6, HH/6);
 			renderer.clear();
 			renderer.render(scene, reversingCamera);			
 		}
-		else{
-			renderer.setViewport(WW/2.42, HH/4.2, WW/6, HH/6);
-			renderer.setScissor(WW/2.42, HH/4.2, WW/6, HH/6);
+		else if(topView){
+			renderer.setViewport(WW/2.41, HH/4.15, WW/6, HH/6);
+			renderer.setScissor(WW/2.41, HH/4.15, WW/6, HH/6);
 			renderer.clear();
 			renderer.render(scene, topCamera);
 		}

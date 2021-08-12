@@ -12,6 +12,10 @@ function onPointerDown (event) {
 			parkBTDown();
 		}
 		
+		if(intersects[0].object.name == 'topViewBT'){
+			topViewBTDown();
+		}
+		
 		if(intersects[0].object.name == 'CCWBT'){
 			CCWBTDown();
 		}
@@ -53,10 +57,10 @@ function onPointerDown (event) {
 			brakesDown();
 		}
 		
-		if(intersects[0].object.name == 'circleFrame'){
-			circleFrameDown();
+		if(intersects[0].object.name == 'gear'){
+			gearDown();
 		}
-		
+				
 	}
 }	
 
@@ -65,6 +69,19 @@ function parkBTDown(){
 	parkingAngle = car.angle;
 	car.dashboard.autoBT.visible = true;
 	car.dashboard.manuBT.visible = false;
+}
+
+function topViewBTDown(){
+	topView = !topView;
+	if(topView){
+		car.dashboard.CCWBT.visible = true;
+		car.dashboard.zoomInBT.visible = true;
+		car.dashboard.zoomOutBT.visible = true;
+	}else{
+		car.dashboard.CCWBT.visible = false;
+		car.dashboard.zoomInBT.visible = false;
+		car.dashboard.zoomOutBT.visible = false;
+	}
 }
 
 function CCWBTDown(){
@@ -117,7 +134,7 @@ function manuBTDown(){
 
 function mode1BTDown(){
 	parkingModeButton = true;
-	car.move(new THREE.Vector3(70, 13, 30));
+	car.move(new THREE.Vector3(-112.5, 13, 13.5));
 	car.rotate(0);
 	car.dashboard.mode1BT.visible = false;
 	car.dashboard.mode2BT.visible = true;
@@ -125,7 +142,7 @@ function mode1BTDown(){
 
 function mode2BTDown(){
 	parkingModeButton = false;
-	car.move(new THREE.Vector3(66.5, 13, 40));
+	car.move(new THREE.Vector3(-116, 13, 23.5));
 	car.rotate(0);
 	car.dashboard.mode1BT.visible = true;
 	car.dashboard.mode2BT.visible = false;
@@ -149,14 +166,8 @@ function acceleratorDown(){
 	car.dashboard.accelerator.position.x = 0.2;
 	car.dashboard.accelerator.position.y = -0.1;
 	if(car.dashboard.R.visible){
-		car.dashboard.R.visible = false;
-		car.dashboard.N.visible = true;
-		console.log('R');
 		car.speed -= 1;
 	}else if(car.dashboard.D.visible){
-		car.dashboard.D.visible = false;
-		car.dashboard.P.visible = true;
-		console.log('D');
 		car.speed += 1;
 	}
 }
@@ -164,27 +175,10 @@ function acceleratorDown(){
 function brakesDown(){
 	car.dashboard.brakes.position.x = 0.2;
 	car.dashboard.brakes.position.y = -0.1;
-	console.log(car.dashboard.brakes.position);
 }
 
-function circleFrameDown(){
-	if(car.dashboard.P.visible){
-		car.dashboard.P.visible = false;
-		car.dashboard.R.visible = true;
-		console.log('P');
-	}else if(car.dashboard.R.visible){
-		car.dashboard.R.visible = false;
-		car.dashboard.N.visible = true;
-		console.log('R');
-	}else if(car.dashboard.N.visible){
-		car.dashboard.N.visible = false;
-		car.dashboard.D.visible = true;
-		console.log('N');
-	}else if(car.dashboard.D.visible){
-		car.dashboard.D.visible = false;
-		car.dashboard.P.visible = true;
-		console.log('D');
-	}
+function gearDown(){
+	
 }
 
 function onPointerUp (event) {

@@ -11,7 +11,7 @@ function parking(theta){
 		}
 		if(PPart == 1){             //turn right
 			car.speed -= 1;
-			car.speed = Math.clamp (car.speed, -50, 50);
+			car.speed = Math.clamp (car.speed, -15, 50);
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.angle >= Math.PI /4 + parkingAngle){
@@ -28,18 +28,19 @@ function parking(theta){
 		}
 		if(PPart == 3){             //turn left
 			car.speed -= 1;
-			car.speed = Math.clamp (car.speed, -50, 50);
+			car.speed = Math.clamp (car.speed, -15, 50);
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.angle <= parkingAngle){
 				car.speed = 0;
 				parkingMode = 0;
+				console.log(car.center);
 			}
 		}
     }else if(parkingMode == 1 && parkingModeButton == true){            //auto parking Mode 2
 		if(PPart == 0){             //turn right
 			car.speed -= 1;
-			car.speed = Math.clamp (car.speed, -50, 50);
+			car.speed = Math.clamp (car.speed, -15, 50);
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.angle >= Math.PI /4 + parkingAngle){
@@ -56,7 +57,7 @@ function parking(theta){
 		}
 		if(PPart == 2){             //go straight backward
 			car.speed  -= 1;
-			car.speed = Math.clamp (car.speed, -50, 50);
+			car.speed = Math.clamp (car.speed, -15, 50);
 			if(car.mesh.position.z >= 45){
 				car.speed = 0;
 				PPart = 3;
@@ -72,7 +73,7 @@ function parking(theta){
 		}
 		if(PPart == 4){             //turn left
 			car.speed -= 1;
-			car.speed = Math.clamp (car.speed, -50, 50);
+			car.speed = Math.clamp (car.speed, -15, 50);
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.angle <= 0 + parkingAngle){
@@ -90,7 +91,7 @@ function parking(theta){
 		}
 		if(PPart == 6){             //go straight forward
 			car.speed  += 1;
-			car.speed = Math.clamp (car.speed, -50, 50);
+			car.speed = Math.clamp (car.speed, -15, 50);
 			if(car.mesh.position.x >= 0){
 				car.speed = 0;
 				parkingMode = 0;
@@ -106,14 +107,14 @@ function parking(theta){
 }
 
 function keyboardAndRC(theta, fSlowDown, bSlowDown){
-	
+		
 	if (keyboard.pressed('down')){
 		car.speed -= 1;
 	}
 	if (keyboard.pressed('up')){
 		car.speed += 1;
 	}
-	car.speed = Math.clamp (car.speed, -50, 50);
+	car.speed = Math.clamp (car.speed, -15, 50);
   
     if (keyboard.pressed('right'))
 		theta -= 0.02;
@@ -126,7 +127,7 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown){
 
     //////////////////////////////////////////////////////////////
     
-    RC = car.mesh.localToWorld (new THREE.Vector3(-12,0,-24/Math.tan(theta)));
+    RC = car.mesh.localToWorld (new THREE.Vector3(-13,0,-26/Math.tan(theta)));
     RCmesh.position.copy (RC);
 	
 	//////////////////////////////////////////////////////////////
@@ -140,20 +141,88 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown){
 		fSlowDown = bSlowDown = 0;
       
     if (fSlowDown == 1) {
-		if(car.speed >= 0) {  // moving forward --> slow down gradually
+		if(car.speed > 0) {  // moving forward --> slow down gradually
 			car.speed -= 1;
 		} else if (car.speed <= 0) {  // moving backward --> stop immediately
 			car.speed = 0;
 			fSlowDown = 0;
 		}
     } else if (bSlowDown == 1) {
-		if(car.speed <= 0) {
+		if(car.speed < 0) {
 			car.speed += 1;
 		} else if (car.speed >= 0) {
 			car.speed = 0;
 			bSlowDown = 0;
 		}
     }
+	
+	///d-drive
+
+	if (keyboard.down("enter")){     //parkingBT
+		if(parkingMode !== 1){
+			parkingMode = 1;
+			parkingAngle = car.angle;
+			car.dashboard.autoBT.visible = true;
+			car.dashboard.manuBT.visible = false;
+		}else {   //stop
+			parkingMode = 2;
+		}
+	}
+	
+	if (keyboard.pressed("space")){ //accelerator
+		if(car.dashboard.gearFrame.position.z == -0.13){
+			car.speed -= 1;
+		}else if(car.dashboard.gearFrame.position.z == 0.17){
+			car.speed += 1;
+		}
+		car.dashboard.accelerator.position.x = 0.2;
+		car.dashboard.accelerator.position.y = -0.1;
+		car.speed = Math.clamp (car.speed, -15, 50);
+	}
+	else if(car.dashboard.gearFrame.position.z == -0.13){///R
+		if(car.speed > -2)
+			car.speed -= 1;
+		else if(car.speed < -2)
+			car.speed += 1;
+		car.speed = Math.clamp (car.speed, -15, 50);
+	}
+	else if(parkingMode !== 1){
+		bSlowDown = 1;
+	}
+	
+	if(keyboard.up("space")){
+		if(car.dashboard.gearFrame.position.z == -0.13){
+			bSlowDown = 1;
+		}else if(car.dashboard.gearFrame.position.z == 0.17){
+			fSlowDown = 1;
+		}
+		car.dashboard.accelerator.position.x = 0;
+		car.dashboard.accelerator.position.y = 0;
+	}
+	
+	if (keyboard.pressed("alt")){     //brakes
+		car.speed = 0;
+		car.dashboard.brakes.position.x = 0.2;
+		car.dashboard.brakes.position.y = -0.1;
+		car.dashboard.brakes.name = 'dDrive';
+	}
+	else if(keyboard.up("alt")){
+		car.dashboard.brakes.position.x = 0;
+		car.dashboard.brakes.position.y = 0;
+		car.dashboard.brakes.name = 'brakes';
+	}
+	
+	if (keyboard.down("shift")){ //gear
+		if(car.dashboard.gearFrame.position.z == 0.17)
+			car.dashboard.gearFrame.position.z = -0.28;//P
+		else if(car.dashboard.gearFrame.position.z == -0.28)
+			car.dashboard.gearFrame.position.z = -0.13;//R
+		else if(car.dashboard.gearFrame.position.z == -0.13)
+			car.dashboard.gearFrame.position.z = 0.02;//N
+		else if(car.dashboard.gearFrame.position.z == 0.02)
+			car.dashboard.gearFrame.position.z = 0.17;//D
+	}
+	
 	
 	return [theta, fSlowDown, bSlowDown];
 }
@@ -194,18 +263,11 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 		tmp = car.mesh.localToWorld(new THREE.Vector3(6, 10, 0));
 		camera.lookAt(tmp);
 		
-		//rear mirror
-		//let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10, 0, 0));
-		//rearMirror.lookAt(carEnd);
-		//rearMirror.position.copy (car.mesh.localToWorld (new THREE.Vector3 (6,10,3)));
-		
-		car.dashboard.CCWBT.visible = car.dashboard.zoomInBT.visible = car.dashboard.zoomOutBT.visible = true;
 		if(car.speed < 0){
-			let carEnd = car.mesh.localToWorld (new THREE.Vector3 (-20,0,0));
+			let carEnd = car.mesh.localToWorld (new THREE.Vector3 (-19,0,0));
 			reversingCamera.position.copy (carEnd);
-			carEnd = car.mesh.localToWorld (new THREE.Vector3(-30, -1, 0));
+			carEnd = car.mesh.localToWorld (new THREE.Vector3(-25, -1, 0));
 			reversingCamera.lookAt(carEnd);
-			car.dashboard.CCWBT.visible = car.dashboard.zoomInBT.visible = car.dashboard.zoomOutBT.visible = false;
 		}
 		
 		//dashboard
@@ -213,19 +275,17 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 		car.dashboard.mesh.position.copy(tmp);
 		car.dashboard.mesh.position.y -= 2;
 		car.dashboard.mesh.rotation.y = car.angle;
-		car.dashboard.steeringWheel.rotation.z = theta * -10;
+		car.dashboard.steeringWheel.rotation.z = theta * -20;
 		
 		if (keyboard.pressed('down')){
 			car.dashboard.accelerator.position.x = 0.2;
 			car.dashboard.accelerator.position.y = -0.1;
-			car.dashboard.P.visible = false;
-			car.dashboard.R.visible = true;
+			car.dashboard.gearFrame.position.z = -0.13;
 		}
 		else if(keyboard.pressed('up')){
 			car.dashboard.accelerator.position.x = 0.2;
 			car.dashboard.accelerator.position.y = -0.1;
-			car.dashboard.P.visible = false;
-			car.dashboard.D.visible = true;
+			car.dashboard.gearFrame.position.z = 0.17;
 		}
 		if (keyboard.up("down") | keyboard.up("up")){
 			car.dashboard.accelerator.position.x = 0;
@@ -235,17 +295,16 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 			car.dashboard.brakes.position.x = 0.2;
 			car.dashboard.brakes.position.y = -0.1;
 		}
-		else{
+		else if(car.dashboard.brakes.name != 'dDrive'){
 			car.dashboard.brakes.position.x = 0;
 			car.dashboard.brakes.position.y = 0;
 		}
 		if(car.speed == 0){
-			car.dashboard.P.visible = true;
-			car.dashboard.R.visible = car.dashboard.N.visible = car.dashboard.D.visible = false;
+			//car.dashboard.gearFrame.position.z = -0.28;
 		}
     }
     else {
-		camera.position.set(-200, 100, 0); // fixed camera, no orbitControl!
+		camera.position.set(-300, 200, 0); // fixed camera, no orbitControl!
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
 }
@@ -254,21 +313,35 @@ setInterval (poll, 200);
 
 function poll(){
 	
-	let min;
+	let min = [];
 	for(let i = 0;i < obstacles.length;i++){
 		let tmp = car.calculateCloseDistance(obstacles[i]);
-		if(i == 0) min = tmp;
-		else if(min > tmp) min = tmp;
+		console.log(tmp[1]);
+		if(i == 0){
+			min[0] = tmp[0];
+			min[1] = tmp[1];
+		} 
+		else if(min[0] > tmp[0]){
+			min[0] = tmp[0];
+			min[1] = tmp[1];
+		} 
 	}
-	car.minDis = min;
+	car.minDis = min[0];
 	
-	if(min < 20){
+	//wave
+	car.dashboard.wave.rotation.z = min[1].z*Math.PI/2;
+	car.dashboard.wave.rotation.x = min[1].x*Math.PI/2;
+	
+	if(min[0] < 20){
 		beeper = true;
+		car.dashboard.wave.visible = true;
 		if (radarOn === false) 
 			setTimeout(radarPlay,0);
 	}
-	else 
+	else {
 		beeper = false;
+		car.dashboard.wave.visible = false;
+	}
 	
 }
 
