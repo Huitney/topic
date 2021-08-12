@@ -587,7 +587,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var waveMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.04, 1), texMat);
+	var waveMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05, 1), texMat);
 	var wave = new THREE.Group();
 	wave.add(waveMesh);
 	wave.position.y = 1.48;

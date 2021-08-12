@@ -179,6 +179,9 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown){
 		car.dashboard.accelerator.position.y = -0.1;
 		car.speed = Math.clamp (car.speed, -15, 50);
 	}
+	else if (keyboard.pressed('down') | keyboard.pressed('up') | parkingMode == 1){
+		bSlowDown = 0;
+	}
 	else if(car.dashboard.gearFrame.position.z == -0.13){///R
 		if(car.speed > -2)
 			car.speed -= 1;
