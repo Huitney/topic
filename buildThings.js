@@ -32,6 +32,14 @@ class Car {
 		this.axes = [];
 		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+				
+		this.min = [];
+		this.max = [];
+		this.min[0] = this.center.clone().x - size[0];
+		this.min[1] = this.center.clone().z - size[2];
+		this.max[0] = this.center.clone().x + size[0];
+		this.max[1] = this.center.clone().z + size[2];
+		
 		this.mesh.rotation.y = angle;
 	}
 
@@ -76,12 +84,7 @@ class Car {
 	calculateCloseDistance(obbB){
 		// four axes to check
 		let obbA = this;
-		let sepAxes = [];
-		sepAxes[0] = obbA.axes[0];
-		sepAxes[1] = obbA.axes[1];
-		sepAxes[2] = obbB.axes[0];
-		sepAxes[3] = obbB.axes[1];
-		
+		let min = [];		
 		let closeDis = [];
 
 		let t = obbB.center.clone().sub(obbA.center);
@@ -122,9 +125,18 @@ class Obstacle {
 		this.angle = angle;
 
 		let yAxis = new THREE.Vector3(0, 1, 0);
+		
 		this.axes = [];
 		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+		
+		this.min = [];
+		this.max = [];
+		this.min[0] = this.center.clone().x - size[0];
+		this.min[1] = this.center.clone().z - size[2];
+		this.max[0] = this.center.clone().x + size[0];
+		this.max[1] = this.center.clone().z + size[2];
+		
 		this.mesh.rotation.y = angle;
 	}
 }
@@ -148,6 +160,14 @@ class ObstacleCar {
 		this.axes = [];
 		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+		
+		this.min = [];
+		this.max = [];
+		this.min[0] = this.center.clone().x - size[0];
+		this.min[1] = this.center.clone().z - size[2];
+		this.max[0] = this.center.clone().x + size[0];
+		this.max[1] = this.center.clone().z + size[2];
+		
 		this.mesh.rotation.y = angle;
 	}
 }
@@ -426,6 +446,7 @@ function buildDashboard(){
 	accelerator.position.z = 4;
 	accelerator.rotation.y = -Math.PI/2;
 	accelerator.name = 'accelerator';
+	accelerator.visible = false;
 	
 	//brakes
 	texMat = new THREE.MeshBasicMaterial({
@@ -437,6 +458,7 @@ function buildDashboard(){
 	brakes.position.z = 3;
 	brakes.rotation.y = -Math.PI/2;
 	brakes.name = 'brakes';
+	brakes.visible = false;
 	
 	//dashboard
 	texMat = new THREE.MeshBasicMaterial({

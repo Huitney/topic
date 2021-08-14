@@ -117,9 +117,13 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown){
 	car.speed = Math.clamp (car.speed, -15, 50);
   
     if (keyboard.pressed('right'))
-		theta -= 0.02;
+		theta -= 0.01;
     if (keyboard.pressed('left'))
-		theta += 0.02;  
+		theta += 0.01;  
+	if(!keyboard.pressed('left') & !keyboard.pressed('right') & parkingMode !== 1){
+		if(theta < 0) theta += 0.01;
+		else if(theta > 0) theta -= 0.01;
+	}
     theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 	
 	car.leftfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)-8));
