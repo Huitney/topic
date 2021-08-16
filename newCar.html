@@ -98,12 +98,13 @@ function init() {
 
     ////////////////////////////////////////////////////////////
 	//car
-    car = buildCar(new THREE.Vector3(-116, 13, 23.5));
-	
+    car = buildCar(new THREE.Vector3(-123, 13, 23));
+	var car2 = buildCar(new THREE.Vector3(-138, 13, 56));
+	obstacles.push(car2);
 	//obstacles
-	var car2 = new ObstacleCar(new THREE.Vector3(55, 13, 70), 'Hyundai');
-	var car3 = new ObstacleCar(new THREE.Vector3(-55, 13, 70), 'X5');
-	alternateObs.push(car2, car3);
+	//var car2 = new ObstacleCar(new THREE.Vector3(55, 13, 70), 'Hyundai');
+	//var car3 = new ObstacleCar(new THREE.Vector3(-55, 13, 70), 'X5');
+	//alternateObs.push(car2, car3);
 	
 	let loader = new THREE.TextureLoader();
 	loader.crossOrigin = '';
@@ -153,7 +154,6 @@ function init() {
 	raycaster = new THREE.Raycaster();
 	
     //drawParkingSpace();
-	//drawFrame();
 	drawReversingLine();
 }
   

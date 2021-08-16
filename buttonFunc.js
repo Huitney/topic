@@ -134,7 +134,7 @@ function manuBTDown(){
 
 function mode1BTDown(){
 	parkingModeButton = true;
-	car.move(new THREE.Vector3(-112.5, 13, 13.5));
+	car.move(new THREE.Vector3(-112.5, 13, 13));
 	car.rotate(0);
 	car.dashboard.mode1BT.visible = false;
 	car.dashboard.mode2BT.visible = true;
@@ -142,7 +142,7 @@ function mode1BTDown(){
 
 function mode2BTDown(){
 	parkingModeButton = false;
-	car.move(new THREE.Vector3(-116, 13, 23.5));
+	car.move(new THREE.Vector3(-118, 13, 23));
 	car.rotate(0);
 	car.dashboard.mode1BT.visible = true;
 	car.dashboard.mode2BT.visible = false;

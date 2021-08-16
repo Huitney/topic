@@ -38,61 +38,68 @@ function parking(theta){
 			}
 		}
     }else if(parkingMode == 1 && parkingModeButton == true){            //auto parking Mode 2
-		if(PPart == 0){             //turn right
+		if(PPart == 0){             //change direction
+			theta -= 0.02;
+			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
+			if(theta == -Math.PI/7){
+				PPart = 1;
+			}
+		}
+		if(PPart == 1){             //turn right
 			car.speed -= 1;
 			car.speed = Math.clamp (car.speed, -15, 50);
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.angle >= Math.PI /4 + parkingAngle){
-				PPart = 1;
+				PPart = 2;
 			}
 		}
-		if(PPart == 1){             //change direction
+		if(PPart == 2){             //change direction
 			car.speed = 0;
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(theta >= 0){
-				PPart = 2;
-			}
-		}
-		if(PPart == 2){             //go straight backward
-			car.speed  -= 1;
-			car.speed = Math.clamp (car.speed, -15, 50);
-			if(car.mesh.position.z >= 45){
-				car.speed = 0;
 				PPart = 3;
 			}
 		}
-		if(PPart == 3){             //change direction
+		if(PPart == 3){             //go straight backward
+			car.speed  -= 1;
+			car.speed = Math.clamp (car.speed, -15, 50);
+			if(car.mesh.position.z >= 30){
+				car.speed = 0;
+				PPart = 4;
+			}
+		}
+		if(PPart == 4){             //change direction
 			car.speed = 0;
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(theta == Math.PI/7){
-				PPart = 4;
+				PPart = 5;
 			}
 		}
-		if(PPart == 4){             //turn left
+		if(PPart == 5){             //turn left
 			car.speed -= 1;
 			car.speed = Math.clamp (car.speed, -15, 50);
 			theta += 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(car.angle <= 0 + parkingAngle){
 				car.speed = 0;
-				PPart = 5;
+				PPart = 6;
 			}
 		}
-		if(PPart == 5){             //change direction
+		if(PPart == 6){             //change direction
 			car.speed = 0;
 			theta -= 0.02;
 			theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 			if(theta <= 0){
-				PPart = 6;
+				PPart = 7;
 			}
 		}
-		if(PPart == 6){             //go straight forward
+		if(PPart == 7){             //go straight forward
 			car.speed  += 1;
 			car.speed = Math.clamp (car.speed, -15, 50);
-			if(car.mesh.position.x >= 0){
+			if(car.mesh.position.x >= -192){
 				car.speed = 0;
 				parkingMode = 0;
 			}
@@ -323,7 +330,6 @@ function poll(){
 	let min = [];
 	for(let i = 0;i < obstacles.length;i++){
 		let tmp = car.calculateCloseDistance(obstacles[i]);
-		console.log(tmp[1]);
 		if(i == 0){
 			min[0] = tmp[0];
 			min[1] = tmp[1];
@@ -335,19 +341,38 @@ function poll(){
 	}
 	car.minDis = min[0];
 	
-	//wave
-	car.dashboard.wave.rotation.z = min[1].z*Math.PI/2;
-	car.dashboard.wave.rotation.x = min[1].x*Math.PI/2;
+	//dirAlert
+	if(min[1] == 'xz'){
+		car.dashboard.dirAlert.position.y = 1.51;
+		car.dashboard.dirAlert.position.z = 0.96;
+		car.dashboard.dirAlert.rotation.x = -Math.PI/1.5;
+	}else if(min[1] == 'x-z'){
+		car.dashboard.dirAlert.position.y = 1.51;
+		car.dashboard.dirAlert.position.z = 0.98;
+		car.dashboard.dirAlert.rotation.x = Math.PI/1.5;
+	}else if(min[1] == '-x-z'){
+		car.dashboard.dirAlert.position.y = 1.47;
+		car.dashboard.dirAlert.position.z = 0.98;
+		car.dashboard.dirAlert.rotation.x = Math.PI/4;
+	}else if(min[1] == '-xz'){
+		car.dashboard.dirAlert.position.y = 1.46;
+		car.dashboard.dirAlert.position.z = 0.96;
+		car.dashboard.dirAlert.rotation.x = -Math.PI/4;
+	}else if(min[1] == 'back'){
+		car.dashboard.dirAlert.position.y = 1.48;
+		car.dashboard.dirAlert.position.z = 0.96;
+		car.dashboard.dirAlert.rotation.x = 0;
+	}
 	
-	if(min[0] < 20){
+	if(min[0] < 25){
 		beeper = true;
-		car.dashboard.wave.visible = true;
+		car.dashboard.dirAlert.visible = true;
 		if (radarOn === false) 
 			setTimeout(radarPlay,0);
 	}
 	else {
 		beeper = false;
-		car.dashboard.wave.visible = false;
+		car.dashboard.dirAlert.visible = false;
 	}
 	
 }
@@ -356,7 +381,7 @@ function radarPlay(){
 	
 	radarSound.play();
 	if (beeper) {
-		setTimeout (radarPlay, car.minDis * 70);
+		setTimeout (radarPlay, car.minDis * 50);
 		radarOn = true;
 	} else {
 		radarOn = false
@@ -369,4 +394,28 @@ function addObstacles(){
 		console.log(alternateObs[0].mesh.position);
 		alternateObs.shift();
 	}
+}
+
+function unitize (object, targetSize) {  
+
+	// find bounding box of 'object'
+	var box3 = new THREE.Box3();
+	box3.setFromObject (object);
+	var size = new THREE.Vector3();
+	size.subVectors (box3.max, box3.min);
+	var center = new THREE.Vector3();
+	center.addVectors(box3.max, box3.min).multiplyScalar (0.5);
+
+	console.log ('center: ' + center.x + ', '+center.y + ', '+center.z );
+	console.log ('size: ' + size.x + ', ' +  size.y + ', '+size.z );
+
+	// uniform scaling according to objSize
+	var objSize = Math.max (size.x, size.y, size.z);
+	var scaleSet = targetSize/objSize;
+
+	var theObject =  new THREE.Object3D();
+	theObject.add (object);
+	object.scale.set (scaleSet, scaleSet, scaleSet);
+	object.position.set (-center.x*scaleSet, center.y*scaleSet/6, -center.z*scaleSet);
+	return theObject;
 }

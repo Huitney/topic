@@ -33,12 +33,17 @@ class Car {
 		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 				
-		this.min = [];
-		this.max = [];
-		this.min[0] = this.center.clone().x - size[0];
-		this.min[1] = this.center.clone().z - size[2];
-		this.max[0] = this.center.clone().x + size[0];
-		this.max[1] = this.center.clone().z + size[2];
+		this.dir = [];
+		this.dir[0] = this.axes[0];
+		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
+		this.dir[2] = this.axes[1];
+		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
+		
+		this.c = [];
+		this.c[0] = this.mesh.localToWorld(new THREE.Vector3(this.size[0], 0, 0));
+		this.c[1] = this.mesh.localToWorld(new THREE.Vector3(-this.size[0], 0, 0));
+		this.c[2] = this.mesh.localToWorld(new THREE.Vector3(0, 0, this.size[2]));
+		this.c[3] = this.mesh.localToWorld(new THREE.Vector3(0, 0, -this.size[2]));
 		
 		this.mesh.rotation.y = angle;
 	}
@@ -82,31 +87,71 @@ class Car {
 	}
 	
 	calculateCloseDistance(obbB){
+		let obbA = this;
+		
+		let dis1 = [], dis2 = [], dis3 = [], dis4 = [], dis5 = [];
+		dis1[0] = obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, obbA.size[2])));
+		dis1[1] = 'xz';
+		
+		dis2[0] = obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, -obbA.size[2])));
+		dis2[1] = 'x-z';
+		
+		dis3[0] = obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, -obbA.size[2])));
+		dis3[1] = '-x-z';
+		
+		dis4[0] = obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, obbA.size[2])));
+		dis4[1] = '-xz';
+		
+		dis5[0] = obbB.calculateDistance(obbA.c[1]);
+		dis5[1] = 'back';
+		
+		let disMin1 = (dis1[0] <= dis2[0]) ? dis1 : dis2;
+		let disMin2 = (dis3[0] <= dis4[0]) ? dis3 : dis4;
+		disMin1 = (disMin1[0] <= dis5[0]) ? disMin1 : dis5;
+				
+		return (disMin1[0] <= disMin2[0]) ? disMin1 : disMin2;
+	}
+
+	calculateDistance(pointB) {
 		// four axes to check
 		let obbA = this;
-		let min = [];		
-		let closeDis = [];
 
-		let t = obbB.center.clone().sub(obbA.center);
-		for (let i = 0; i < 4; i++) {
-			let sHat = sepAxes[i];
-			let centerDis = Math.abs(t.dot(sHat));
+		let x1 = (pointB.clone().sub(obbA.c[0])).dot(obbA.dir[0]);
+		let x2 = (pointB.clone().sub(obbA.c[1])).dot(obbA.dir[1]);
+		let z1 = (pointB.clone().sub(obbA.c[2])).dot(obbA.dir[2]);
+		let z2 = (pointB.clone().sub(obbA.c[3])).dot(obbA.dir[3]);
+		console.log(x1, x2, z1, z2);
 
-			let dA = obbA.size[0] * Math.abs(obbA.axes[0].dot(sHat)) 
-					+ obbA.size[1] * Math.abs(obbA.axes[1].dot(sHat));
-			let dB = obbB.size[0] * Math.abs(obbB.axes[0].dot(sHat)) 
-					+ obbB.size[1] * Math.abs(obbB.axes[1].dot(sHat));
-			
-			let dis = Math.abs(centerDis - (dA + dB))
-			if(dis >= 0){
-				closeDis[0] = (closeDis[0] === undefined) ? dis : closeDis[0];
-				if(closeDis[0] > dis){
-					closeDis[0] = dis;
-					closeDis[1] = sHat;
-				}
+		let dis = new THREE.Vector3(0, 0, 0);
+		if(x1 > 0){
+			if(z1 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, obbA.size[2])));
+			}else if(z2 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, -obbA.size[2])));
+			}else {
+				dis.x = pointB.clone().sub(obbA.c[0]).dot(obbA.dir[0]);
+				dis.z = 0;
 			}
+		}else if(x2 > 0){
+			if(z1 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, obbA.size[2])));
+			}else if(z2 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, -obbA.size[2])));
+			}else {
+				dis.x = pointB.clone().sub(obbA.c[1]).dot(obbA.dir[1]);
+				dis.z = 0;
+			}
+		}else if(z1 > 0){
+			dis.z = pointB.clone().sub(obbA.c[2]).dot(obbA.dir[2]);
+			dis.x = 0;
+		}else if(z2 > 0){
+			dis.z = pointB.clone().sub(obbA.c[3]).dot(obbA.dir[3]);
+			dis.x = 0;
+		}else{
+			dis.x = dis.z = 0;
 		}
-		return closeDis;
+		return Math.sqrt(dis.x*dis.x + dis.z*dis.z);
+
 	}
 }
 
@@ -125,19 +170,64 @@ class Obstacle {
 		this.angle = angle;
 
 		let yAxis = new THREE.Vector3(0, 1, 0);
-		
 		this.axes = [];
 		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+				
+		this.dir = [];
+		this.dir[0] = this.axes[0];
+		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
+		this.dir[2] = this.axes[1];
+		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
 		
-		this.min = [];
-		this.max = [];
-		this.min[0] = this.center.clone().x - size[0];
-		this.min[1] = this.center.clone().z - size[2];
-		this.max[0] = this.center.clone().x + size[0];
-		this.max[1] = this.center.clone().z + size[2];
+		this.c = [];
+		this.c[0] = this.mesh.localToWorld(new THREE.Vector3(this.size[0], 0, 0));
+		this.c[1] = this.mesh.localToWorld(new THREE.Vector3(-this.size[0], 0, 0));
+		this.c[2] = this.mesh.localToWorld(new THREE.Vector3(0, 0, this.size[2]));
+		this.c[3] = this.mesh.localToWorld(new THREE.Vector3(0, 0, -this.size[2]));
 		
 		this.mesh.rotation.y = angle;
+	}
+	
+	calculateDistance(pointB) {
+		// four axes to check
+		let obbA = this;
+
+		let x1 = (pointB.clone().sub(obbA.c[0])).dot(obbA.dir[0]);
+		let x2 = (pointB.clone().sub(obbA.c[1])).dot(obbA.dir[1]);
+		let z1 = (pointB.clone().sub(obbA.c[2])).dot(obbA.dir[2]);
+		let z2 = (pointB.clone().sub(obbA.c[3])).dot(obbA.dir[3]);
+
+		let dis = new THREE.Vector3(0, 0, 0);
+		if(x1 > 0){
+			if(z1 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, obbA.size[2])));
+			}else if(z2 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, -obbA.size[2])));
+			}else {
+				dis.x = pointB.clone().sub(obbA.c[0]).dot(obbA.dir[0]);
+				dis.z = 0;
+			}
+		}else if(x2 > 0){
+			if(z1 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, obbA.size[2])));
+			}else if(z2 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, -obbA.size[2])));
+			}else {
+				dis.x = pointB.clone().sub(obbA.c[1]).dot(obbA.dir[1]);
+				dis.z = 0;
+			}
+		}else if(z1 > 0){
+			dis.z = pointB.clone().sub(obbA.c[2]).dot(obbA.dir[2]);
+			dis.x = 0;
+		}else if(z2 > 0){
+			dis.z = pointB.clone().sub(obbA.c[3]).dot(obbA.dir[3]);
+			dis.x = 0;
+		}else{
+			dis.x = dis.z = 0;
+		}
+		return Math.sqrt(dis.x*dis.x + dis.z*dis.z);
+
 	}
 }
 
@@ -160,21 +250,67 @@ class ObstacleCar {
 		this.axes = [];
 		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+				
+		this.dir = [];
+		this.dir[0] = this.axes[0];
+		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
+		this.dir[2] = this.axes[1];
+		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
 		
-		this.min = [];
-		this.max = [];
-		this.min[0] = this.center.clone().x - size[0];
-		this.min[1] = this.center.clone().z - size[2];
-		this.max[0] = this.center.clone().x + size[0];
-		this.max[1] = this.center.clone().z + size[2];
+		this.c = [];
+		this.c[0] = this.mesh.localToWorld(new THREE.Vector3(this.size[0], 0, 0));
+		this.c[1] = this.mesh.localToWorld(new THREE.Vector3(-this.size[0], 0, 0));
+		this.c[2] = this.mesh.localToWorld(new THREE.Vector3(0, 0, this.size[2]));
+		this.c[3] = this.mesh.localToWorld(new THREE.Vector3(0, 0, -this.size[2]));
 		
 		this.mesh.rotation.y = angle;
+	}
+	
+	calculateDistance(pointB) {
+		// four axes to check
+		let obbA = this;
+
+		let x1 = (pointB.clone().sub(obbA.c[0])).dot(obbA.dir[0]);
+		let x2 = (pointB.clone().sub(obbA.c[1])).dot(obbA.dir[1]);
+		let z1 = (pointB.clone().sub(obbA.c[2])).dot(obbA.dir[2]);
+		let z2 = (pointB.clone().sub(obbA.c[3])).dot(obbA.dir[3]);
+
+		let dis = new THREE.Vector3(0, 0, 0);
+		if(x1 > 0){
+			if(z1 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, obbA.size[2])));
+			}else if(z2 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, -obbA.size[2])));
+			}else {
+				dis.x = pointB.clone().sub(obbA.c[0]).dot(obbA.dir[0]);
+				dis.z = 0;
+			}
+		}else if(x2 > 0){
+			if(z1 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, obbA.size[2])));
+			}else if(z2 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, -obbA.size[2])));
+			}else {
+				dis.x = pointB.clone().sub(obbA.c[1]).dot(obbA.dir[1]);
+				dis.z = 0;
+			}
+		}else if(z1 > 0){
+			dis.z = pointB.clone().sub(obbA.c[2]).dot(obbA.dir[2]);
+			dis.x = 0;
+		}else if(z2 > 0){
+			dis.z = pointB.clone().sub(obbA.c[3]).dot(obbA.dir[3]);
+			dis.x = 0;
+		}else{
+			dis.x = dis.z = 0;
+		}
+		return Math.sqrt(dis.x*dis.x + dis.z*dis.z);
+
 	}
 }
 
 class Dashboard{
 	constructor(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
-				, mode1BT, mode2BT, parkBT, topViewBT, wave, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff){
+				, mode1BT, mode2BT, parkBT, topViewBT, dirAlert, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff){
 		this.steeringWheel = steeringWheel;
 		this.accelerator = accelerator;
 		this.brakes = brakes;
@@ -188,7 +324,7 @@ class Dashboard{
 		this.mode1BT = mode1BT;
 		this.mode2BT = mode2BT;
 		this.topViewBT = topViewBT;
-		this.wave = wave;
+		this.dirAlert = dirAlert;
 		this.CCWBT = CCWBT;
 		this.zoomInBT = zoomInBT;
 		this.zoomOutBT = zoomOutBT;
@@ -197,7 +333,7 @@ class Dashboard{
 				
 		this.mesh = new THREE.Group();
 		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.autoBT, this.manuBT, this.gear
-					, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.wave, this.CCWBT, this.zoomInBT, this.zoomOutBT, this.gearFrame
+					, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.dirAlert, this.CCWBT, this.zoomInBT, this.zoomOutBT, this.gearFrame
 					, this.radarOn, this.radarOff);
 		
 		sceneHUD.add(this.mesh);
@@ -303,31 +439,6 @@ function buildCar(pos) {
     return car;
 }
 
-function drawFrame(){
-	//frame 邊框
-    var fframe = new THREE.Mesh(new THREE.PlaneGeometry(5.7, 0.08), new THREE.MeshBasicMaterial({
-		color: 0xff0000,
-		depthTest: false
-    }));
-    var fframe2 = new THREE.Mesh(new THREE.PlaneGeometry(5.8, 0.08), new THREE.MeshBasicMaterial({
-		color: 0xff0000,
-		opacity: 0.6,
-		transparent: true,
-		depthTest: false
-    }));
-    var fup = fframe.clone();
-    fup.position.set (6.8,9.9,0);
-    var fdown = fframe.clone();
-    fdown.position.set (6.8,4.1,0);
-    var fleft = fframe2.clone();
-    fleft.rotation.z = Math.PI/2;
-    fleft.position.set (3.94,7,0);
-    var fright = fframe2.clone();
-    fright.rotation.z = Math.PI/2;
-    fright.position.set (9.7,7,0);
-    sceneHUD.add(fup, fdown, fleft, fright);
-}
-
 function drawParkingSpace(){
 	const material = new THREE.LineBasicMaterial( { linewidth: 6, color: 0xffffff } );
 	const points = [];
@@ -384,30 +495,6 @@ function readModel (modelName, targetSize=40) {
 	});
 	
 	
-}
-
-function unitize (object, targetSize) {  
-
-	// find bounding box of 'object'
-	var box3 = new THREE.Box3();
-	box3.setFromObject (object);
-	var size = new THREE.Vector3();
-	size.subVectors (box3.max, box3.min);
-	var center = new THREE.Vector3();
-	center.addVectors(box3.max, box3.min).multiplyScalar (0.5);
-
-	console.log ('center: ' + center.x + ', '+center.y + ', '+center.z );
-	console.log ('size: ' + size.x + ', ' +  size.y + ', '+size.z );
-
-	// uniform scaling according to objSize
-	var objSize = Math.max (size.x, size.y, size.z);
-	var scaleSet = targetSize/objSize;
-
-	var theObject =  new THREE.Object3D();
-	theObject.add (object);
-	object.scale.set (scaleSet, scaleSet, scaleSet);
-	object.position.set (-center.x*scaleSet, center.y*scaleSet/6, -center.z*scaleSet);
-	return theObject;
 }
 
 function buildDashboard(){
@@ -603,21 +690,21 @@ function buildDashboard(){
 	topViewBT.rotation.y = -Math.PI/2;
 	topViewBT.name = 'topViewBT';
 	
-	//wave
+	//dirAlert
 	texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var waveMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05, 1), texMat);
-	var wave = new THREE.Group();
-	wave.add(waveMesh);
-	wave.position.y = 1.48;
-	wave.position.z = 0.96;
-	wave.rotation.y = -Math.PI/2;
-	waveMesh.position.y = -0.1;
-	waveMesh.position.z = -0.005;
-	wave.visible = false;
+	var dirAlertMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05, 1), texMat);
+	var dirAlert = new THREE.Group();
+	dirAlert.add(dirAlertMesh);
+	dirAlert.position.y = 1.48;
+	dirAlert.position.z = 0.96;
+	dirAlert.rotation.y = -Math.PI/2;
+	dirAlertMesh.position.y = -0.1;
+	dirAlertMesh.position.z = -0.005;
+	//dirAlert.visible = false;
 	
 	//CCW
 	texMat = new THREE.MeshBasicMaterial({
@@ -659,7 +746,7 @@ function buildDashboard(){
 	zoomOutBT.name = 'zoomOutBT';
 		
 	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
-								, mode1BT, mode2BT, parkBT, topViewBT, wave, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff);
+								, mode1BT, mode2BT, parkBT, topViewBT, dirAlert, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff);
 	
 	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
 					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.topViewBT, dashboard.gear);
