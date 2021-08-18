@@ -363,8 +363,8 @@ function poll(){
 		car.dashboard.dirAlert.position.z = 0.96;
 		car.dashboard.dirAlert.rotation.x = 0;
 	}
-	
-	if(min[0] < 25){
+	//console.log(min);
+	if(min[0] < 20){
 		beeper = true;
 		car.dashboard.dirAlert.visible = true;
 		if (radarOn === false) 

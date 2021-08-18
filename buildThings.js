@@ -34,12 +34,13 @@ class Car {
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 				
 		this.dir = [];
-		this.dir[0] = this.axes[0];
+		this.dir[0] = this.axes[0].clone();
 		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
-		this.dir[2] = this.axes[1];
+		this.dir[2] = this.axes[1].clone();
 		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
 		
 		this.c = [];
+		this.mesh.updateWorldMatrix(true, false);
 		this.c[0] = this.mesh.localToWorld(new THREE.Vector3(this.size[0], 0, 0));
 		this.c[1] = this.mesh.localToWorld(new THREE.Vector3(-this.size[0], 0, 0));
 		this.c[2] = this.mesh.localToWorld(new THREE.Vector3(0, 0, this.size[2]));
@@ -115,12 +116,11 @@ class Car {
 	calculateDistance(pointB) {
 		// four axes to check
 		let obbA = this;
-
+		
 		let x1 = (pointB.clone().sub(obbA.c[0])).dot(obbA.dir[0]);
 		let x2 = (pointB.clone().sub(obbA.c[1])).dot(obbA.dir[1]);
 		let z1 = (pointB.clone().sub(obbA.c[2])).dot(obbA.dir[2]);
 		let z2 = (pointB.clone().sub(obbA.c[3])).dot(obbA.dir[3]);
-		console.log(x1, x2, z1, z2);
 
 		let dis = new THREE.Vector3(0, 0, 0);
 		if(x1 > 0){
@@ -150,6 +150,7 @@ class Car {
 		}else{
 			dis.x = dis.z = 0;
 		}
+		
 		return Math.sqrt(dis.x*dis.x + dis.z*dis.z);
 
 	}
@@ -175,12 +176,13 @@ class Obstacle {
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 				
 		this.dir = [];
-		this.dir[0] = this.axes[0];
+		this.dir[0] = this.axes[0].clone();
 		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
-		this.dir[2] = this.axes[1];
+		this.dir[2] = this.axes[1].clone();
 		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
 		
 		this.c = [];
+		this.mesh.updateWorldMatrix(true, false);
 		this.c[0] = this.mesh.localToWorld(new THREE.Vector3(this.size[0], 0, 0));
 		this.c[1] = this.mesh.localToWorld(new THREE.Vector3(-this.size[0], 0, 0));
 		this.c[2] = this.mesh.localToWorld(new THREE.Vector3(0, 0, this.size[2]));
@@ -252,12 +254,13 @@ class ObstacleCar {
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 				
 		this.dir = [];
-		this.dir[0] = this.axes[0];
+		this.dir[0] = this.axes[0].clone();
 		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
-		this.dir[2] = this.axes[1];
+		this.dir[2] = this.axes[1].clone();
 		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
 		
 		this.c = [];
+		this.mesh.updateWorldMatrix(true, false);
 		this.c[0] = this.mesh.localToWorld(new THREE.Vector3(this.size[0], 0, 0));
 		this.c[1] = this.mesh.localToWorld(new THREE.Vector3(-this.size[0], 0, 0));
 		this.c[2] = this.mesh.localToWorld(new THREE.Vector3(0, 0, this.size[2]));
