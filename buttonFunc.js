@@ -1,5 +1,5 @@
 function onPointerDown (event) {
-	//console.log ('in mouse down')
+	
 	event.preventDefault();  // may not be necessary
 	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -151,6 +151,7 @@ function mode2BTDown(){
 function radarOnDown(){
 	soundBT = true;
 	radarSound.volume = 0;
+	radarSound.muted = true;
 	car.dashboard.radarOn.visible = false;
 	car.dashboard.radarOff.visible = true;
 }
@@ -158,6 +159,7 @@ function radarOnDown(){
 function radarOffDown(){
 	soundBT = false;
 	radarSound.volume = 1;
+	radarSound.muted = false;
 	car.dashboard.radarOn.visible = true;
 	car.dashboard.radarOff.visible = false;
 }
@@ -206,5 +208,4 @@ function acceleratorUp(){
 function brakesUp(){
 	car.dashboard.brakes.position.x = 0;
 	car.dashboard.brakes.position.y = 0;
-	console.log(car.dashboard.brakes.position);
 }

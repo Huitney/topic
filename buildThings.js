@@ -34,9 +34,9 @@ class Car {
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 				
 		this.dir = [];
-		this.dir[0] = this.axes[0].clone();
+		this.dir[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
-		this.dir[2] = this.axes[1].clone();
+		this.dir[2] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
 		
 		this.c = [];
@@ -57,8 +57,8 @@ class Car {
 		sepAxes[1] = obbA.axes[1];
 		sepAxes[2] = obbB.axes[0];
 		sepAxes[3] = obbB.axes[1];
-
-		let t = obbB.center.clone().sub(obbA.center);
+		
+		let t = obbB.center.clone().sub(obbA.center.clone());
 		for (let i = 0; i < 4; i++) {
 			let sHat = sepAxes[i];
 			let centerDis = Math.abs(t.dot(sHat));
@@ -90,27 +90,15 @@ class Car {
 	calculateCloseDistance(obbB){
 		let obbA = this;
 		
-		let dis1 = [], dis2 = [], dis3 = [], dis4 = [], dis5 = [];
-		dis1[0] = obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, obbA.size[2])));
-		dis1[1] = 'xz';
+		var min = [
+			{dis:obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, obbA.size[2]))), dir:'xz'},
+			{dis:obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, -obbA.size[2]))), dir:'x-z'},
+			{dis:obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, -obbA.size[2]))), dir:'-x-z'},
+			{dis:obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, obbA.size[2]))), dir:'-xz'},
+			{dis:obbB.calculateDistance(obbA.c[1]), dir:'back'}
+		];
 		
-		dis2[0] = obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, -obbA.size[2])));
-		dis2[1] = 'x-z';
-		
-		dis3[0] = obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, -obbA.size[2])));
-		dis3[1] = '-x-z';
-		
-		dis4[0] = obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, obbA.size[2])));
-		dis4[1] = '-xz';
-		
-		dis5[0] = obbB.calculateDistance(obbA.c[1]);
-		dis5[1] = 'back';
-		
-		let disMin1 = (dis1[0] <= dis2[0]) ? dis1 : dis2;
-		let disMin2 = (dis3[0] <= dis4[0]) ? dis3 : dis4;
-		disMin1 = (disMin1[0] <= dis5[0]) ? disMin1 : dis5;
-				
-		return (disMin1[0] <= disMin2[0]) ? disMin1 : disMin2;
+		return min;
 	}
 
 	calculateDistance(pointB) {
@@ -176,9 +164,9 @@ class Obstacle {
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 				
 		this.dir = [];
-		this.dir[0] = this.axes[0].clone();
+		this.dir[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
-		this.dir[2] = this.axes[1].clone();
+		this.dir[2] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
 		
 		this.c = [];
@@ -254,9 +242,9 @@ class ObstacleCar {
 		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 				
 		this.dir = [];
-		this.dir[0] = this.axes[0].clone();
+		this.dir[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
 		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
-		this.dir[2] = this.axes[1].clone();
+		this.dir[2] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
 		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
 		
 		this.c = [];
@@ -313,7 +301,9 @@ class ObstacleCar {
 
 class Dashboard{
 	constructor(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
-				, mode1BT, mode2BT, parkBT, topViewBT, dirAlert, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff){
+				, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
+				, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
+				, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2){
 		this.steeringWheel = steeringWheel;
 		this.accelerator = accelerator;
 		this.brakes = brakes;
@@ -327,19 +317,40 @@ class Dashboard{
 		this.mode1BT = mode1BT;
 		this.mode2BT = mode2BT;
 		this.topViewBT = topViewBT;
-		this.dirAlert = dirAlert;
 		this.CCWBT = CCWBT;
 		this.zoomInBT = zoomInBT;
 		this.zoomOutBT = zoomOutBT;
 		this.radarOn = radarOn;
 		this.radarOff = radarOff;
+		this.backAlert = backAlert;
+		this.backAlert2 = backAlert2;
+		this.backLeftAlert = backLeftAlert;
+		this.backLeftAlert2 = backLeftAlert2;
+		this.backRightAlert = backRightAlert;
+		this.backRightAlert2 = backRightAlert2;
+		this.frontRightAlert = frontRightAlert;
+		this.frontRightAlert2 = frontRightAlert2;
+		this.frontLeftAlert = frontLeftAlert;
+		this.frontLeftAlert2 = frontLeftAlert2;
 				
 		this.mesh = new THREE.Group();
-		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.autoBT, this.manuBT, this.gear
-					, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.dirAlert, this.CCWBT, this.zoomInBT, this.zoomOutBT, this.gearFrame
-					, this.radarOn, this.radarOff);
+		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.autoBT, this.manuBT
+					, this.gear, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.CCWBT, this.zoomInBT, this.zoomOutBT
+					, this.gearFrame, this.radarOn, this.radarOff, this.backAlert, this.backAlert2, this.backLeftAlert
+					, this.backLeftAlert2, this.backRightAlert, this.backRightAlert2, this.frontRightAlert, this.frontRightAlert2
+					, this.frontLeftAlert, this.frontLeftAlert2);
 		
 		sceneHUD.add(this.mesh);
+	}
+}
+
+class CarParameter{
+	constructor(){
+		this.bodyWidth = 20;
+		this.bodyLength = 38;
+		this.axelLength = 26;
+		this.wheelToWheel = 26;
+		this.bodyHeight = 20;
 	}
 }
 
@@ -442,64 +453,6 @@ function buildCar(pos) {
     return car;
 }
 
-function drawParkingSpace(){
-	const material = new THREE.LineBasicMaterial( { linewidth: 6, color: 0xffffff } );
-	const points = [];
-	points.push( new THREE.Vector3( 27, 0, 18 ) );
-	points.push( new THREE.Vector3( 27, 0, 42 ) );
-	points.push( new THREE.Vector3( -27, 0, 42 ) );
-	points.push( new THREE.Vector3( -27, 0, 18 ) );
-	points.push( new THREE.Vector3( 27, 0, 18 ) );
-
-	const geometry = new THREE.BufferGeometry().setFromPoints( points );
-	const parkingSpace1 = new THREE.Line( geometry, material );
-	parkingSpace1.position.set(0, 0.4, 40);
-
-	var parkingSpace2 = parkingSpace1.clone();
-	parkingSpace2.position.x = 54;
-	
-	var parkingSpace3 = parkingSpace1.clone();
-	parkingSpace3.position.x = -54;
-	scene.add(parkingSpace1 , parkingSpace2, parkingSpace3);
-
-}
-
-function readModel (modelName, targetSize=40) {
-	var onProgress = function(xhr) {
-		if (xhr.lengthComputable) {
-			var percentComplete = xhr.loaded / xhr.total * 100;
-			console.log(Math.round(percentComplete, 2) + '% downloaded');
-		}
-	};
-
-	var onError = function(xhr) {};
-	
-	//var model;
-	var mtlLoader =  new THREE.MTLLoader();
-	mtlLoader.setPath('models/');
-	mtlLoader.load(modelName+'.mtl', function(materials) {
-		materials.preload();
-
-		var objLoader =  new THREE.OBJLoader();
-		objLoader.setMaterials(materials);
-		objLoader.setPath('models/');
-		objLoader.load(modelName+'.obj', function(object) {
-
-			let theObject =  unitize (object, targetSize);
-			//theObject.add(new THREE.BoxHelper(theObject));
-			theObject.name = 'OBJ';
-
-			var model = new THREE.Object3D();
-			model.add(theObject);
-			model.rotation.y = Math.PI/2;
-			return model;
-		}, onProgress, onError);
-
-	});
-	
-	
-}
-
 function buildDashboard(){
 	
 	let loader = new THREE.TextureLoader();
@@ -522,7 +475,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var rearMirror = new THREE.Mesh(new THREE.PlaneGeometry(5, 2.5, 3), texMat);
+	var rearMirror = new THREE.Mesh(new THREE.PlaneGeometry(5, 2.5), texMat);
 	rearMirror.position.set(0, 3.2, 3);
 	rearMirror.rotation.y = -Math.PI/2;
 	
@@ -532,7 +485,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var accelerator = new THREE.Mesh(new THREE.PlaneGeometry(1, 2, 1), texMat);
+	var accelerator = new THREE.Mesh(new THREE.PlaneGeometry(1, 2), texMat);
 	accelerator.position.z = 4;
 	accelerator.rotation.y = -Math.PI/2;
 	accelerator.name = 'accelerator';
@@ -544,7 +497,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var brakes = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 1), texMat);
+	var brakes = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), texMat);
 	brakes.position.z = 3;
 	brakes.rotation.y = -Math.PI/2;
 	brakes.name = 'brakes';
@@ -556,7 +509,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var board = new THREE.Mesh(new THREE.PlaneGeometry(12.6, 4, 25.2), texMat);
+	var board = new THREE.Mesh(new THREE.PlaneGeometry(12.6, 4), texMat);
 	board.position.y = 1.2;
 	board.position.x = 1;
 	board.rotation.y = -Math.PI/2;
@@ -567,7 +520,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var screen = new THREE.Mesh(new THREE.PlaneGeometry(3.5, 3.5, 7), texMat);
+	var screen = new THREE.Mesh(new THREE.PlaneGeometry(3.5, 3.5), texMat);
 	screen.position.y = 0.93;
 	screen.position.x = 0.5;
 	screen.position.z = -0.1;
@@ -579,7 +532,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var gear = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.2, 1), texMat);
+	var gear = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.2), texMat);
 	gear.position.y = 0.85;
 	gear.position.x = 0.1;
 	gear.position.z = -0.05;
@@ -592,7 +545,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var gearFrame = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.2, 1), texMat);
+	var gearFrame = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.2), texMat);
 	gearFrame.position.y = 0.88;
 	gearFrame.position.z = -0.28;
 	gearFrame.rotation.y = -Math.PI/2;
@@ -603,7 +556,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var parkBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var parkBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	parkBT.position.y = 1.48;
 	parkBT.position.z = -1.04;
 	parkBT.rotation.y = -Math.PI/2;
@@ -615,7 +568,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var autoBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var autoBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	autoBT.position.y = 1.29;
 	autoBT.position.z = -1.04;
 	autoBT.rotation.y = -Math.PI/2;
@@ -628,7 +581,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var manuBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var manuBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	manuBT.position.y = 1.29;
 	manuBT.position.z = -1.04;
 	manuBT.rotation.y = -Math.PI/2;
@@ -639,7 +592,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var mode1BT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var mode1BT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	mode1BT.position.y = 1.09;
 	mode1BT.position.z = -1.04;
 	mode1BT.rotation.y = -Math.PI/2;
@@ -651,7 +604,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var mode2BT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var mode2BT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	mode2BT.position.y = 1.09;
 	mode2BT.position.z = -1.04;
 	mode2BT.rotation.y = -Math.PI/2;
@@ -663,7 +616,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var radarOn = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var radarOn = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	radarOn.position.y = 0.89;
 	radarOn.position.z = -1.04;
 	radarOn.rotation.y = -Math.PI/2;
@@ -675,7 +628,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var radarOff = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var radarOff = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	radarOff.position.y = 0.89;
 	radarOff.position.z = -1.04;
 	radarOff.rotation.y = -Math.PI/2;
@@ -687,27 +640,129 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var topViewBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var topViewBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	topViewBT.position.y = 1.48;
 	topViewBT.position.z = 0.96;
 	topViewBT.rotation.y = -Math.PI/2;
 	topViewBT.name = 'topViewBT';
 	
-	//dirAlert
+	//frontRightAlert
 	texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var dirAlertMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05, 1), texMat);
-	var dirAlert = new THREE.Group();
-	dirAlert.add(dirAlertMesh);
-	dirAlert.position.y = 1.48;
-	dirAlert.position.z = 0.96;
-	dirAlert.rotation.y = -Math.PI/2;
-	dirAlertMesh.position.y = -0.1;
-	dirAlertMesh.position.z = -0.005;
-	//dirAlert.visible = false;
+	var frontRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.04), texMat);
+	frontRightAlert.position.y = 1.565;
+	frontRightAlert.position.z = 1;
+	frontRightAlert.rotation.y = -Math.PI/2;
+	frontRightAlert.rotation.x = -Math.PI*3/4;
+	
+	//frontRightAlert2
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var frontRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05), texMat);
+	frontRightAlert2.position.y = 1.575;
+	frontRightAlert2.position.z = 1.005;
+	frontRightAlert2.rotation.y = -Math.PI/2;
+	frontRightAlert2.rotation.x = -Math.PI*3/4;
+	
+	//frontLeftAlert
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var frontLeftAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.04), texMat);
+	frontLeftAlert.position.y = 1.565;
+	frontLeftAlert.position.z = 0.915;
+	frontLeftAlert.rotation.y = -Math.PI/2;
+	frontLeftAlert.rotation.x = Math.PI*3/4;
+	
+	//frontLeftAlert2
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var frontLeftAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05), texMat);
+	frontLeftAlert2.position.y = 1.575;
+	frontLeftAlert2.position.z = 0.91;
+	frontLeftAlert2.rotation.y = -Math.PI/2;
+	frontLeftAlert2.rotation.x = Math.PI*3/4;
+	
+	//backLeftAlert
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var backLeftAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.04), texMat);
+	backLeftAlert.position.y = 1.41;
+	backLeftAlert.position.z = 0.915;
+	backLeftAlert.rotation.y = -Math.PI/2;
+	backLeftAlert.rotation.x = Math.PI/4;
+	
+	//backLeftAlert2
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var backLeftAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05), texMat);
+	backLeftAlert2.position.y = 1.4;
+	backLeftAlert2.position.z = 0.91;
+	backLeftAlert2.rotation.y = -Math.PI/2;
+	backLeftAlert2.rotation.x = Math.PI/4;
+	
+	//backRightAlert
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var backRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.04), texMat);
+	backRightAlert.position.y = 1.4;
+	backRightAlert.position.z = 0.995;
+	backRightAlert.rotation.y = -Math.PI/2;
+	backRightAlert.rotation.x = -Math.PI/4;
+	
+	//backRightAlert2
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var backRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05), texMat);
+	backRightAlert2.position.y = 1.39;
+	backRightAlert2.position.z = 1;
+	backRightAlert2.rotation.y = -Math.PI/2;
+	backRightAlert2.rotation.x = -Math.PI/4;
+	
+	//backAlert
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/08Vqwyy.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var backAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.05, 0.02), texMat);
+	backAlert.position.y = 1.39;
+	backAlert.position.z = 0.96;
+	backAlert.rotation.y = -Math.PI/2;
+	
+	//backAlert2
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/08Vqwyy.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var backAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.05, 0.02), texMat);
+	backAlert2.position.y = 1.38;
+	backAlert2.position.z = 0.96;
+	backAlert2.rotation.y = -Math.PI/2;
 	
 	//CCW
 	texMat = new THREE.MeshBasicMaterial({
@@ -715,7 +770,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var CCWBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var CCWBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	CCWBT.position.y = 1.29;
 	CCWBT.position.z = 0.96;
 	CCWBT.rotation.y = -Math.PI/2;
@@ -728,7 +783,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var zoomInBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var zoomInBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	zoomInBT.position.y = 1.09;
 	zoomInBT.position.z = 0.96;
 	zoomInBT.rotation.y = -Math.PI/2;
@@ -741,7 +796,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var zoomOutBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2, 1), texMat);
+	var zoomOutBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
 	zoomOutBT.position.y = 0.89;
 	zoomOutBT.position.z = 0.96;
 	zoomOutBT.rotation.y = -Math.PI/2;
@@ -749,7 +804,9 @@ function buildDashboard(){
 	zoomOutBT.name = 'zoomOutBT';
 		
 	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
-								, mode1BT, mode2BT, parkBT, topViewBT, dirAlert, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff);
+								, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
+								, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
+								, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2);
 	
 	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
 					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.topViewBT, dashboard.gear);
