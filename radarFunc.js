@@ -17,16 +17,16 @@ function poll(){
 		} 
 	}
 	
+	//dirAlert
+	radarAlert(min);
+	
 	min = min.sort(function (a, b) {
 		return a.dis > b.dis ? 1 : -1;
 	});
 	
 	car.minDis = min[0].dis;
 	
-	//dirAlert
-	radarAlert(min);
-	
-	if(min[0].dis < 25){
+	if(min[0].dis < 20){
 		beeper = true;
 		if (radarOn === false) 
 			setTimeout(radarPlay,0);
@@ -54,174 +54,34 @@ function radarAlert(min){
 	car.dashboard.backRightAlert.visible = car.dashboard.backRightAlert2.visible = false;
 	car.dashboard.frontRightAlert.visible = car.dashboard.frontRightAlert2.visible = false;
 	car.dashboard.frontLeftAlert.visible = car.dashboard.frontLeftAlert2.visible = false;
-	if(min[0].dis < 25){
-		switch(min[0].dir){
-			case 'xz':
-				car.dashboard.frontRightAlert.visible = true;
-				if(min[0].dis < 10){
-					car.dashboard.frontRightAlert2.visible = true;
-				}
-				break;
-			case 'x-z':
-				car.dashboard.frontLeftAlert.visible = true;
-				if(min[0].dis < 10){
-					car.dashboard.frontLeftAlert2.visible = true;
-				}
-				break;
-			case '-x-z':
-				car.dashboard.backLeftAlert.visible = true;
-				if(min[0].dis < 10){
-					car.dashboard.backLeftAlert2.visible = true;
-				}
-				break;
-			case '-xz':
-				car.dashboard.backRightAlert.visible = true;
-				if(min[0].dis < 10){
-					car.dashboard.backRightAlert2.visible = true;
-				}
-				break;
-			case 'back':
-				car.dashboard.backAlert.visible = true;
-				if(min[0].dis < 10){
-					car.dashboard.backAlert2.visible = true;
-				}
-				break;
+	if(min[0].dis < 20){
+		car.dashboard.frontRightAlert.visible = true;
+		if(min[0].dis < 10){
+			car.dashboard.frontRightAlert2.visible = true;
 		}
 	}
-	if(min[1].dis < 25){
-		switch(min[1].dir){
-			case 'xz':
-				car.dashboard.frontRightAlert.visible = true;
-				if(min[1].dis < 10){
-					car.dashboard.frontRightAlert2.visible = true;
-				}
-				break;
-			case 'x-z':
-				car.dashboard.frontLeftAlert.visible = true;
-				if(min[1].dis < 10){
-					car.dashboard.frontLeftAlert2.visible = true;
-				}
-				break;
-			case '-x-z':
-				car.dashboard.backLeftAlert.visible = true;
-				if(min[1].dis < 10){
-					car.dashboard.backLeftAlert2.visible = true;
-				}
-				break;
-			case '-xz':
-				car.dashboard.backRightAlert.visible = true;
-				if(min[1].dis < 10){
-					car.dashboard.backRightAlert2.visible = true;
-				}
-				break;
-			case 'back':
-				car.dashboard.backAlert.visible = true;
-				if(min[1].dis < 10){
-					car.dashboard.backAlert2.visible = true;
-				}
-				break;
+	if(min[1].dis < 20){
+		car.dashboard.frontLeftAlert.visible = true;
+		if(min[1].dis < 10){
+			car.dashboard.frontLeftAlert2.visible = true;
 		}
 	}
-	if(min[2].dis < 25){
-		switch(min[2].dir){
-			case 'xz':
-				car.dashboard.frontRightAlert.visible = true;
-				if(min[2].dis < 10){
-					car.dashboard.frontRightAlert2.visible = true;
-				}
-				break;
-			case 'x-z':
-				car.dashboard.frontLeftAlert.visible = true;
-				if(min[2].dis < 10){
-					car.dashboard.frontLeftAlert2.visible = true;
-				}
-				break;
-			case '-x-z':
-				car.dashboard.backLeftAlert.visible = true;
-				if(min[2].dis < 10){
-					car.dashboard.backLeftAlert2.visible = true;
-				}
-				break;
-			case '-xz':
-				car.dashboard.backRightAlert.visible = true;
-				if(min[2].dis < 10){
-					car.dashboard.backRightAlert2.visible = true;
-				}
-				break;
-			case 'back':
-				car.dashboard.backAlert.visible = true;
-				if(min[2].dis < 10){
-					car.dashboard.backAlert2.visible = true;
-				}
-				break;
+	if(min[2].dis < 20){
+		car.dashboard.backLeftAlert.visible = true;
+		if(min[2].dis < 10){
+			car.dashboard.backLeftAlert2.visible = true;
 		}
 	}
-	if(min[3].dis < 25){
-		switch(min[3].dir){
-			case 'xz':
-				car.dashboard.frontRightAlert.visible = true;
-				if(min[3].dis < 10){
-					car.dashboard.frontRightAlert2.visible = true;
-				}
-				break;
-			case 'x-z':
-				car.dashboard.frontLeftAlert.visible = true;
-				if(min[3].dis < 10){
-					car.dashboard.frontLeftAlert2.visible = true;
-				}
-				break;
-			case '-x-z':
-				car.dashboard.backLeftAlert.visible = true;
-				if(min[3].dis < 10){
-					car.dashboard.backLeftAlert2.visible = true;
-				}
-				break;
-			case '-xz':
-				car.dashboard.backRightAlert.visible = true;
-				if(min[3].dis < 10){
-					car.dashboard.backRightAlert2.visible = true;
-				}
-				break;
-			case 'back':
-				car.dashboard.backAlert.visible = true;
-				if(min[3].dis < 10){
-					car.dashboard.backAlert2.visible = true;
-				}
-				break;
+	if(min[3].dis < 20){
+		car.dashboard.backRightAlert.visible = true;
+		if(min[3].dis < 10){
+			car.dashboard.backRightAlert2.visible = true;
 		}
 	}
-	if(min[4].dis < 25){
-		switch(min[4].dir){
-			case 'xz':
-				car.dashboard.frontRightAlert.visible = true;
-				if(min[4].dis < 10){
-					car.dashboard.frontRightAlert2.visible = true;
-				}
-				break;
-			case 'x-z':
-				car.dashboard.frontLeftAlert.visible = true;
-				if(min[4].dis < 10){
-					car.dashboard.frontLeftAlert2.visible = true;
-				}
-				break;
-			case '-x-z':
-				car.dashboard.backLeftAlert.visible = true;
-				if(min[4].dis < 10){
-					car.dashboard.backLeftAlert2.visible = true;
-				}
-				break;
-			case '-xz':
-				car.dashboard.backRightAlert.visible = true;
-				if(min[4].dis < 10){
-					car.dashboard.backRightAlert2.visible = true;
-				}
-				break;
-			case 'back':
-				car.dashboard.backAlert.visible = true;
-				if(min[4].dis < 10){
-					car.dashboard.backAlert2.visible = true;
-				}
-				break;
+	if(min[4].dis < 20){
+		car.dashboard.backAlert.visible = true;
+		if(min[4].dis < 10){
+			car.dashboard.backAlert2.visible = true;
 		}
 	}
 }

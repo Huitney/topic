@@ -116,9 +116,11 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 		
 	if (keyboard.pressed('down')){
 		car.speed -= 1;
+		car.dashboard.gasIcon.material.color.set('springgreen');
 	}
 	if (keyboard.pressed('up')){
 		car.speed += 1;
+		car.dashboard.gasIcon.material.color.set('springgreen');
 	}
 	car.speed = Math.clamp (car.speed, -15, 50);
   
@@ -133,20 +135,24 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	}
     theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 	
-	car.leftfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)-8));
-    car.rightfrontWheel.rotation.y = Math.atan(26/(26/Math.tan(theta)+8));
+	car.leftfrontWheel.rotation.y = Math.atan(carParameter.wheelToWheel/(carParameter.wheelToWheel/Math.tan(theta)-carParameter.axelLength/2));
+    car.rightfrontWheel.rotation.y = Math.atan(carParameter.wheelToWheel/(carParameter.wheelToWheel/Math.tan(theta)+carParameter.axelLength/2));
 
     //////////////////////////////////////////////////////////////
     
-    RC = car.mesh.localToWorld (new THREE.Vector3(-13,0,-26/Math.tan(theta)));
+    RC = car.mesh.localToWorld (new THREE.Vector3(-carParameter.wheelToWheel/2,0,-carParameter.wheelToWheel/Math.tan(theta)));
     RCmesh.position.copy (RC);
 	
 	//////////////////////////////////////////////////////////////
     // slowing down    after keyboard up
-    if (keyboard.up("up")) 
+    if (keyboard.up("up")){
 		fSlowDown = 1; 
-    else if (keyboard.up("down"))	
+		car.dashboard.gasIcon.material.color.set('dimgrey');
+	}
+    else if (keyboard.up("down")){
 		bSlowDown = 1;
+		car.dashboard.gasIcon.material.color.set('dimgrey');
+	}
        
     if (keyboard.down("up") ||  keyboard.down("down"))
 		fSlowDown = bSlowDown = 0;
@@ -186,8 +192,7 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 		}else if(car.dashboard.gearFrame.position.z == 0.17){
 			car.speed += 1;
 		}
-		car.dashboard.accelerator.position.x = 0.2;
-		car.dashboard.accelerator.position.y = -0.1;
+		car.dashboard.gasIcon.material.color.set('springgreen');
 		car.speed = Math.clamp (car.speed, -15, 50);
 	}
 	else if (keyboard.pressed('down') | keyboard.pressed('up') | parkingMode == 1){
@@ -210,19 +215,16 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 		}else if(car.dashboard.gearFrame.position.z == 0.17){
 			fSlowDown = 1;
 		}
-		car.dashboard.accelerator.position.x = 0;
-		car.dashboard.accelerator.position.y = 0;
+		car.dashboard.gasIcon.material.color.set('dimgrey');
 	}
 	
 	if (keyboard.pressed("alt")){     //brakes
 		car.speed = 0;
-		car.dashboard.brakes.position.x = 0.2;
-		car.dashboard.brakes.position.y = -0.1;
+		car.dashboard.brakeIcon.material.color.set('red');
 		car.dashboard.brakes.name = 'dDrive';
 	}
 	else if(keyboard.up("alt")){
-		car.dashboard.brakes.position.x = 0;
-		car.dashboard.brakes.position.y = 0;
+		car.dashboard.brakeIcon.material.color.set('dimgrey');
 		car.dashboard.brakes.name = 'brakes';
 	}
 	

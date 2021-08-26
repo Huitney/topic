@@ -45,7 +45,7 @@ class Car {
 		this.c[1] = this.mesh.localToWorld(new THREE.Vector3(-this.size[0], 0, 0));
 		this.c[2] = this.mesh.localToWorld(new THREE.Vector3(0, 0, this.size[2]));
 		this.c[3] = this.mesh.localToWorld(new THREE.Vector3(0, 0, -this.size[2]));
-		
+				
 		this.mesh.rotation.y = angle;
 	}
 
@@ -303,7 +303,7 @@ class Dashboard{
 	constructor(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
 				, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
 				, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
-				, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2){
+				, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon){
 		this.steeringWheel = steeringWheel;
 		this.accelerator = accelerator;
 		this.brakes = brakes;
@@ -332,13 +332,15 @@ class Dashboard{
 		this.frontRightAlert2 = frontRightAlert2;
 		this.frontLeftAlert = frontLeftAlert;
 		this.frontLeftAlert2 = frontLeftAlert2;
+		this.gasIcon = gasIcon;
+		this.brakeIcon = brakeIcon;
 				
 		this.mesh = new THREE.Group();
 		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.autoBT, this.manuBT
 					, this.gear, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.CCWBT, this.zoomInBT, this.zoomOutBT
 					, this.gearFrame, this.radarOn, this.radarOff, this.backAlert, this.backAlert2, this.backLeftAlert
 					, this.backLeftAlert2, this.backRightAlert, this.backRightAlert2, this.frontRightAlert, this.frontRightAlert2
-					, this.frontLeftAlert, this.frontLeftAlert2);
+					, this.frontLeftAlert, this.frontLeftAlert2, this.gasIcon, this.brakeIcon);
 		
 		sceneHUD.add(this.mesh);
 	}
@@ -348,7 +350,7 @@ class CarParameter{
 	constructor(){
 		this.bodyWidth = 20;
 		this.bodyLength = 38;
-		this.axelLength = 26;
+		this.axelLength = 16;
 		this.wheelToWheel = 26;
 		this.bodyHeight = 20;
 	}
@@ -427,11 +429,11 @@ function buildCar(pos) {
 	let dashboard = buildDashboard();
   
     // assembly
-    let car = new Car(pos, [19, 10, 10], 'white', materialArray, materialArray2, dashboard);
+    let car = new Car(pos, [carParameter.bodyLength/2, carParameter.bodyWidth/2, carParameter.bodyHeight/2], 'white', materialArray, materialArray2, dashboard);
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);
-    car.leftfrontWheel.position.set(13, -8, -8);
+    car.leftfrontWheel.position.set(carParameter.wheelToWheel/2, -carParameter.axelLength/2, -carParameter.axelLength/2);
     mesh1.add(circle);
     mesh1.add(circle2);
     car.leftfrontWheel.add(mesh1);
@@ -439,15 +441,15 @@ function buildCar(pos) {
     mesh1.rotation.x = Math.PI/2;
   
     let mesh2 = mesh1.clone();;
-    car.rightfrontWheel.position.set(13, -8, 8);
+    car.rightfrontWheel.position.set(carParameter.wheelToWheel/2, -carParameter.axelLength/2, carParameter.axelLength/2);
     car.rightfrontWheel.add(mesh2);
     
     let mesh3 = mesh1.clone();;
-    car.leftRearWheel.position.set(-13, -8, -8);
+    car.leftRearWheel.position.set(-carParameter.wheelToWheel/2, -carParameter.axelLength/2, -carParameter.axelLength/2);
     car.leftRearWheel.add(mesh3);
   
     let mesh4 = mesh1.clone();;
-    car.rightRearWheel.position.set(-13, -8, 8);
+    car.rightRearWheel.position.set(-carParameter.wheelToWheel/2, -carParameter.axelLength/2, carParameter.axelLength/2);
     car.rightRearWheel.add(mesh4);
 		
     return car;
@@ -802,11 +804,35 @@ function buildDashboard(){
 	zoomOutBT.rotation.y = -Math.PI/2;
 	zoomOutBT.visible = false;
 	zoomOutBT.name = 'zoomOutBT';
+	
+	//gasIcon
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/k7YVw02.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var gasIcon = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
+	gasIcon.position.y = 0.35;
+	gasIcon.position.z = -1.1;
+	gasIcon.rotation.y = -Math.PI/2;
+	gasIcon.material.color.set('dimgrey')
+	
+	//brakeIcon
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/c0ULrlV.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var brakeIcon = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
+	brakeIcon.position.y = 0.35;
+	brakeIcon.position.z = -1.3;
+	brakeIcon.rotation.y = -Math.PI/2;
+	brakeIcon.material.color.set('dimgrey')
 		
 	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
 								, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
 								, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
-								, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2);
+								, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon);
 	
 	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
 					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.topViewBT, dashboard.gear);
