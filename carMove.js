@@ -135,12 +135,15 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	}
     theta = Math.clamp (theta, -Math.PI/7, Math.PI/7);
 	
-	car.leftfrontWheel.rotation.y = Math.atan(carParameter.wheelToWheel/(carParameter.wheelToWheel/Math.tan(theta)-carParameter.axelLength/2));
-    car.rightfrontWheel.rotation.y = Math.atan(carParameter.wheelToWheel/(carParameter.wheelToWheel/Math.tan(theta)+carParameter.axelLength/2));
+	let axelLength = carParameter[carParameter.map(x =>x.name).indexOf('axelLength')].value
+	, frontWheelToBackWheel = carParameter[carParameter.map(x =>x.name).indexOf('frontWheelToBackWheel')].value;
+	
+	car.leftfrontWheel.rotation.y = Math.atan(frontWheelToBackWheel/(frontWheelToBackWheel/Math.tan(theta)-axelLength/2));
+    car.rightfrontWheel.rotation.y = Math.atan(frontWheelToBackWheel/(frontWheelToBackWheel/Math.tan(theta)+axelLength/2));
 
     //////////////////////////////////////////////////////////////
     
-    RC = car.mesh.localToWorld (new THREE.Vector3(-carParameter.wheelToWheel/2,0,-carParameter.wheelToWheel/Math.tan(theta)));
+    RC = car.mesh.localToWorld (new THREE.Vector3(-frontWheelToBackWheel/2,0,-frontWheelToBackWheel/Math.tan(theta)));
     RCmesh.position.copy (RC);
 	
 	//////////////////////////////////////////////////////////////
@@ -239,6 +242,8 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 			car.dashboard.gearFrame.position.z = 0.17;//D
 	}
 	
+	//car speed pointer
+	car.dashboard.pointer.rotation.x = Math.abs(car.speed*0.042);
 	
 	return [theta, fSlowDown, bSlowDown];
 }
@@ -265,4 +270,9 @@ function moveCar(RC, omega, deltaT){
 	
 	topCamera.position.x = car.center.x;
 	topCamera.position.z = car.center.z;
+	topCamera.lookAt(car.center);
+	thirdPVCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(30,0,0)));
+	thirdPVCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-30,18,0)));
+	GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(50,0,0)));
+	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-60,200,0)));
 }

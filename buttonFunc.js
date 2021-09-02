@@ -60,6 +60,10 @@ function onPointerDown (event) {
 		if(intersects[0].object.name == 'gear'){
 			gearDown();
 		}
+		
+		if(intersects[0].object.name == 'mapIcon'){
+			mapIconDown();
+		}
 				
 	}
 }	
@@ -73,14 +77,19 @@ function parkBTDown(){
 
 function topViewBTDown(){
 	topView = !topView;
+	GPSView = false;
+	//viewControl = 
 	if(topView){
 		car.dashboard.CCWBT.visible = true;
 		car.dashboard.zoomInBT.visible = true;
 		car.dashboard.zoomOutBT.visible = true;
+		car.dashboard.splitLine.visible = true;
+		car.dashboard.mapArrow.visible = false;
 	}else{
 		car.dashboard.CCWBT.visible = false;
 		car.dashboard.zoomInBT.visible = false;
 		car.dashboard.zoomOutBT.visible = false;
+		car.dashboard.splitLine.visible = false;
 	}
 }
 
@@ -105,16 +114,16 @@ function CCWBTDown(){
 }
 
 function zoomInBTDown(){
-	topCamera.left += window.innerWidth/60;
-	topCamera.right -= window.innerWidth/60;
+	topCamera.left += window.innerWidth/130;
+	topCamera.right -= window.innerWidth/130;
 	topCamera.top -= window.innerHeight/60;
 	topCamera.bottom += window.innerHeight/60;
 	topCamera.updateProjectionMatrix();
 }
 
 function zoomOutBTDown(){
-	topCamera.left -= window.innerWidth/60;
-	topCamera.right += window.innerWidth/60;
+	topCamera.left -= window.innerWidth/130;
+	topCamera.right += window.innerWidth/130;
 	topCamera.top += window.innerHeight/60;
 	topCamera.bottom -= window.innerHeight/60;
 	topCamera.updateProjectionMatrix();
@@ -181,6 +190,20 @@ function brakesDown(){
 
 function gearDown(){
 	
+}
+
+function mapIconDown(){
+	GPSView = !GPSView;
+	topView = false;
+	if(GPSView){
+		car.dashboard.mapArrow.visible = true;
+	}else{
+		car.dashboard.mapArrow.visible = false;	
+	}
+	car.dashboard.CCWBT.visible = false;
+	car.dashboard.zoomInBT.visible = false;
+	car.dashboard.zoomOutBT.visible = false;
+	car.dashboard.splitLine.visible = false;
 }
 
 function onPointerUp (event) {

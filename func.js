@@ -8,7 +8,7 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
     else if(firstPV){
 		var tmp = car.mesh.localToWorld(new THREE.Vector3(1, 10, 0));
 		camera.position.copy(tmp);
-		tmp = car.mesh.localToWorld(new THREE.Vector3(6, 10, 0));
+		tmp = car.mesh.localToWorld(new THREE.Vector3(6, 9.5, 0));
 		camera.lookAt(tmp);
 		
 		if(car.speed < 0){
@@ -23,6 +23,8 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 		car.dashboard.mesh.position.copy(tmp);
 		car.dashboard.mesh.position.y -= 2;
 		car.dashboard.mesh.rotation.y = car.angle;
+		car.dashboard.mesh.rotation.z = -0.1;
+		console.log(camera.position, tmp);
 		car.dashboard.steeringWheel.rotation.z = theta * -20;
 		
 		if (keyboard.pressed('down')){

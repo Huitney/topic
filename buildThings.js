@@ -303,7 +303,8 @@ class Dashboard{
 	constructor(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
 				, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
 				, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
-				, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon){
+				, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon
+				, mapIcon, splitLine, mapArrow, speedometer, pointer){
 		this.steeringWheel = steeringWheel;
 		this.accelerator = accelerator;
 		this.brakes = brakes;
@@ -334,13 +335,19 @@ class Dashboard{
 		this.frontLeftAlert2 = frontLeftAlert2;
 		this.gasIcon = gasIcon;
 		this.brakeIcon = brakeIcon;
+		this.mapIcon = mapIcon;
+		this.splitLine = splitLine;
+		this.mapArrow = mapArrow;
+		this.speedometer = speedometer;
+		this.pointer = pointer;
 				
 		this.mesh = new THREE.Group();
 		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.autoBT, this.manuBT
 					, this.gear, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.CCWBT, this.zoomInBT, this.zoomOutBT
 					, this.gearFrame, this.radarOn, this.radarOff, this.backAlert, this.backAlert2, this.backLeftAlert
 					, this.backLeftAlert2, this.backRightAlert, this.backRightAlert2, this.frontRightAlert, this.frontRightAlert2
-					, this.frontLeftAlert, this.frontLeftAlert2, this.gasIcon, this.brakeIcon);
+					, this.frontLeftAlert, this.frontLeftAlert2, this.gasIcon, this.brakeIcon, this.mapIcon, this.splitLine
+					, this.mapArrow, this.speedometer, this.pointer);
 		
 		sceneHUD.add(this.mesh);
 	}
@@ -427,13 +434,18 @@ function buildCar(pos) {
 	
 	//dashboard
 	let dashboard = buildDashboard();
+	
+	let bodyLength = carParameter[carParameter.map(x =>x.name).indexOf('bodyLength')].value
+	, bodyWidth = carParameter[carParameter.map(x =>x.name).indexOf('bodyWidth')].value
+	, axelLength = carParameter[carParameter.map(x =>x.name).indexOf('axelLength')].value
+	, frontWheelToBackWheel = carParameter[carParameter.map(x =>x.name).indexOf('frontWheelToBackWheel')].value;
   
     // assembly
-    let car = new Car(pos, [carParameter.bodyLength/2, carParameter.bodyWidth/2, carParameter.bodyHeight/2], 'white', materialArray, materialArray2, dashboard);
+    let car = new Car(pos, [bodyLength/2, bodyWidth/2, 10], 'white', materialArray, materialArray2, dashboard);
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);
-    car.leftfrontWheel.position.set(carParameter.wheelToWheel/2, -carParameter.axelLength/2, -carParameter.axelLength/2);
+    car.leftfrontWheel.position.set(frontWheelToBackWheel/2, -axelLength/2, -axelLength/2);
     mesh1.add(circle);
     mesh1.add(circle2);
     car.leftfrontWheel.add(mesh1);
@@ -441,15 +453,15 @@ function buildCar(pos) {
     mesh1.rotation.x = Math.PI/2;
   
     let mesh2 = mesh1.clone();;
-    car.rightfrontWheel.position.set(carParameter.wheelToWheel/2, -carParameter.axelLength/2, carParameter.axelLength/2);
+    car.rightfrontWheel.position.set(frontWheelToBackWheel/2, -axelLength/2, axelLength/2);
     car.rightfrontWheel.add(mesh2);
     
     let mesh3 = mesh1.clone();;
-    car.leftRearWheel.position.set(-carParameter.wheelToWheel/2, -carParameter.axelLength/2, -carParameter.axelLength/2);
+    car.leftRearWheel.position.set(-frontWheelToBackWheel/2, -axelLength/2, -axelLength/2);
     car.leftRearWheel.add(mesh3);
   
     let mesh4 = mesh1.clone();;
-    car.rightRearWheel.position.set(-carParameter.wheelToWheel/2, -carParameter.axelLength/2, carParameter.axelLength/2);
+    car.rightRearWheel.position.set(-frontWheelToBackWheel/2, -axelLength/2, axelLength/2);
     car.rightRearWheel.add(mesh4);
 		
     return car;
@@ -511,7 +523,7 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var board = new THREE.Mesh(new THREE.PlaneGeometry(12.6, 4), texMat);
+	var board = new THREE.Mesh(new THREE.PlaneGeometry(13, 4.2), texMat);
 	board.position.y = 1.2;
 	board.position.x = 1;
 	board.rotation.y = -Math.PI/2;
@@ -642,129 +654,151 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var topViewBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
-	topViewBT.position.y = 1.48;
-	topViewBT.position.z = 0.96;
+	var topViewBT = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.38), texMat);
+	topViewBT.position.y = 1.37;
+	topViewBT.position.z = 0.92;
 	topViewBT.rotation.y = -Math.PI/2;
 	topViewBT.name = 'topViewBT';
 	
 	//frontRightAlert
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		map: loader.load('https://i.imgur.com/ocrXB81.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var frontRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.04), texMat);
-	frontRightAlert.position.y = 1.565;
-	frontRightAlert.position.z = 1;
+	var frontRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
+	frontRightAlert.position.y = 1.48;
+	frontRightAlert.position.z = 0.96;
 	frontRightAlert.rotation.y = -Math.PI/2;
-	frontRightAlert.rotation.x = -Math.PI*3/4;
 	
 	//frontRightAlert2
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		map: loader.load('https://i.imgur.com/Ss58Poh.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var frontRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05), texMat);
-	frontRightAlert2.position.y = 1.575;
-	frontRightAlert2.position.z = 1.005;
+	var frontRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
+	frontRightAlert2.position.y = 1.51;
+	frontRightAlert2.position.z = 0.99;
 	frontRightAlert2.rotation.y = -Math.PI/2;
-	frontRightAlert2.rotation.x = -Math.PI*3/4;
 	
 	//frontLeftAlert
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		map: loader.load('https://i.imgur.com/ocrXB81.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var frontLeftAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.04), texMat);
-	frontLeftAlert.position.y = 1.565;
-	frontLeftAlert.position.z = 0.915;
+	var frontLeftAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
+	frontLeftAlert.position.y = 1.48;
+	frontLeftAlert.position.z = 0.89;
 	frontLeftAlert.rotation.y = -Math.PI/2;
-	frontLeftAlert.rotation.x = Math.PI*3/4;
+	frontLeftAlert.rotation.x = -Math.PI/2;
 	
 	//frontLeftAlert2
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		map: loader.load('https://i.imgur.com/Ss58Poh.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var frontLeftAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05), texMat);
-	frontLeftAlert2.position.y = 1.575;
-	frontLeftAlert2.position.z = 0.91;
+	var frontLeftAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
+	frontLeftAlert2.position.y = 1.51;
+	frontLeftAlert2.position.z = 0.86;
 	frontLeftAlert2.rotation.y = -Math.PI/2;
-	frontLeftAlert2.rotation.x = Math.PI*3/4;
+	frontLeftAlert2.rotation.x = -Math.PI/2;
 	
 	//backLeftAlert
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		map: loader.load('https://i.imgur.com/ocrXB81.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var backLeftAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.04), texMat);
-	backLeftAlert.position.y = 1.41;
-	backLeftAlert.position.z = 0.915;
+	var backLeftAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
+	backLeftAlert.position.y = 1.25;
+	backLeftAlert.position.z = 0.9;
 	backLeftAlert.rotation.y = -Math.PI/2;
-	backLeftAlert.rotation.x = Math.PI/4;
+	backLeftAlert.rotation.x = Math.PI;
 	
 	//backLeftAlert2
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		map: loader.load('https://i.imgur.com/Ss58Poh.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var backLeftAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05), texMat);
-	backLeftAlert2.position.y = 1.4;
-	backLeftAlert2.position.z = 0.91;
+	var backLeftAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
+	backLeftAlert2.position.y = 1.22;
+	backLeftAlert2.position.z = 0.87;
 	backLeftAlert2.rotation.y = -Math.PI/2;
-	backLeftAlert2.rotation.x = Math.PI/4;
+	backLeftAlert2.rotation.x = Math.PI;
 	
 	//backRightAlert
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		map: loader.load('https://i.imgur.com/ocrXB81.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var backRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.04), texMat);
-	backRightAlert.position.y = 1.4;
-	backRightAlert.position.z = 0.995;
+	var backRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
+	backRightAlert.position.y = 1.25;
+	backRightAlert.position.z = 0.95;
 	backRightAlert.rotation.y = -Math.PI/2;
-	backRightAlert.rotation.x = -Math.PI/4;
+	backRightAlert.rotation.x = Math.PI/2;
 	
 	//backRightAlert2
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/kxQcDcE.png?1'),
+		map: loader.load('https://i.imgur.com/Ss58Poh.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var backRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.05), texMat);
-	backRightAlert2.position.y = 1.39;
-	backRightAlert2.position.z = 1;
+	var backRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
+	backRightAlert2.position.y = 1.22;
+	backRightAlert2.position.z = 0.98;
 	backRightAlert2.rotation.y = -Math.PI/2;
-	backRightAlert2.rotation.x = -Math.PI/4;
+	backRightAlert2.rotation.x = Math.PI/2;
 	
 	//backAlert
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/08Vqwyy.png'),
+		map: loader.load('https://i.imgur.com/OIYkcZm.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var backAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.05, 0.02), texMat);
-	backAlert.position.y = 1.39;
-	backAlert.position.z = 0.96;
+	var backAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.1), texMat);
+	backAlert.position.y = 1.18;
+	backAlert.position.z = 0.93;
 	backAlert.rotation.y = -Math.PI/2;
 	
 	//backAlert2
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/08Vqwyy.png'),
+		map: loader.load('https://i.imgur.com/OIYkcZm.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var backAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.05, 0.02), texMat);
-	backAlert2.position.y = 1.38;
-	backAlert2.position.z = 0.96;
+	var backAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.08), texMat);
+	backAlert2.position.y = 1.13;
+	backAlert2.position.z = 0.925;
 	backAlert2.rotation.y = -Math.PI/2;
+	
+	//mapIcon
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/BfHiBya.png?1'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var mapIcon = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.28), texMat);
+	mapIcon.position.y = 0.98;
+	mapIcon.position.z = 0.99;
+	mapIcon.rotation.y = -Math.PI/2;
+	mapIcon.name = 'mapIcon';
+	
+	//mapArrow
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/1wmEVdS.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var mapArrow = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
+	mapArrow.position.y = 1;
+	mapArrow.position.z = -0.1;
+	mapArrow.rotation.y = -Math.PI/2;
+	mapArrow.visible = false;
 	
 	//CCW
 	texMat = new THREE.MeshBasicMaterial({
@@ -772,35 +806,32 @@ function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var CCWBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
-	CCWBT.position.y = 1.29;
-	CCWBT.position.z = 0.96;
+	var CCWBT = new THREE.Mesh(new THREE.PlaneGeometry(0.13, 0.13), texMat);
+	CCWBT.position.set(0, 1.08, 0.81);
 	CCWBT.rotation.y = -Math.PI/2;
 	CCWBT.visible = false;
 	CCWBT.name = 'CCWBT';
 	
 	//zoomIn
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/sCRnAtH.png'),
+		map: loader.load('https://i.imgur.com/RepKBvi.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var zoomInBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
-	zoomInBT.position.y = 1.09;
-	zoomInBT.position.z = 0.96;
+	var zoomInBT = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.1), texMat);
+	zoomInBT.position.set(0, 0.95, 0.81);
 	zoomInBT.rotation.y = -Math.PI/2;
 	zoomInBT.visible = false;
 	zoomInBT.name = 'zoomInBT';
 	
 	//zoomOut
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/7bB1vvo.png'),
+		map: loader.load('https://i.imgur.com/6GixlJH.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var zoomOutBT = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
-	zoomOutBT.position.y = 0.89;
-	zoomOutBT.position.z = 0.96;
+	var zoomOutBT = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.1), texMat);
+	zoomOutBT.position.set(0, 0.85, 0.81);
 	zoomOutBT.rotation.y = -Math.PI/2;
 	zoomOutBT.visible = false;
 	zoomOutBT.name = 'zoomOutBT';
@@ -815,7 +846,7 @@ function buildDashboard(){
 	gasIcon.position.y = 0.35;
 	gasIcon.position.z = -1.1;
 	gasIcon.rotation.y = -Math.PI/2;
-	gasIcon.material.color.set('dimgrey')
+	gasIcon.material.color.set('dimgrey');
 	
 	//brakeIcon
 	texMat = new THREE.MeshBasicMaterial({
@@ -827,15 +858,40 @@ function buildDashboard(){
 	brakeIcon.position.y = 0.35;
 	brakeIcon.position.z = -1.3;
 	brakeIcon.rotation.y = -Math.PI/2;
-	brakeIcon.material.color.set('dimgrey')
+	brakeIcon.material.color.set('dimgrey');
+	
+	//splitLine
+	var splitLine = new THREE.Mesh(new THREE.PlaneGeometry(0.02, 0.82), new THREE.MeshBasicMaterial({color: 'blue'}));
+	splitLine.position.set(0, 1.18, -0.09);
+	splitLine.rotation.y = -Math.PI/2;
+	splitLine.visible = false;
+	
+	//speedometer
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/CHfdlEr.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var speedometer = new THREE.Mesh(new THREE.CircleGeometry(0.6, 32), texMat);
+	speedometer.position.set(0.3, 0.2, -3);
+	speedometer.rotation.y = -Math.PI/2;
+	
+	//pointer
+	var cone = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.3, 32), new THREE.MeshBasicMaterial({color: 'red'}));
+	var pointer = new THREE.Group();
+	pointer.add(cone);
+	cone.position.z = -0.15;
+	cone.rotation.x = -Math.PI/2 - Math.PI/15;
+	pointer.position.set(0.3, 0.07, -3);
 		
 	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
 								, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
 								, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
-								, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon);
+								, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon
+								, mapIcon, splitLine, mapArrow, speedometer, pointer);
 	
 	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
-					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.topViewBT, dashboard.gear);
+					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.topViewBT, dashboard.gear, dashboard.mapIcon);
 	
 	return dashboard;
 }

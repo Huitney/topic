@@ -45,8 +45,8 @@ var mouse = new THREE.Vector2();
 var radarSound, RCmesh;
 var beeper = false, radarOn = false;
 
-var topCamera, scene1;
-var soundBT = false, topView = false;
+var topCamera, scene1, thirdPVCamera;
+var soundBT = false, topView = false, GPSView = false;
 var thirdPV = false, firstPV = false;
 var parkingMode = 0, parkingAngle = 0;
 var PPart = 0;
@@ -55,6 +55,7 @@ var parkingModeButton = false;
 var CCW = 0;
 var traceMeshes = [];
 var carParameter;
+var GPSCamera;
 
 //button
 $("#thirdPV").click(function() {
@@ -91,7 +92,8 @@ function init() {
 	scene.add(light);
 	
 	buildScenes();
-	carParameter = new CarParameter();
+	carParameter = [{name:'bodyWidth', value:20}, {name:'bodyLength', value:38}
+					, {name:'axelLength', value:16}, {name:'frontWheelToBackWheel', value:26}];
 	
 	/*
 	var grid = new THREE.GridHelper (400,40,'red','white');
@@ -134,20 +136,33 @@ function init() {
 	
     //topCamera
 	scene1 = new THREE.Scene();
-    topCamera = new THREE.OrthographicCamera(-window.innerWidth/6, window.innerWidth/6
-											, window.innerHeight/6, -window.innerHeight/6, 1, 1000);
-    topCamera.position.y = 200;
+    topCamera = new THREE.OrthographicCamera(-window.innerWidth/26, window.innerWidth/26
+											, window.innerHeight/12, -window.innerHeight/12, 1, 1000);
+    topCamera.position.y = 100;
 	topCamera.up.set(1, 0, 0);
 	topCamera.lookAt(0, 0, 0);
+	
+	//thirdPVCamera
+	thirdPVCamera = new THREE.OrthographicCamera(-window.innerWidth/52, window.innerWidth/52
+											, window.innerHeight/24, -window.innerHeight/24, 1, 1000);
+	thirdPVCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(30,0,0)));
+	thirdPVCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-30,18,0)));
 	
 	//rear mirror
     rearMirror = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
     rearMirror.position.set(-60, 23, 40);
 	
 	//Reversing camera
-    reversingCamera = new THREE.OrthographicCamera(-window.innerWidth/48, window.innerWidth/48
+    reversingCamera = new THREE.OrthographicCamera(-window.innerWidth/52, window.innerWidth/52
 												, window.innerHeight/48, -window.innerHeight/48, 0.1, 1000);
     reversingCamera.position.set(-60, 23, 40);
+	
+	//GPSCamera
+    GPSCamera = new THREE.OrthographicCamera(-window.innerWidth/6.5, window.innerWidth/6.5
+											, window.innerHeight/6, -window.innerHeight/6, 1, 1000);
+    GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(50,0,0)));
+	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-60,200,0)));
+
 	
 	//sound
 	radarSound = document.getElementById('radarSound');
@@ -221,16 +236,26 @@ function render() {
 		renderer.render(sceneHUD, camera);
 		//reversing Camera
 		if(car.dashboard.gearFrame.position.z == -0.13){
-			renderer.setViewport(WW/2.41, HH/4.15, WW/6, HH/6);
-			renderer.setScissor(WW/2.41, HH/4.15, WW/6, HH/6);
+			renderer.setViewport(WW/2.41, HH/4, WW/6.5, HH/6);
+			renderer.setScissor(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.clear();
 			renderer.render(scene, reversingCamera);			
 		}
 		else if(topView){
-			renderer.setViewport(WW/2.41, HH/4.15, WW/6, HH/6);
-			renderer.setScissor(WW/2.41, HH/4.15, WW/6, HH/6);
+			renderer.setViewport(WW/2.41, HH/4, WW/13, HH/6);
+			renderer.setScissor(WW/2.41, HH/4, WW/13, HH/6);
 			renderer.clear();
 			renderer.render(scene, topCamera);
+			renderer.setViewport(WW*1.545/3.13, HH/4, WW/13, HH/6);
+			renderer.setScissor(WW*1.545/3.13, HH/4, WW/13, HH/6);
+			renderer.clear();
+			renderer.render(scene, thirdPVCamera);
+		}
+		else if(GPSView){
+			renderer.setViewport(WW/2.41, HH/4, WW/6.5, HH/6);
+			renderer.setScissor(WW/2.41, HH/4, WW/6.5, HH/6);
+			renderer.clear();
+			renderer.render(scene, GPSCamera);
 		}
 	}
 	renderer.setScissorTest( false );
