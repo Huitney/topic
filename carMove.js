@@ -113,7 +113,10 @@ function parking(theta){
 }
 
 function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
-		
+	//gas and brake icon
+	car.dashboard.brakeIcon.material.color.set('dimgrey');
+	car.dashboard.gasIcon.material.color.set('dimgrey');
+	
 	if (keyboard.pressed('down')){
 		car.speed -= 1;
 		car.dashboard.gasIcon.material.color.set('springgreen');
@@ -150,11 +153,9 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
     // slowing down    after keyboard up
     if (keyboard.up("up")){
 		fSlowDown = 1; 
-		car.dashboard.gasIcon.material.color.set('dimgrey');
 	}
     else if (keyboard.up("down")){
 		bSlowDown = 1;
-		car.dashboard.gasIcon.material.color.set('dimgrey');
 	}
        
     if (keyboard.down("up") ||  keyboard.down("down"))
@@ -227,8 +228,15 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 		car.dashboard.brakes.name = 'dDrive';
 	}
 	else if(keyboard.up("alt")){
-		car.dashboard.brakeIcon.material.color.set('dimgrey');
 		car.dashboard.brakes.name = 'brakes';
+	}
+	
+	if(keyboard.pressed("ctrl")){    //another brakes
+		if (car.speed < 0)
+			car.speed += 1.5;
+		else if (car.speed > 0)
+			car.speed -= 1.5;
+		car.dashboard.brakeIcon.material.color.set('red');
 	}
 	
 	if (keyboard.down("shift")){ //gear

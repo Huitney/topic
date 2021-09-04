@@ -474,7 +474,7 @@ function buildDashboard(){
 	
 	//steering wheel
 	let texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/AaejjAQ.png'),
+		map: loader.load('https://i.imgur.com/0ltwDD9.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -668,7 +668,7 @@ function buildDashboard(){
 	});
 	var frontRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
 	frontRightAlert.position.y = 1.48;
-	frontRightAlert.position.z = 0.96;
+	frontRightAlert.position.z = 0.955;
 	frontRightAlert.rotation.y = -Math.PI/2;
 	
 	//frontRightAlert2
@@ -679,7 +679,7 @@ function buildDashboard(){
 	});
 	var frontRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
 	frontRightAlert2.position.y = 1.51;
-	frontRightAlert2.position.z = 0.99;
+	frontRightAlert2.position.z = 0.985;
 	frontRightAlert2.rotation.y = -Math.PI/2;
 	
 	//frontLeftAlert
@@ -714,7 +714,7 @@ function buildDashboard(){
 	});
 	var backLeftAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
 	backLeftAlert.position.y = 1.25;
-	backLeftAlert.position.z = 0.9;
+	backLeftAlert.position.z = 0.895;
 	backLeftAlert.rotation.y = -Math.PI/2;
 	backLeftAlert.rotation.x = Math.PI;
 	
@@ -726,7 +726,7 @@ function buildDashboard(){
 	});
 	var backLeftAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
 	backLeftAlert2.position.y = 1.22;
-	backLeftAlert2.position.z = 0.87;
+	backLeftAlert2.position.z = 0.865;
 	backLeftAlert2.rotation.y = -Math.PI/2;
 	backLeftAlert2.rotation.x = Math.PI;
 	
@@ -738,7 +738,7 @@ function buildDashboard(){
 	});
 	var backRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
 	backRightAlert.position.y = 1.25;
-	backRightAlert.position.z = 0.95;
+	backRightAlert.position.z = 0.945;
 	backRightAlert.rotation.y = -Math.PI/2;
 	backRightAlert.rotation.x = Math.PI/2;
 	
@@ -750,7 +750,7 @@ function buildDashboard(){
 	});
 	var backRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
 	backRightAlert2.position.y = 1.22;
-	backRightAlert2.position.z = 0.98;
+	backRightAlert2.position.z = 0.975;
 	backRightAlert2.rotation.y = -Math.PI/2;
 	backRightAlert2.rotation.x = Math.PI/2;
 	
