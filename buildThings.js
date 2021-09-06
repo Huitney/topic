@@ -1,5 +1,5 @@
 class Car {
-	constructor(pos, size, colorName = 'white', materialArray, materialArray2, dashboard) {
+	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, colorName = 'white') {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0] * 2, size[1] * 2, size[2] * 2), materialArray);
@@ -11,6 +11,7 @@ class Car {
 		this.materialArray = materialArray;
 		this.materialArray2 = materialArray2;
 		this.dashboard = dashboard;
+		this.mapArrow = mapArrow;
 		
 		this.dashboard.mesh.visible = false;
 		
@@ -20,7 +21,7 @@ class Car {
 		this.rightRearWheel = new THREE.Group();
 		
 		this.mesh.add(this.leftfrontWheel, this.rightfrontWheel, this.leftRearWheel, this.rightRearWheel);
-		scene.add(this.mesh);
+		scene.add(this.mesh, this.mapArrow);
 		
 		this.rotate(0); // set initial axes
 	}
@@ -47,6 +48,7 @@ class Car {
 		this.c[3] = this.mesh.localToWorld(new THREE.Vector3(0, 0, -this.size[2]));
 				
 		this.mesh.rotation.y = angle;
+		this.mapArrow.rotation.y = angle;
 	}
 
 	intersect(obbB) {
@@ -78,6 +80,7 @@ class Car {
 	move(pos){
 		this.center.copy(pos);
 		this.mesh.position.copy(this.center);
+		this.mapArrow.position.copy(this.center);
 	}
 	
 	changeColor(signal){
@@ -304,7 +307,7 @@ class Dashboard{
 				, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
 				, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
 				, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon
-				, mapIcon, splitLine, mapArrow, speedometer, pointer){
+				, mapIcon, splitLine, speedometer, pointer){
 		this.steeringWheel = steeringWheel;
 		this.accelerator = accelerator;
 		this.brakes = brakes;
@@ -337,7 +340,6 @@ class Dashboard{
 		this.brakeIcon = brakeIcon;
 		this.mapIcon = mapIcon;
 		this.splitLine = splitLine;
-		this.mapArrow = mapArrow;
 		this.speedometer = speedometer;
 		this.pointer = pointer;
 				
@@ -347,7 +349,7 @@ class Dashboard{
 					, this.gearFrame, this.radarOn, this.radarOff, this.backAlert, this.backAlert2, this.backLeftAlert
 					, this.backLeftAlert2, this.backRightAlert, this.backRightAlert2, this.frontRightAlert, this.frontRightAlert2
 					, this.frontLeftAlert, this.frontLeftAlert2, this.gasIcon, this.brakeIcon, this.mapIcon, this.splitLine
-					, this.mapArrow, this.speedometer, this.pointer);
+					, this.speedometer, this.pointer);
 		
 		sceneHUD.add(this.mesh);
 	}
@@ -429,7 +431,7 @@ function buildCar(pos) {
 								}));
     circle.rotation.x = Math.PI/2;
     circle.position.y = 1;
-    circle2 = circle.clone();
+    let circle2 = circle.clone();
     circle2.position.y = -1;
 	
 	//dashboard
@@ -439,9 +441,21 @@ function buildCar(pos) {
 	, bodyWidth = carParameter[carParameter.map(x =>x.name).indexOf('bodyWidth')].value
 	, axelLength = carParameter[carParameter.map(x =>x.name).indexOf('axelLength')].value
 	, frontWheelToBackWheel = carParameter[carParameter.map(x =>x.name).indexOf('frontWheelToBackWheel')].value;
+	
+	//mapArrow
+	var arrowMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), new THREE.MeshBasicMaterial({
+																		map: loader.load('https://i.imgur.com/1wmEVdS.png'),
+																		alphaTest: 0.5,
+																		side: THREE.DoubleSide
+																	}));
+	arrowMesh.rotation.z = -Math.PI/2;
+	arrowMesh.rotation.x = Math.PI/2;
+	let mapArrow = new THREE.Group();
+	mapArrow.add(arrowMesh);
+	mapArrow.visible = false;
   
     // assembly
-    let car = new Car(pos, [bodyLength/2, bodyWidth/2, 10], 'white', materialArray, materialArray2, dashboard);
+    let car = new Car(pos, [bodyLength/2, bodyWidth/2, 10], materialArray, materialArray2, dashboard, mapArrow, 'white');
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);
@@ -788,18 +802,6 @@ function buildDashboard(){
 	mapIcon.rotation.y = -Math.PI/2;
 	mapIcon.name = 'mapIcon';
 	
-	//mapArrow
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('https://i.imgur.com/1wmEVdS.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var mapArrow = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), texMat);
-	mapArrow.position.y = 1;
-	mapArrow.position.z = -0.1;
-	mapArrow.rotation.y = -Math.PI/2;
-	mapArrow.visible = false;
-	
 	//CCW
 	texMat = new THREE.MeshBasicMaterial({
 		map: loader.load('https://i.imgur.com/c7ynEsQ.png'),
@@ -888,7 +890,7 @@ function buildDashboard(){
 								, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
 								, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
 								, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon
-								, mapIcon, splitLine, mapArrow, speedometer, pointer);
+								, mapIcon, splitLine, speedometer, pointer);
 	
 	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
 					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.topViewBT, dashboard.gear, dashboard.mapIcon);

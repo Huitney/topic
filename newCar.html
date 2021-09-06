@@ -44,7 +44,7 @@ var clock = new THREE.Clock();
 var car, obstacles = [], alternateObs = [];
 var raycaster, pickables = [];
 var mouse = new THREE.Vector2();
-var radarSound, RCmesh;
+var radarSound, RCmesh, longBeep;
 var beeper = false, radarOn = false;
 
 var topCamera, scene1, thirdPVCamera;
@@ -169,12 +169,12 @@ function init() {
 	//sound
 	radarSound = document.getElementById('radarSound');
 	radarSound.muted = false;
+	longBeep = document.getElementById('longBeep');
 	
 	window.addEventListener ('pointerdown', onPointerDown, false);
 	window.addEventListener ('pointerup', onPointerUp, false);
 	raycaster = new THREE.Raycaster();
 	
-    //drawParkingSpace();
 	drawReversingLine();
 }
   
@@ -257,7 +257,11 @@ function render() {
 			renderer.setViewport(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.setScissor(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.clear();
+			car.mesh.visible = false;
+			car.mapArrow.visible = true;
 			renderer.render(scene, GPSCamera);
+			car.mesh.visible = true;
+			car.mapArrow.visible = false;
 		}
 	}
 	renderer.setScissorTest( false );

@@ -24,7 +24,6 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
 		car.dashboard.mesh.position.y -= 2;
 		car.dashboard.mesh.rotation.y = car.angle;
 		car.dashboard.mesh.rotation.z = -0.1;
-		console.log(camera.position, tmp);
 		car.dashboard.steeringWheel.rotation.z = theta * -21;
 		
 		if (keyboard.pressed('down')){
