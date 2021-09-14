@@ -1,5 +1,5 @@
 class Car {
-	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, colorName = 'white') {
+	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, brakeLight, colorName = 'white') {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0] * 2, size[1] * 2, size[2] * 2), materialArray);
@@ -13,6 +13,13 @@ class Car {
 		this.dashboard = dashboard;
 		this.mapArrow = mapArrow;
 		
+		this.brakeLightR = brakeLight;
+		this.brakeLightR.material.color.set('darkred');
+		this.brakeLightR.position.set(-19.01, -5.5, 8);
+		this.brakeLightL = brakeLight.clone();
+		this.brakeLightL.material.color.set('darkred');
+		this.brakeLightL.position.set(-19.01, -5.5, -8);
+		
 		this.dashboard.mesh.visible = false;
 		
 		this.leftfrontWheel = new THREE.Group();
@@ -20,7 +27,7 @@ class Car {
 		this.leftRearWheel = new THREE.Group();
 		this.rightRearWheel = new THREE.Group();
 		
-		this.mesh.add(this.leftfrontWheel, this.rightfrontWheel, this.leftRearWheel, this.rightRearWheel);
+		this.mesh.add(this.leftfrontWheel, this.rightfrontWheel, this.leftRearWheel, this.rightRearWheel, this.brakeLightR, this.brakeLightL);
 		scene.add(this.mesh, this.mapArrow);
 		
 		this.rotate(0); // set initial axes
@@ -355,16 +362,6 @@ class Dashboard{
 	}
 }
 
-class CarParameter{
-	constructor(){
-		this.bodyWidth = 20;
-		this.bodyLength = 38;
-		this.axelLength = 16;
-		this.wheelToWheel = 26;
-		this.bodyHeight = 20;
-	}
-}
-
 function buildCar(pos) {
     let loader = new THREE.TextureLoader();
     loader.setCrossOrigin('');
@@ -453,9 +450,17 @@ function buildCar(pos) {
 	let mapArrow = new THREE.Group();
 	mapArrow.add(arrowMesh);
 	mapArrow.visible = false;
+	
+	//brakeLight
+	var brakeLight = new THREE.Mesh(new THREE.PlaneGeometry(3, 6), new THREE.MeshBasicMaterial({
+																		map: loader.load('https://i.imgur.com/2nvO3tz.png'),
+																		alphaTest: 0.5,
+																		side: THREE.DoubleSide
+																	}));
+	brakeLight.rotation.y = Math.PI/2;
   
     // assembly
-    let car = new Car(pos, [bodyLength/2, bodyWidth/2, 10], materialArray, materialArray2, dashboard, mapArrow, 'white');
+    let car = new Car(pos, [bodyLength/2, bodyWidth/2, 10], materialArray, materialArray2, dashboard, mapArrow, brakeLight, 'white');
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);
@@ -466,15 +471,15 @@ function buildCar(pos) {
     //important!!
     mesh1.rotation.x = Math.PI/2;
   
-    let mesh2 = mesh1.clone();;
+    let mesh2 = mesh1.clone();
     car.rightfrontWheel.position.set(frontWheelToBackWheel/2, -axelLength/2, axelLength/2);
     car.rightfrontWheel.add(mesh2);
     
-    let mesh3 = mesh1.clone();;
+    let mesh3 = mesh1.clone();
     car.leftRearWheel.position.set(-frontWheelToBackWheel/2, -axelLength/2, -axelLength/2);
     car.leftRearWheel.add(mesh3);
   
-    let mesh4 = mesh1.clone();;
+    let mesh4 = mesh1.clone();
     car.rightRearWheel.position.set(-frontWheelToBackWheel/2, -axelLength/2, axelLength/2);
     car.rightRearWheel.add(mesh4);
 		

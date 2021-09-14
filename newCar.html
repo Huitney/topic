@@ -168,8 +168,10 @@ function init() {
 	
 	//sound
 	radarSound = document.getElementById('radarSound');
-	radarSound.muted = false;
 	longBeep = document.getElementById('longBeep');
+	radarSound.muted = false;
+	longBeep.muted = false;
+	longBeep.loop = true;
 	
 	window.addEventListener ('pointerdown', onPointerDown, false);
 	window.addEventListener ('pointerup', onPointerUp, false);
@@ -205,7 +207,8 @@ function animate() {
 	this.fSlowDown = paraArray[1];
 	this.bSlowDown = paraArray[2];
     
-    moveCar(RC, (car.speed * Math.tan(this.theta)/24), deltaT);
+	let frontWheelToBackWheel = carParameter[carParameter.map(x =>x.name).indexOf('frontWheelToBackWheel')].value;
+    moveCar(RC, (car.speed * Math.tan(this.theta)/frontWheelToBackWheel), deltaT);
 	
     //camera position
 	cameraUpdate(this.theta, this.fSlowDown, this.bSlowDown);

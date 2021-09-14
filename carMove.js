@@ -116,6 +116,8 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	//gas and brake icon
 	car.dashboard.brakeIcon.material.color.set('dimgrey');
 	car.dashboard.gasIcon.material.color.set('dimgrey');
+	car.brakeLightR.material.color.set('darkred');
+	car.brakeLightL.material.color.set('darkred');
 	
 	if (keyboard.pressed('down')){
 		car.speed -= 1;
@@ -225,6 +227,8 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	if (keyboard.pressed("alt")){     //brakes
 		car.speed = 0;
 		car.dashboard.brakeIcon.material.color.set('red');
+		car.brakeLightR.material.color.set('red');
+		car.brakeLightL.material.color.set('red');
 		car.dashboard.brakes.name = 'dDrive';
 	}
 	else if(keyboard.up("alt")){
@@ -237,6 +241,8 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 		else if (car.speed > 0)
 			car.speed -= 1.5;
 		car.dashboard.brakeIcon.material.color.set('red');
+		car.brakeLightR.material.color.set('red');
+		car.brakeLightL.material.color.set('red');
 	}
 	
 	if (keyboard.down("shift")){ //gear

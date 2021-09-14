@@ -39,9 +39,16 @@ function poll(){
 
 function radarPlay(){
 	
-	radarSound.play();
+	if(car.minDis < 3){
+		longBeep.play();
+		radarSound.pause();
+	}else {
+		radarSound.play();
+		longBeep.pause();
+	}
+	
 	if (beeper) {
-		setTimeout (radarPlay, car.minDis * 50);
+		setTimeout (radarPlay, car.minDis * 40);
 		radarOn = true;
 	} else {
 		radarOn = false
