@@ -29,6 +29,7 @@
 
 <script>
 
+
 ( function() {
 	Math.clamp = function(val,min,max) {
 		return Math.min(Math.max(val,min),max);
@@ -244,7 +245,11 @@ function render() {
 			renderer.setViewport(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.setScissor(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.clear();
-			renderer.render(scene, reversingCamera);			
+			car.brakeLightR.visible = false;
+			car.brakeLightL.visible = false;
+			renderer.render(scene, reversingCamera);	
+			car.brakeLightR.visible = true;
+			car.brakeLightL.visible = true;
 		}
 		else if(topView){
 			renderer.setViewport(WW/2.41, HH/4, WW/13, HH/6);

@@ -105,7 +105,8 @@ class Car {
 			{dis:obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, -obbA.size[2]))), dir:'x-z'},
 			{dis:obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, -obbA.size[2]))), dir:'-x-z'},
 			{dis:obbB.calculateDistance(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, obbA.size[2]))), dir:'-xz'},
-			{dis:obbB.calculateDistance(obbA.c[1]), dir:'back'}
+			{dis:obbB.calculateDistance(obbA.c[1]), dir:'back'},
+			{dis:obbB.calculateDistance(obbA.c[0]), dir:'front'}
 		];
 		
 		return min;
@@ -312,9 +313,9 @@ class ObstacleCar {
 class Dashboard{
 	constructor(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
 				, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
-				, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
-				, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon
-				, mapIcon, splitLine, speedometer, pointer){
+				, backAlert, backAlert2, backLeftAlert, frontAlert, frontAlert2, backLeftAlert2
+				, backRightAlert, backRightAlert2, frontRightAlert, frontRightAlert2, frontLeftAlert
+				, frontLeftAlert2, gasIcon, brakeIcon, mapIcon, splitLine, speedometer, pointer){
 		this.steeringWheel = steeringWheel;
 		this.accelerator = accelerator;
 		this.brakes = brakes;
@@ -335,6 +336,8 @@ class Dashboard{
 		this.radarOff = radarOff;
 		this.backAlert = backAlert;
 		this.backAlert2 = backAlert2;
+		this.frontAlert = frontAlert;
+		this.frontAlert2 = frontAlert2;
 		this.backLeftAlert = backLeftAlert;
 		this.backLeftAlert2 = backLeftAlert2;
 		this.backRightAlert = backRightAlert;
@@ -353,10 +356,10 @@ class Dashboard{
 		this.mesh = new THREE.Group();
 		this.mesh.add(this.steeringWheel, this.accelerator, this.brakes, this.board, this.screen, this.autoBT, this.manuBT
 					, this.gear, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.CCWBT, this.zoomInBT, this.zoomOutBT
-					, this.gearFrame, this.radarOn, this.radarOff, this.backAlert, this.backAlert2, this.backLeftAlert
-					, this.backLeftAlert2, this.backRightAlert, this.backRightAlert2, this.frontRightAlert, this.frontRightAlert2
-					, this.frontLeftAlert, this.frontLeftAlert2, this.gasIcon, this.brakeIcon, this.mapIcon, this.splitLine
-					, this.speedometer, this.pointer);
+					, this.gearFrame, this.radarOn, this.radarOff, this.backAlert, this.backAlert2, this.frontAlert, this.frontAlert2
+					, this.backLeftAlert, this.backLeftAlert2, this.backRightAlert, this.backRightAlert2, this.frontRightAlert
+					, this.frontRightAlert2, this.frontLeftAlert, this.frontLeftAlert2, this.gasIcon, this.brakeIcon, this.mapIcon
+					, this.splitLine, this.speedometer, this.pointer);
 		
 		sceneHUD.add(this.mesh);
 	}
@@ -452,8 +455,8 @@ function buildCar(pos) {
 	mapArrow.visible = false;
 	
 	//brakeLight
-	var brakeLight = new THREE.Mesh(new THREE.PlaneGeometry(3, 6), new THREE.MeshBasicMaterial({
-																		map: loader.load('https://i.imgur.com/2nvO3tz.png'),
+	var brakeLight = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshBasicMaterial({
+																		map: loader.load('https://i.imgur.com/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
 																	}));
@@ -781,7 +784,7 @@ function buildDashboard(){
 	});
 	var backAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.1), texMat);
 	backAlert.position.y = 1.18;
-	backAlert.position.z = 0.93;
+	backAlert.position.z = 0.925;
 	backAlert.rotation.y = -Math.PI/2;
 	
 	//backAlert2
@@ -792,8 +795,30 @@ function buildDashboard(){
 	});
 	var backAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.08), texMat);
 	backAlert2.position.y = 1.13;
-	backAlert2.position.z = 0.925;
+	backAlert2.position.z = 0.92;
 	backAlert2.rotation.y = -Math.PI/2;
+	
+	//frontAlert
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/OIYkcZm.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var frontAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.1), texMat);
+	frontAlert.position.y = 1.56;
+	frontAlert.position.z = 0.925;
+	frontAlert.rotation.y = -Math.PI/2;
+	
+	//frontAlert2
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/OIYkcZm.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var frontAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.08), texMat);
+	frontAlert2.position.y = 1.6;
+	frontAlert2.position.z = 0.92;
+	frontAlert2.rotation.y = -Math.PI/2;
 	
 	//mapIcon
 	texMat = new THREE.MeshBasicMaterial({
@@ -893,9 +918,9 @@ function buildDashboard(){
 		
 	var dashboard = new Dashboard(steeringWheel, accelerator, brakes, board, screen, autoBT, manuBT, gear, gearFrame
 								, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
-								, backAlert, backAlert2, backLeftAlert, backLeftAlert2, backRightAlert, backRightAlert2
-								, frontRightAlert, frontRightAlert2, frontLeftAlert, frontLeftAlert2, gasIcon, brakeIcon
-								, mapIcon, splitLine, speedometer, pointer);
+								, backAlert, backAlert2, backLeftAlert, frontAlert, frontAlert2, backLeftAlert2
+								, backRightAlert, backRightAlert2, frontRightAlert, frontRightAlert2, frontLeftAlert
+								, frontLeftAlert2, gasIcon, brakeIcon, mapIcon, splitLine, speedometer, pointer);
 	
 	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
 					, dashboard.radarOn, dashboard.accelerator, dashboard.brakes, dashboard.topViewBT, dashboard.gear, dashboard.mapIcon);

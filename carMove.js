@@ -130,9 +130,9 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	car.speed = Math.clamp (car.speed, -15, 50);
   
     if (keyboard.pressed('right'))
-		theta -= 0.01;
+		theta -= 0.005;
     if (keyboard.pressed('left'))
-		theta += 0.01;  
+		theta += 0.005;  
 	if(!keyboard.pressed('left') & !keyboard.pressed('right') & parkingMode !== 1){
 		theta = PDControl(theta, deltaT);
 		if(theta.toFixed(5) == 0.00000)
@@ -227,6 +227,7 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	if (keyboard.pressed("alt")){     //brakes
 		car.speed = 0;
 		car.dashboard.brakeIcon.material.color.set('red');
+		car.dashboard.gasIcon.material.color.set('dimgrey');
 		car.brakeLightR.material.color.set('red');
 		car.brakeLightL.material.color.set('red');
 		car.dashboard.brakes.name = 'dDrive';
@@ -237,10 +238,11 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	
 	if(keyboard.pressed("ctrl")){    //another brakes
 		if (car.speed < 0)
-			car.speed += 1.5;
+			car.speed += 1.3;
 		else if (car.speed > 0)
-			car.speed -= 1.5;
+			car.speed -= 1.3;
 		car.dashboard.brakeIcon.material.color.set('red');
+		car.dashboard.gasIcon.material.color.set('dimgrey');
 		car.brakeLightR.material.color.set('red');
 		car.brakeLightL.material.color.set('red');
 	}

@@ -84,7 +84,7 @@ function topViewBTDown(){
 		car.dashboard.zoomInBT.visible = true;
 		car.dashboard.zoomOutBT.visible = true;
 		car.dashboard.splitLine.visible = true;
-		car.dashboard.mapArrow.visible = false;
+		car.mapArrow.visible = false;
 	}else{
 		car.dashboard.CCWBT.visible = false;
 		car.dashboard.zoomInBT.visible = false;

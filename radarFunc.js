@@ -14,6 +14,7 @@ function poll(){
 			min[2] = min[2].dis < tmp[2].dis ? min[2] : tmp[2];
 			min[3] = min[3].dis < tmp[3].dis ? min[3] : tmp[3];
 			min[4] = min[4].dis < tmp[4].dis ? min[4] : tmp[4];
+			min[5] = min[5].dis < tmp[5].dis ? min[5] : tmp[5];
 		} 
 	}
 	
@@ -57,10 +58,12 @@ function radarPlay(){
 
 function radarAlert(min){
 	car.dashboard.backAlert.visible = car.dashboard.backAlert2.visible = false;
+	car.dashboard.frontAlert.visible = car.dashboard.frontAlert2.visible = false;
 	car.dashboard.backLeftAlert.visible = car.dashboard.backLeftAlert2.visible = false;
 	car.dashboard.backRightAlert.visible = car.dashboard.backRightAlert2.visible = false;
 	car.dashboard.frontRightAlert.visible = car.dashboard.frontRightAlert2.visible = false;
 	car.dashboard.frontLeftAlert.visible = car.dashboard.frontLeftAlert2.visible = false;
+	
 	if(min[0].dis < 20){
 		car.dashboard.frontRightAlert.visible = true;
 		if(min[0].dis < 10){
@@ -75,6 +78,7 @@ function radarAlert(min){
 	}
 	if(min[2].dis < 20){
 		car.dashboard.backLeftAlert.visible = true;
+		console.log(min[2].dis)
 		if(min[2].dis < 10){
 			car.dashboard.backLeftAlert2.visible = true;
 		}
@@ -89,6 +93,12 @@ function radarAlert(min){
 		car.dashboard.backAlert.visible = true;
 		if(min[4].dis < 10){
 			car.dashboard.backAlert2.visible = true;
+		}
+	}
+	if(min[5].dis < 20){
+		car.dashboard.frontAlert.visible = true;
+		if(min[5].dis < 10){
+			car.dashboard.frontAlert2.visible = true;
 		}
 	}
 }
