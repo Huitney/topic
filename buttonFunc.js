@@ -49,18 +49,6 @@ function onPointerDown (event) {
 				radarOffDown();
 		}
 		
-		if(intersects[0].object.name == 'accelerator'){
-			acceleratorDown();
-		}
-		
-		if(intersects[0].object.name == 'brakes'){
-			brakesDown();
-		}
-		
-		if(intersects[0].object.name == 'gear'){
-			gearDown();
-		}
-		
 		if(intersects[0].object.name == 'mapIcon'){
 			mapIconDown();
 		}
@@ -173,25 +161,6 @@ function radarOffDown(){
 	car.dashboard.radarOff.visible = false;
 }
 
-function acceleratorDown(){
-	car.dashboard.accelerator.position.x = 0.2;
-	car.dashboard.accelerator.position.y = -0.1;
-	if(car.dashboard.R.visible){
-		car.speed -= 1;
-	}else if(car.dashboard.D.visible){
-		car.speed += 1;
-	}
-}
-
-function brakesDown(){
-	car.dashboard.brakes.position.x = 0.2;
-	car.dashboard.brakes.position.y = -0.1;
-}
-
-function gearDown(){
-	
-}
-
 function mapIconDown(){
 	GPSView = !GPSView;
 	topView = false;
@@ -204,31 +173,4 @@ function mapIconDown(){
 	car.dashboard.zoomInBT.visible = false;
 	car.dashboard.zoomOutBT.visible = false;
 	car.dashboard.splitLine.visible = false;
-}
-
-function onPointerUp (event) {
-	event.preventDefault();  // may not be necessary
-	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-	// find intersections
-	raycaster.setFromCamera(mouse, camera);
-	var intersects = raycaster.intersectObjects(pickables, true);
-	if (intersects.length > 0) {
-		if(intersects[0].object.name == 'accelerator'){
-			acceleratorUp();
-		}else if(intersects[0].object.name == 'brakes'){
-			brakesUp();
-		}
-	}
-}
-
-function acceleratorUp(){
-	car.dashboard.accelerator.position.x = 0;
-	car.dashboard.accelerator.position.y = 0;
-}
-
-function brakesUp(){
-	car.dashboard.brakes.position.x = 0;
-	car.dashboard.brakes.position.y = 0;
 }

@@ -29,11 +29,13 @@ function poll(){
 	
 	if(min[0].dis < 20){
 		beeper = true;
+		longBeep.loop = true;
 		if (radarOn === false) 
 			setTimeout(radarPlay,0);
 	}
 	else {
 		beeper = false;
+		longBeep.loop = false;
 	}
 	
 }
