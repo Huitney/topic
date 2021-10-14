@@ -1,6 +1,10 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import {buildCar} from "./buildThing.js";
 import {firstPV} from "./func.js";
+import {cameraUpdate} from "./func.js";
+import {onPointerDown} from "./buttonFunc.js";
+import {parking, keyboardAndRC, moveCar, flashTurnSignal} from "./carMove.js";
+import {buildScenes, drawReversingLine} from "./buildScenes.js";
 
 var scene, renderer, camera;
 var sceneHUD, GPSCamera;

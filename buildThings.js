@@ -1,5 +1,6 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import {carParameter, scene} from "./init.js";
+import {buildDashboard} from "./buildDashboard.js";
 
 export class Car {
 	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, brakeLight, turnSignal, colorName = 'white') {
