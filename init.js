@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {buildCar} from "./buildThing.js";
+import {buildCar} from "./buildThings.js";
 import {firstPV} from "./func.js";
 import {cameraUpdate} from "./func.js";
 import {onPointerDown} from "./buttonFunc.js";
@@ -104,27 +104,28 @@ export function animate() {
     keyboard.update();
   
     // 'static' variables  
-	this.theta = (this.theta === undefined) ? 0.001 : this.theta;
-    this.fSlowDown = (this.fSlowDown === undefined) ? 0 : this.fSlowDown;
-    this.bSlowDown = (this.bSlowDown === undefined) ? 0 : this.bSlowDown;
+	animate.theta = (animate.theta === undefined) ? 0.001 : animate.theta;
+    animate.fSlowDown = (animate.fSlowDown === undefined) ? 0 : animate.fSlowDown;
+    animate.bSlowDown = (animate.bSlowDown === undefined) ? 0 : animate.bSlowDown;
 	
     /////////////////////////////////////////////////////////////////
     //move car	
 	var deltaT = clock.getDelta();
 	
-	let paraArray = keyboardAndRC(this.theta, this.fSlowDown, this.bSlowDown, deltaT);
-	this.theta = paraArray[0];
-	this.fSlowDown = paraArray[1];
-	this.bSlowDown = paraArray[2];
+	let paraArray = keyboardAndRC(animate.theta, animate.fSlowDown, animate.bSlowDown, deltaT);
+	animate.theta = paraArray[0];
+	animate.fSlowDown = paraArray[1];
+	animate.bSlowDown = paraArray[2];
+	let RC = paraArray[3];
     
 	let frontWheelToBackWheel = carParameter[carParameter.map(x =>x.name).indexOf('frontWheelToBackWheel')].value;
-    moveCar(RC, (car.speed * Math.tan(this.theta)/frontWheelToBackWheel), deltaT);
+    moveCar(RC, (car.speed * Math.tan(animate.theta)/frontWheelToBackWheel), deltaT);
 	
     //camera position
-	cameraUpdate(this.theta, this.fSlowDown, this.bSlowDown);
+	cameraUpdate(animate.theta, animate.fSlowDown, animate.bSlowDown);
 	
     //parking 
-	this.theta = parking(this.theta);
+	animate.theta = parking(animate.theta);
 		  
     /////////////////////////////////////////////
     // purely cosmetic ...    wheel turn  

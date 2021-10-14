@@ -160,7 +160,7 @@ export function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 
     //////////////////////////////////////////////////////////////
     
-    RC = car.mesh.localToWorld (new THREE.Vector3(-frontWheelToBackWheel/2,0,-frontWheelToBackWheel/Math.tan(theta)));
+    let RC = car.mesh.localToWorld (new THREE.Vector3(-frontWheelToBackWheel/2,0,-frontWheelToBackWheel/Math.tan(theta)));
     RCmesh.position.copy (RC);
 	
 	//////////////////////////////////////////////////////////////
@@ -298,7 +298,7 @@ export function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	//car speed pointer
 	car.dashboard.pointer.rotation.x = Math.abs(car.speed*0.042);
 	
-	return [theta, fSlowDown, bSlowDown];
+	return [theta, fSlowDown, bSlowDown, RC];
 }
 
 export function moveCar(RC, omega, deltaT){
@@ -331,13 +331,13 @@ export function moveCar(RC, omega, deltaT){
 }
 
 export function flashTurnSignal(){
-	this.ticker = (this.ticker === undefined) ? true : this.ticker;
+	flashTurnSignal.ticker = (flashTurnSignal.ticker === undefined) ? true : flashTurnSignal.ticker;
 	car.turnSignalR.material.color.set(0x998000);
 	car.turnSignalL.material.color.set(0x998000);
 	car.dashboard.turnSignalL.material.color.set('dimgrey');
 	car.dashboard.turnSignalR.material.color.set('dimgrey');
 	
-	if(this.ticker){
+	if(flashTurnSignal.ticker){
 		if (keyboard.pressed('right')){
 			car.dashboard.turnSignalR.material.color.set('springgreen');
 			car.turnSignalR.material.color.set('gold');
@@ -347,8 +347,7 @@ export function flashTurnSignal(){
 			car.dashboard.turnSignalL.material.color.set('springgreen');
 		}
 	}
-	this.ticker =! this.ticker;
-	console.log(this.ticker);
+	flashTurnSignal.ticker =! flashTurnSignal.ticker;
 	
 	setTimeout(flashTurnSignal,300);
 }

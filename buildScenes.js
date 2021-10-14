@@ -43,7 +43,7 @@ export function buildScenes(){
 	shape.absarc(rr,width-rr,rr,Math.PI/2, Math.PI);
 	shape.absarc(rr,rr,rr,Math.PI, Math.PI*1.5);
 
-	path = new THREE.Path();
+	var path = new THREE.Path();
 	path.moveTo(length / 7.3, width / 21);
 	path.lineTo(length / 7.3 * 6.3, width / 21);
 	path.lineTo(length / 7.3 * 6.3, width / 21 * 20);
@@ -203,7 +203,7 @@ export function buildScenes(){
 	scene.add(sidewalk1, sidewalk2, sidewalk3, sidewalk4, sidewalk5, sidewalk6);
 
 //zebraCrossing
-	texture = loader.load('https://i.imgur.com/09w3f06.png');
+	var texture = loader.load('https://i.imgur.com/09w3f06.png');
 
 	texture.minFilter = THREE.NearestFilter;
 	texture.needsUpdate = true;
@@ -250,7 +250,7 @@ export function buildScenes(){
 	road1.position.x = -125;
 	road1.rotation.x = Math.PI/2;
 
-	texture1 = loader.load('https://i.imgur.com/KvjCb5P.png');
+	var texture1 = loader.load('https://i.imgur.com/KvjCb5P.png');
 	texture1.minFilter = THREE.NearestFilter;
 	texture1.needsUpdate = true;
 	var road2 = new THREE.Mesh(new THREE.PlaneGeometry(70, 80), new THREE.MeshBasicMaterial({
@@ -264,7 +264,7 @@ export function buildScenes(){
 	road2.rotation.x = Math.PI/2;
 
 
-	texture2 = loader.load('https://i.imgur.com/VPddEdt.png?3');
+	var texture2 = loader.load('https://i.imgur.com/VPddEdt.png?3');
 
 	texture2.wrapS = THREE.RepeatWrapping;
 	texture2.wrapT = THREE.RepeatWrapping;
@@ -393,7 +393,7 @@ export function buildScenes(){
 	road15.rotation.x = Math.PI/2;
 
 
-	texture3 = loader.load('https://i.imgur.com/Q8DzNSQ.png?1');
+	var texture3 = loader.load('https://i.imgur.com/Q8DzNSQ.png?1');
 	var road16 = new THREE.Mesh(new THREE.PlaneGeometry(80, 40), new THREE.MeshBasicMaterial({
 								map: texture3,
 								alphaTest: 0.5,
@@ -652,7 +652,7 @@ export function buildScenes(){
 	scene.add(redLine6);
 	
 	//parking space
-	texture4 = loader.load('https://i.imgur.com/ifr2RZj.png');
+	var texture4 = loader.load('https://i.imgur.com/ifr2RZj.png');
 	var space1 = new THREE.Mesh(new THREE.PlaneGeometry(55, 27), new THREE.MeshBasicMaterial({
 								map: texture4,
 								alphaTest: 0.5,

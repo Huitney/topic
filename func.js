@@ -60,13 +60,13 @@ export function cameraUpdate(theta, fSlowDown, bSlowDown){
 export function PDControl(theta, dt){
 	var KP = 50;
 	var KD = 15;
-	this.vv = (this.vv === undefined) ? 0 : this.vv;
+	PDControl.vv = (PDControl.vv === undefined) ? 0 : PDControl.vv;
 	
-	var f = KP*(-theta) - KD*this.vv;
+	var f = KP*(-theta) - KD*PDControl.vv;
 
 	// plant dynamics 
-	this.vv += f*dt;
-	theta += this.vv*dt
+	PDControl.vv += f*dt;
+	theta += PDControl.vv*dt
 	
 	return theta;
 }
