@@ -1,4 +1,7 @@
-class Car {
+import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import {carParameter, scene} from "./init.js";
+
+export class Car {
 	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, brakeLight, turnSignal, colorName = 'white') {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
@@ -162,7 +165,7 @@ class Car {
 	}
 }
 
-class Obstacle {
+export class Obstacle {
 	constructor(pos, size, texture) {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
@@ -239,85 +242,7 @@ class Obstacle {
 	}
 }
 
-class ObstacleCar {
-	constructor(pos, modelName) {
-		this.center = pos;
-		this.mesh = readModel(modelName);
-		
-		if(this.mesh){
-			this.mesh.position.copy(pos);
-			scene.add(this.mesh);
-			this.rotate(0); // set initial axes
-		}
-	}
-
-	rotate(angle) {
-		this.angle = angle;
-
-		let yAxis = new THREE.Vector3(0, 1, 0);
-		this.axes = [];
-		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
-		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
-				
-		this.dir = [];
-		this.dir[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
-		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
-		this.dir[2] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
-		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
-		
-		this.c = [];
-		this.mesh.updateWorldMatrix(true, false);
-		this.c[0] = this.mesh.localToWorld(new THREE.Vector3(this.size[0], 0, 0));
-		this.c[1] = this.mesh.localToWorld(new THREE.Vector3(-this.size[0], 0, 0));
-		this.c[2] = this.mesh.localToWorld(new THREE.Vector3(0, 0, this.size[2]));
-		this.c[3] = this.mesh.localToWorld(new THREE.Vector3(0, 0, -this.size[2]));
-		
-		this.mesh.rotation.y = angle;
-	}
-	
-	calculateDistance(pointB) {
-		// four axes to check
-		let obbA = this;
-
-		let x1 = (pointB.clone().sub(obbA.c[0])).dot(obbA.dir[0]);
-		let x2 = (pointB.clone().sub(obbA.c[1])).dot(obbA.dir[1]);
-		let z1 = (pointB.clone().sub(obbA.c[2])).dot(obbA.dir[2]);
-		let z2 = (pointB.clone().sub(obbA.c[3])).dot(obbA.dir[3]);
-
-		let dis = new THREE.Vector3(0, 0, 0);
-		if(x1 > 0){
-			if(z1 > 0){
-				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, obbA.size[2])));
-			}else if(z2 > 0){
-				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, -obbA.size[2])));
-			}else {
-				dis.x = pointB.clone().sub(obbA.c[0]).dot(obbA.dir[0]);
-				dis.z = 0;
-			}
-		}else if(x2 > 0){
-			if(z1 > 0){
-				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, obbA.size[2])));
-			}else if(z2 > 0){
-				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, -obbA.size[2])));
-			}else {
-				dis.x = pointB.clone().sub(obbA.c[1]).dot(obbA.dir[1]);
-				dis.z = 0;
-			}
-		}else if(z1 > 0){
-			dis.z = pointB.clone().sub(obbA.c[2]).dot(obbA.dir[2]);
-			dis.x = 0;
-		}else if(z2 > 0){
-			dis.z = pointB.clone().sub(obbA.c[3]).dot(obbA.dir[3]);
-			dis.x = 0;
-		}else{
-			dis.x = dis.z = 0;
-		}
-		return Math.sqrt(dis.x*dis.x + dis.z*dis.z);
-
-	}
-}
-
-function buildCar(pos) {
+export function buildCar(pos) {
     let loader = new THREE.TextureLoader();
     loader.setCrossOrigin('');
   
@@ -516,3 +441,4 @@ function buildSeats(){
 	seats.add( backSeats, frontSeatL, frontSeatR );
 	return seats;
 }
+

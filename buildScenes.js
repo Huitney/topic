@@ -1,4 +1,9 @@
-function buildScenes(){
+import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import {car, scene} from "./init.js";
+
+var traceMeshes = [];
+
+export function buildScenes(){
 	//ground
 	
 	var shape = new THREE.Shape(); 
@@ -791,7 +796,7 @@ function buildScenes(){
 
 }
 
-function drawReversingLine(){
+export function drawReversingLine(){
 	//Reversing display line
 	const material = new THREE.LineBasicMaterial( {color: 0xffffff } );
 	const points = [];

@@ -1,3 +1,8 @@
+import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import {car, obstacles, radarSound, longBeep} from "./init.js";
+
+var beeper = false, radarOn = false;
+
 setInterval (poll, 200);
 
 function poll(){

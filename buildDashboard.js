@@ -1,4 +1,9 @@
-class Dashboard{
+import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import {scene, sceneHUD} from "./init.js";
+
+var pickables = [];
+
+export class Dashboard{
 	constructor(steeringWheel, board, screen, autoBT, manuBT, gear, gearFrame
 				, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
 				, backAlert, backAlert2, backLeftAlert, frontAlert, frontAlert2, backLeftAlert2
@@ -54,7 +59,7 @@ class Dashboard{
 	}
 }
 
-function buildDashboard(){
+export function buildDashboard(){
 	
 	let loader = new THREE.TextureLoader();
 	loader.crossOrigin = '';
@@ -482,3 +487,5 @@ function buildDashboard(){
 	
 	return dashboard;
 }
+
+export {pickables};

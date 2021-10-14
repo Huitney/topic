@@ -1,4 +1,12 @@
-function onPointerDown (event) {
+import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import {parkingMode, parkingAngle, parkingModeButton} from "./carMove.js";
+import {car, camera, topCamera, raycaster, radarSound, longBeep, topView, GPSView} from "./init.js";
+import {pickables} from "./buildDashboard.js";
+
+var mouse = new THREE.Vector2();
+var soundBT = false, CCW = 0;
+
+export function onPointerDown (event) {
 	
 	event.preventDefault();  // may not be necessary
 	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -149,6 +157,8 @@ function radarOnDown(){
 	soundBT = true;
 	radarSound.volume = 0;
 	radarSound.muted = true;
+	longBeep.volume = 0;
+	longBeep.muted = true;
 	car.dashboard.radarOn.visible = false;
 	car.dashboard.radarOff.visible = true;
 }
@@ -157,6 +167,8 @@ function radarOffDown(){
 	soundBT = false;
 	radarSound.volume = 1;
 	radarSound.muted = false;
+	longBeep.volume = 1;
+	longBeep.muted = false;
 	car.dashboard.radarOn.visible = true;
 	car.dashboard.radarOff.visible = false;
 }

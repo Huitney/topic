@@ -1,4 +1,22 @@
-function cameraUpdate(theta, fSlowDown, bSlowDown){
+import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import {car, camera, reversingCamera, keyboard} from "./init.js";
+
+var thirdPV = false, firstPV = false;
+
+//button
+$("#thirdPV").click(function() {
+	thirdPV = !thirdPV;
+	if(thirdPV)
+		firstPV = false;
+});
+
+$("#firstPV").click(function() {
+	firstPV = !firstPV;
+	if(firstPV)
+		thirdPV = false;
+});
+
+export function cameraUpdate(theta, fSlowDown, bSlowDown){
 	car.dashboard.mesh.visible = false;
     if (thirdPV) {
 		let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10,0,0));
@@ -39,7 +57,7 @@ function cameraUpdate(theta, fSlowDown, bSlowDown){
     }
 }
 
-function PDControl(theta, dt){
+export function PDControl(theta, dt){
 	var KP = 50;
 	var KD = 15;
 	this.vv = (this.vv === undefined) ? 0 : this.vv;
@@ -53,8 +71,4 @@ function PDControl(theta, dt){
 	return theta;
 }
 
-function onWindowResize() {
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-	renderer.setSize(window.innerWidth, window.innerHeight);
-}
+export {firstPV};

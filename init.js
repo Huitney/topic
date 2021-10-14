@@ -1,5 +1,6 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import {buildCar} from "./buildThing.js";
+import {firstPV} from "./func.js";
 
 var scene, renderer, camera;
 var sceneHUD, GPSCamera;

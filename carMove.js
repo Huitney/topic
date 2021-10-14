@@ -1,4 +1,10 @@
-function parking(theta){
+import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import {car, topCamera, thirdPVCamera, GPSCamera, keyboard, obstacles, RCmesh, carParameter} from "./init.js";
+
+var parkingMode = 0, parkingAngle = 0, PPart = 0;
+var parkingModeButton = false;
+
+export function parking(theta){
 	//parkingMode 0 manual 1 auto parking 2 stop parking      
 	//PPart 0 turn right 1 change direction 2 turn left
     if(parkingMode == 1 && parkingModeButton == false){            //auto parking Mode 1
@@ -112,7 +118,7 @@ function parking(theta){
 	return theta;
 }
 
-function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
+export function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	//gas and brake icon
 	car.dashboard.brakeIcon.material.color.set('dimgrey');
 	car.dashboard.gasIcon.material.color.set('dimgrey');
@@ -294,7 +300,7 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 	return [theta, fSlowDown, bSlowDown];
 }
 
-function moveCar(RC, omega, deltaT){
+export function moveCar(RC, omega, deltaT){
 	
 	// C is the center of car body
     let C = car.mesh.position.clone();
@@ -323,7 +329,7 @@ function moveCar(RC, omega, deltaT){
 	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-60,200,0)));
 }
 
-function flashTurnSignal(){
+export function flashTurnSignal(){
 	this.ticker = (this.ticker === undefined) ? true : this.ticker;
 	car.turnSignalR.material.color.set(0x998000);
 	car.turnSignalL.material.color.set(0x998000);
@@ -345,3 +351,5 @@ function flashTurnSignal(){
 	
 	setTimeout(flashTurnSignal,300);
 }
+
+export {parkingMode, parkingAngle, parkingModeButton};
