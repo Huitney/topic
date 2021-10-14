@@ -1,5 +1,5 @@
 class Car {
-	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, brakeLight, colorName = 'white') {
+	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, brakeLight, turnSignal, colorName = 'white') {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0] * 2, size[1] * 2, size[2] * 2), materialArray);
@@ -15,17 +15,26 @@ class Car {
 		
 		this.brakeLightR = brakeLight;
 		this.brakeLightR.material.color.set('darkred');
-		this.brakeLightR.position.set(-19.01, -5.5, 8);
+		this.brakeLightR.position.set(-19.02, -5, 8);
 		this.brakeLightL = brakeLight.clone();
 		this.brakeLightL.material.color.set('darkred');
-		this.brakeLightL.position.set(-19.01, -5.5, -8);
+		this.brakeLightL.position.set(-19.02, -5, -8);
+		
+		this.turnSignalR = turnSignal[0];
+		this.turnSignalR.material.color.set(0x998000);
+		this.turnSignalR.position.set(-19.01, -7, 8);
+		this.turnSignalL = turnSignal[1];
+		this.turnSignalL.material.color.set(0x998000);
+		this.turnSignalL.position.set(-19.01, -7, -8);
 				
 		this.leftfrontWheel = new THREE.Group();
 		this.rightfrontWheel = new THREE.Group();
 		this.leftRearWheel = new THREE.Group();
 		this.rightRearWheel = new THREE.Group();
+		this.seats = buildSeats();
 		
-		this.mesh.add(this.leftfrontWheel, this.rightfrontWheel, this.leftRearWheel, this.rightRearWheel, this.brakeLightR, this.brakeLightL);
+		this.mesh.add(this.leftfrontWheel, this.rightfrontWheel, this.leftRearWheel, this.rightRearWheel
+					, this.brakeLightR, this.brakeLightL, this.seats, this.turnSignalR, this.turnSignalL);
 		scene.add(this.mesh, this.mapArrow);
 		
 		this.rotate(0); // set initial axes
@@ -404,9 +413,23 @@ function buildCar(pos) {
 																		side: THREE.DoubleSide
 																	}));
 	brakeLight.rotation.y = Math.PI/2;
+	
+	//turnSignal
+	var turnSignalR = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshBasicMaterial({
+																		map: loader.load('https://i.imgur.com/CrbaIo1.png'),
+																		alphaTest: 0.5,
+																		side: THREE.DoubleSide
+																	}));
+	turnSignalR.rotation.y = Math.PI/2;
+	var turnSignalL = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshBasicMaterial({
+																		map: loader.load('https://i.imgur.com/CrbaIo1.png'),
+																		alphaTest: 0.5,
+																		side: THREE.DoubleSide
+																	}));
+	turnSignalL.rotation.y = Math.PI/2;
   
     // assembly
-    let car = new Car(pos, [bodyLength/2, bodyWidth/2, 10], materialArray, materialArray2, dashboard, mapArrow, brakeLight, 'white');
+    let car = new Car(pos, [bodyLength/2, bodyWidth/2, 10], materialArray, materialArray2, dashboard, mapArrow, brakeLight, [turnSignalR, turnSignalL], 'white');
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);
@@ -430,4 +453,66 @@ function buildCar(pos) {
     car.rightRearWheel.add(mesh4);
 		
     return car;
+}
+
+function buildSeats(){
+	var seats = new THREE.Group();
+	
+	//backSeats
+	let shape = new THREE.Shape();
+	shape.moveTo( 0,0 );
+	shape.lineTo( 0, 10 );
+	shape.lineTo( 3, 10 );
+	shape.lineTo( 3, 6 );
+	shape.lineTo( 9, 6 );
+	shape.lineTo( 9, 10 );
+	shape.lineTo( 12, 10 );
+	shape.lineTo( 12, 0 );
+	shape.lineTo( 0, 0 );
+
+	let extrudeSettings = {
+		steps: 2,
+		depth: 2,
+		bevelThickness: 1,
+		bevelSize: 1,
+		bevelSegments: 1
+	};
+	
+	let geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+	let backSeats = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0x323740, transparent: true, opacity: 0.7 } ) ) ;
+	backSeats.position.set(-12, -5, -6);
+	backSeats.rotation.y = -Math.PI/2;
+	
+	let longSeat = new THREE.Mesh( new THREE.BoxGeometry( 5, 2, 14 ), new THREE.MeshLambertMaterial( {color: 0x323740, transparent: true, opacity: 0.7} ) );
+	longSeat.position.set(6, 0, -1.5);
+	longSeat.rotation.y = Math.PI/2;
+	backSeats.add(longSeat);
+	
+	//frontSeat
+	shape = new THREE.Shape();
+	shape.moveTo( 0,0 );
+	shape.lineTo( 0, 10 );
+	shape.lineTo( 2, 10 );
+	shape.lineTo( 2, 2 );
+	shape.lineTo( 5, 2 );
+	shape.lineTo( 5, 0 );
+	shape.lineTo( 0, 0 );
+
+	extrudeSettings = {
+		steps: 2,
+		depth: 4,
+		bevelThickness: 1,
+		bevelSize: 1,
+		bevelSegments: 1
+	};
+	geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+	let frontSeatL = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0x323740, transparent: true, opacity: 0.7 } ) ) ;
+	frontSeatL.position.set(5, -5, -6);
+	
+	let frontSeatR = frontSeatL.clone();
+	frontSeatR.position.set(5, -5, 2);
+	
+	
+	seats.add( backSeats, frontSeatL, frontSeatR );
+	return seats;
 }

@@ -130,11 +130,14 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 		car.dashboard.gearFrame.position.z = 0.17;//D
 	}
 	car.speed = Math.clamp (car.speed, -15, 50);
-  
-    if (keyboard.pressed('right'))
+
+	
+    if (keyboard.pressed('right')){
 		theta -= 0.002;
-    if (keyboard.pressed('left'))
+	}
+    if (keyboard.pressed('left')){
 		theta += 0.002;  
+	}
 	if(!keyboard.pressed('left') & !keyboard.pressed('right') & parkingMode !== 1){
 		theta = PDControl(theta, deltaT);
 		if(theta.toFixed(5) == 0.00000)
@@ -169,28 +172,36 @@ function keyboardAndRC(theta, fSlowDown, bSlowDown, deltaT){
 		if(car.speed > 0) {  // moving forward --> slow down gradually
 			car.speed -= 0.1;
 		} else if (car.speed <= 0) {  // moving backward --> stop immediately
-			car.speed += 0.1;
+			car.speed = 0;
 			fSlowDown = 0;
 		}
     } else if (bSlowDown == 1) {
 		if(car.speed < 0) {
 			car.speed += 0.1;
 		} else if (car.speed >= 0) {
-			car.speed -= 0.1;
+			car.speed = 0;
 			bSlowDown = 0;
 		}
     } else if(!keyboard.pressed("up") & !keyboard.pressed("down") & !keyboard.pressed("space") & !keyboard.pressed("alt") & !keyboard.pressed("ctrl")){
 		if(car.dashboard.gearFrame.position.z == -0.13 & car.speed > -2){ //R
 			car.speed -= 0.1;
+			if(car.speed.toFixed(1) == -2.0)
+				car.speed = -2;
 		} 
 		else if(car.dashboard.gearFrame.position.z == -0.13 & car.speed < -2){ //R
 			car.speed += 0.1;
+			if(car.speed.toFixed(1) == -2.0)
+				car.speed = -2;
 		}
 		else if(car.dashboard.gearFrame.position.z == 0.17 & car.speed > 2){//D
 			car.speed -= 0.1;
+			if(car.speed.toFixed(1) == 2.0)
+				car.speed = 2;
 		}
 		else if(car.dashboard.gearFrame.position.z == 0.17 & car.speed < 2){//D
 			car.speed += 0.1;
+			if(car.speed.toFixed(1) == 2.0)
+				car.speed = 2;
 		}
 		car.speed = Math.clamp (car.speed, -15, 50);
 	}
@@ -310,4 +321,27 @@ function moveCar(RC, omega, deltaT){
 	thirdPVCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-30,18,0)));
 	GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(50,0,0)));
 	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-60,200,0)));
+}
+
+function flashTurnSignal(){
+	this.ticker = (this.ticker === undefined) ? true : this.ticker;
+	car.turnSignalR.material.color.set(0x998000);
+	car.turnSignalL.material.color.set(0x998000);
+	car.dashboard.turnSignalL.material.color.set('dimgrey');
+	car.dashboard.turnSignalR.material.color.set('dimgrey');
+	
+	if(this.ticker){
+		if (keyboard.pressed('right')){
+			car.dashboard.turnSignalR.material.color.set('springgreen');
+			car.turnSignalR.material.color.set('gold');
+		}
+		else if (keyboard.pressed('left')){
+			car.turnSignalL.material.color.set('gold');
+			car.dashboard.turnSignalL.material.color.set('springgreen');
+		}
+	}
+	this.ticker =! this.ticker;
+	console.log(this.ticker);
+	
+	setTimeout(flashTurnSignal,300);
 }

@@ -3,7 +3,8 @@ class Dashboard{
 				, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
 				, backAlert, backAlert2, backLeftAlert, frontAlert, frontAlert2, backLeftAlert2
 				, backRightAlert, backRightAlert2, frontRightAlert, frontRightAlert2, frontLeftAlert
-				, frontLeftAlert2, gasIcon, brakeIcon, mapIcon, splitLine, speedometer, pointer){
+				, frontLeftAlert2, gasIcon, brakeIcon, mapIcon, splitLine, speedometer, pointer
+				, turnSignalL, turnSignalR){
 		this.steeringWheel = steeringWheel;
 		this.board = board;
 		this.screen = screen;
@@ -38,6 +39,8 @@ class Dashboard{
 		this.splitLine = splitLine;
 		this.speedometer = speedometer;
 		this.pointer = pointer;
+		this.turnSignalL = turnSignalL;
+		this.turnSignalR = turnSignalR;
 				
 		this.mesh = new THREE.Group();
 		this.mesh.add(this.steeringWheel, this.board, this.screen, this.autoBT, this.manuBT
@@ -45,7 +48,7 @@ class Dashboard{
 					, this.gearFrame, this.radarOn, this.radarOff, this.backAlert, this.backAlert2, this.frontAlert, this.frontAlert2
 					, this.backLeftAlert, this.backLeftAlert2, this.backRightAlert, this.backRightAlert2, this.frontRightAlert
 					, this.frontRightAlert2, this.frontLeftAlert, this.frontLeftAlert2, this.gasIcon, this.brakeIcon, this.mapIcon
-					, this.splitLine, this.speedometer, this.pointer);
+					, this.splitLine, this.speedometer, this.pointer, this.turnSignalL, this.turnSignalR);
 		
 		sceneHUD.add(this.mesh);
 	}
@@ -443,12 +446,36 @@ function buildDashboard(){
 	cone.position.z = -0.15;
 	cone.rotation.x = -Math.PI/2 - Math.PI/15;
 	pointer.position.set(0.3, 0.07, -3);
+	
+	//turnSignalL
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/QMsaXAr.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var turnSignalL = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.15), texMat);
+	turnSignalL.position.set(0.2, 0.14, -3.6);
+	turnSignalL.rotation.y = -Math.PI/2;
+	turnSignalL.rotation.x = Math.PI;
+	turnSignalL.material.color.set('dimgrey');
+	
+	//turnSignalR
+	texMat = new THREE.MeshBasicMaterial({
+		map: loader.load('https://i.imgur.com/QMsaXAr.png'),
+		alphaTest: 0.5,
+		side: THREE.DoubleSide
+	});
+	var turnSignalR = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.15), texMat);
+	turnSignalR.position.set(0.2, 0.135, -2.29);
+	turnSignalR.rotation.y = -Math.PI/2;
+	turnSignalR.material.color.set('dimgrey');
 		
 	var dashboard = new Dashboard(steeringWheel, board, screen, autoBT, manuBT, gear, gearFrame
 								, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
 								, backAlert, backAlert2, backLeftAlert, frontAlert, frontAlert2, backLeftAlert2
 								, backRightAlert, backRightAlert2, frontRightAlert, frontRightAlert2, frontLeftAlert
-								, frontLeftAlert2, gasIcon, brakeIcon, mapIcon, splitLine, speedometer, pointer);
+								, frontLeftAlert2, gasIcon, brakeIcon, mapIcon, splitLine, speedometer, pointer
+								, turnSignalL, turnSignalR);
 	
 	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
 					, dashboard.radarOn, dashboard.topViewBT, dashboard.gear, dashboard.mapIcon);

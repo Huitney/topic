@@ -1,84 +1,20 @@
-<html><head>
-<link rel="stylesheet" type="text/css" href="carStyle.css">
-</head>
-
-<body style='overflow:hidden'> 
-<div id="info">
-	<h2 id="warning">no hit</h2>
-</div>
-
-<audio id="radarSound" style="display:none" muted>
-<source src="https://huitney.github.io/topic/sounds/beep_short.wav" type='audio/wav'></audio>
-<audio id="longBeep" style="display:none" muted>
-<source src="https://huitney.github.io/topic/sounds/beep-13(long).wav" type='audio/wav'></audio>
-
-<!---->
-<script src="https://threejs.org/build/three.min.js"></script>
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
-<script src="buildThings.js"></script>
-<script src="buildDashboard.js"></script>
-<script src="buildScenes.js"></script>
-<script src="func.js"></script>
-<script src="carMove.js"></script>
-<script src="radarFunc.js"></script>
-<script src="buttonFunc.js"></script>
-<!---->
-
-<button id="thirdPV"><img src="https://i.imgur.com/OvvIh4R.png?2" style="width:80px;height:80px;"></button>
-<button id="firstPV"><img src="https://i.imgur.com/AX5vRqY.png" style="width:80px;height:80px;"></button>
-
-<script>
-//import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-//import * as KeyboardState from 'https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js';
-//import * from 'https://code.jquery.com/jquery-2.1.4.min.js';
-
-
-( function() {
-	Math.clamp = function(val,min,max) {
-		return Math.min(Math.max(val,min),max);
-	} 
-})();
+import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import {buildCar} from "./buildThing.js";
 
 var scene, renderer, camera;
 var sceneHUD, GPSCamera;
 var topCamera, thirdPVCamera;
 var reversingCamera;
-
 var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
 var car, obstacles = [];
-var raycaster, pickables = [];
-var mouse = new THREE.Vector2();
+var raycaster;
 var radarSound, RCmesh, longBeep;
-var beeper = false, radarOn = false;
-
-var soundBT = false, topView = false, GPSView = false;
-var thirdPV = false, firstPV = false;
-var parkingMode = 0, parkingAngle = 0;
-var PPart = 0, CCW = 0;
-var parkingModeButton = false;
-var traceMeshes = [];
+var topView = false, GPSView = false;
 var carParameter;
 
-//button
-$("#thirdPV").click(function() {
-	thirdPV = !thirdPV;
-	if(thirdPV)
-		firstPV = false;
-});
-
-$("#firstPV").click(function() {
-	firstPV = !firstPV;
-	if(firstPV)
-		thirdPV = false;
-});
-
-init();
-animate();
-  
-function init() {
+export function init() {
 
 	scene = new THREE.Scene();
 	sceneHUD = new THREE.Scene();
@@ -98,13 +34,6 @@ function init() {
 	carParameter = [{name:'bodyWidth', value:20}, {name:'bodyLength', value:38}
 					, {name:'axelLength', value:16}, {name:'frontWheelToBackWheel', value:26}];
 	
-	/*
-	var grid = new THREE.GridHelper (400,40,'red','white');
-	scene.add (grid);
-	const axesHelper = new THREE.AxesHelper( 25 );
-	scene.add( axesHelper );
-	*/
-
     ////////////////////////////////////////////////////////////
 	//car
     car = buildCar(new THREE.Vector3(-122, 13, 21));
@@ -163,7 +92,7 @@ function init() {
 	flashTurnSignal();
 }
   
-function animate() {
+export function animate() {
 	
     renderer.clear(true);
     
@@ -204,6 +133,7 @@ function animate() {
 }
   
 function render() {
+	
 	var WW = window.innerWidth;
 	var HH = window.innerHeight;
     renderer.setScissorTest( true );
@@ -252,4 +182,12 @@ function render() {
 	else car.mesh.visible = true;
 	renderer.setScissorTest( false );
 }
-</script></body></html>
+
+function onWindowResize() {
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+export {scene, sceneHUD, camera, GPSCamera, topCamera, thirdPVCamera, reversingCamera, keyboard
+		, car, obstacles, raycaster, radarSound, RCmesh, longBeep, topView, GPSView, carParameter};
