@@ -1,7 +1,7 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import {buildCar} from "./buildThings.js";
 import {firstPV} from "./func.js";
-import {cameraUpdate} from "./func.js";
+import {cameraUpdate, treesLootAt, treesVisible} from "./func.js";
 import {onPointerDown} from "./buttonFunc.js";
 import {parking, keyboardAndRC, moveCar, flashTurnSignal} from "./carMove.js";
 import {buildScenes, drawReversingLine} from "./buildScenes.js";
@@ -133,6 +133,9 @@ export function animate() {
     car.rightfrontWheel.rotation.z -= car.speed*deltaT/5;
     car.leftRearWheel.rotation.z -= car.speed*deltaT/5;
     car.rightRearWheel.rotation.z -= car.speed*deltaT/5;
+	
+	//trees
+	treesLootAt();
   
     requestAnimationFrame(animate);
     render();
@@ -160,7 +163,9 @@ function render() {
 			renderer.clear();
 			car.brakeLightR.visible = false;
 			car.brakeLightL.visible = false;
+			treesVisible(false);
 			renderer.render(scene, reversingCamera);	
+			treesVisible(true);
 			car.brakeLightR.visible = true;
 			car.brakeLightL.visible = true;
 		}
@@ -180,7 +185,9 @@ function render() {
 			renderer.clear();
 			car.mesh.visible = false;
 			car.mapArrow.visible = true;
+			treesVisible(false);
 			renderer.render(scene, GPSCamera);
+			treesVisible(true);
 			car.mesh.visible = true;
 			car.mapArrow.visible = false;
 		}

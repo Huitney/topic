@@ -1,5 +1,6 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import {car, camera, reversingCamera, keyboard} from "./init.js";
+import {bushes, bushes1, bushes2, bushes3} from "./buildScenes.js"
 
 var thirdPV = false, firstPV = false;
 
@@ -69,6 +70,24 @@ export function PDControl(theta, dt){
 	theta += PDControl.vv*dt
 	
 	return theta;
+}
+
+export function treesLootAt(){
+	let cameraRoot = camera.position.clone();
+	cameraRoot.y =camera.position.y;
+
+	bushes.forEach (function(b) {b.lookAt (cameraRoot)})
+	bushes1.forEach (function(b) {b.lookAt (cameraRoot)})
+	bushes2.forEach (function(b) {b.lookAt (cameraRoot)})
+	bushes3.forEach (function(b) {b.lookAt (cameraRoot)})
+}
+
+export function treesVisible(canSee){
+
+	bushes.forEach (function(b) {b.visible = canSee})
+	bushes1.forEach (function(b) {b.visible = canSee})
+	bushes2.forEach (function(b) {b.visible = canSee})
+	bushes3.forEach (function(b) {b.visible = canSee})
 }
 
 export {firstPV};

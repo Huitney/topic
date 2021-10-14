@@ -18,10 +18,12 @@ export function onPointerDown (event) {
 	if (intersects.length > 0) {
 		if(intersects[0].object.name == 'parkBT'){
 			parkBTDown();
+			console.log('1')
 		}
 		
 		if(intersects[0].object.name == 'topViewBT'){
 			topViewBTDown();
+			console.log('1')
 		}
 		
 		if(intersects[0].object.name == 'CCWBT'){
