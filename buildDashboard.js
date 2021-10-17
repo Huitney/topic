@@ -466,7 +466,7 @@ export function buildDashboard(){
 	
 	//turnSignalL
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/QMsaXAr.png'),
+		map: loader.load('./pictures/DGZapB4.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -478,7 +478,7 @@ export function buildDashboard(){
 	
 	//turnSignalR
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/QMsaXAr.png'),
+		map: loader.load('./pictures/DGZapB4.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
