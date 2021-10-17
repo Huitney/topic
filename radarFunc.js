@@ -3,9 +3,7 @@ import {car, obstacles, radarSound, longBeep} from "./init.js";
 
 var beeper = false, radarOn = false;
 
-setInterval (poll, 200);
-
-function poll(){
+export function poll(){
 	
 	let min = [];
 	for(let i = 0;i < obstacles.length;i++){

@@ -4,7 +4,7 @@
 
 <body style='overflow:hidden'> 
 <div id="info">
-	<h2 id="warning">no hit</h2>
+	
 </div>
 
 <audio id="radarSound" style="display:none" muted>
@@ -21,6 +21,7 @@
 <script type ="module">
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import {init, animate} from "./init.js";
+import {poll} from "./radarFunc.js";
 
 
 ( function() {
@@ -32,4 +33,5 @@ import {init, animate} from "./init.js";
 init();
 animate();
   
+setInterval (poll, 200);
 </script></body></html>

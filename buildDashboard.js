@@ -228,6 +228,7 @@ export function buildDashboard(){
 	frontRightAlert.position.y = 1.51;
 	frontRightAlert.position.z = 0.955;
 	frontRightAlert.rotation.y = -Math.PI/2;
+	frontRightAlert.visible = false;
 	
 	//frontRightAlert2
 	texMat = new THREE.MeshBasicMaterial({
@@ -239,6 +240,7 @@ export function buildDashboard(){
 	frontRightAlert2.position.y = 1.54;
 	frontRightAlert2.position.z = 0.985;
 	frontRightAlert2.rotation.y = -Math.PI/2;
+	frontRightAlert2.visible = false;
 	
 	//frontLeftAlert
 	texMat = new THREE.MeshBasicMaterial({
@@ -251,6 +253,7 @@ export function buildDashboard(){
 	frontLeftAlert.position.z = 0.89;
 	frontLeftAlert.rotation.y = -Math.PI/2;
 	frontLeftAlert.rotation.x = -Math.PI/2;
+	frontLeftAlert.visible = false;
 	
 	//frontLeftAlert2
 	texMat = new THREE.MeshBasicMaterial({
@@ -263,6 +266,7 @@ export function buildDashboard(){
 	frontLeftAlert2.position.z = 0.86;
 	frontLeftAlert2.rotation.y = -Math.PI/2;
 	frontLeftAlert2.rotation.x = -Math.PI/2;
+	frontLeftAlert2.visible = false;
 	
 	//backLeftAlert
 	texMat = new THREE.MeshBasicMaterial({
@@ -275,6 +279,7 @@ export function buildDashboard(){
 	backLeftAlert.position.z = 0.895;
 	backLeftAlert.rotation.y = -Math.PI/2;
 	backLeftAlert.rotation.x = Math.PI;
+	backLeftAlert.visible = false;
 	
 	//backLeftAlert2
 	texMat = new THREE.MeshBasicMaterial({
@@ -287,6 +292,7 @@ export function buildDashboard(){
 	backLeftAlert2.position.z = 0.865;
 	backLeftAlert2.rotation.y = -Math.PI/2;
 	backLeftAlert2.rotation.x = Math.PI;
+	backLeftAlert2.visible = false;
 	
 	//backRightAlert
 	texMat = new THREE.MeshBasicMaterial({
@@ -299,6 +305,7 @@ export function buildDashboard(){
 	backRightAlert.position.z = 0.945;
 	backRightAlert.rotation.y = -Math.PI/2;
 	backRightAlert.rotation.x = Math.PI/2;
+	backRightAlert.visible = false;
 	
 	//backRightAlert2
 	texMat = new THREE.MeshBasicMaterial({
@@ -311,6 +318,7 @@ export function buildDashboard(){
 	backRightAlert2.position.z = 0.975;
 	backRightAlert2.rotation.y = -Math.PI/2;
 	backRightAlert2.rotation.x = Math.PI/2;
+	backRightAlert2.visible = false;
 	
 	//backAlert
 	texMat = new THREE.MeshBasicMaterial({
@@ -322,6 +330,7 @@ export function buildDashboard(){
 	backAlert.position.y = 1.15;
 	backAlert.position.z = 0.925;
 	backAlert.rotation.y = -Math.PI/2;
+	backAlert.visible = false;
 	
 	//backAlert2
 	texMat = new THREE.MeshBasicMaterial({
@@ -333,6 +342,7 @@ export function buildDashboard(){
 	backAlert2.position.y = 1.1;
 	backAlert2.position.z = 0.92;
 	backAlert2.rotation.y = -Math.PI/2;
+	backAlert2.visible = false;
 	
 	//frontAlert
 	texMat = new THREE.MeshBasicMaterial({
@@ -344,6 +354,7 @@ export function buildDashboard(){
 	frontAlert.position.y = 1.59;
 	frontAlert.position.z = 0.925;
 	frontAlert.rotation.y = -Math.PI/2;
+	frontAlert.visible = false;
 	
 	//frontAlert2
 	texMat = new THREE.MeshBasicMaterial({
@@ -355,6 +366,7 @@ export function buildDashboard(){
 	frontAlert2.position.y = 1.63;
 	frontAlert2.position.z = 0.92;
 	frontAlert2.rotation.y = -Math.PI/2;
+	frontAlert2.visible = false;
 	
 	//mapIcon
 	texMat = new THREE.MeshBasicMaterial({

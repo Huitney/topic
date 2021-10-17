@@ -19,17 +19,17 @@ export class Car {
 		
 		this.brakeLightR = brakeLight;
 		this.brakeLightR.material.color.set('darkred');
-		this.brakeLightR.position.set(-19.02, -5, 8);
+		this.brakeLightR.position.set(-19.02, -6, 8);
 		this.brakeLightL = brakeLight.clone();
 		this.brakeLightL.material.color.set('darkred');
-		this.brakeLightL.position.set(-19.02, -5, -8);
+		this.brakeLightL.position.set(-19.02, -6, -8);
 		
 		this.turnSignalR = turnSignal[0];
 		this.turnSignalR.material.color.set(0x998000);
-		this.turnSignalR.position.set(-19.01, -7, 8);
+		this.turnSignalR.position.set(-19.01, -6, 8);
 		this.turnSignalL = turnSignal[1];
 		this.turnSignalL.material.color.set(0x998000);
-		this.turnSignalL.position.set(-19.01, -7, -8);
+		this.turnSignalL.position.set(-19.01, -6, -8);
 				
 		this.leftfrontWheel = new THREE.Group();
 		this.rightfrontWheel = new THREE.Group();
@@ -253,7 +253,7 @@ export function buildCar(pos) {
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/m8OcKV5.png'),
+		map: loader.load ('./pictures/oPWLR0Y3.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
@@ -279,7 +279,7 @@ export function buildCar(pos) {
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray2.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/E6Aa12z.png'),
+		map: loader.load ('./pictures/qTj48LDP3.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray2.push(new THREE.MeshLambertMaterial({
@@ -333,7 +333,7 @@ export function buildCar(pos) {
 	mapArrow.visible = false;
 	
 	//brakeLight
-	var brakeLight = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshBasicMaterial({
+	var brakeLight = new THREE.Mesh(new THREE.CircleGeometry(1.3, 32), new THREE.MeshBasicMaterial({
 																		map: loader.load('./pictures/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
@@ -341,13 +341,13 @@ export function buildCar(pos) {
 	brakeLight.rotation.y = Math.PI/2;
 	
 	//turnSignal
-	var turnSignalR = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshBasicMaterial({
+	var turnSignalR = new THREE.Mesh(new THREE.RingGeometry(1.3, 2, 32), new THREE.MeshBasicMaterial({
 																		map: loader.load('./pictures/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
 																	}));
 	turnSignalR.rotation.y = Math.PI/2;
-	var turnSignalL = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshBasicMaterial({
+	var turnSignalL = new THREE.Mesh(new THREE.RingGeometry(1.3, 2, 32), new THREE.MeshBasicMaterial({
 																		map: loader.load('./pictures/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide

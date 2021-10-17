@@ -309,13 +309,11 @@ export function moveCar(RC, omega, deltaT){
 	
 	car.move(vv);
 	car.rotate(car.angle + omega*deltaT);
-	$('#warning').text("no hit");
 	car.changeColor(false);
 	for(var i = 0;i < obstacles.length;i++){
 		if(car.intersect(obstacles[i])){    //intersect
 			car.move(C);
 			car.rotate(car.angle - omega*deltaT);
-			$('#warning').text("hit");
 			car.changeColor(true);
 			break;
 		}

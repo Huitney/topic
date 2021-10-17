@@ -373,32 +373,38 @@ export function buildScenes(){
 	
 	//bushes
 	var bush = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), texMat1);
+	var bushes0 = new THREE.Group();
+	//var bushes = [], bushes1 = [], bushes2 = [], bushes3 = [];
 
   for (let i = 0; i < 62; i++) {
 	let bb = bush.clone();
 	bb.position.set (360, 5, 460-i*15)
 	bushes.push(bb)
+	bushes0.add(bb);
 
   }
   for (let i = 0; i < 60; i++) {
 	let bb = bush.clone();
 	bb.position.set (-360, 5, 440-i*15)
 	bushes1.push(bb)
+	bushes0.add(bb);
 
   }
   for (let i = 0; i < 49; i++) {
 	let bb = bush.clone();
 	bb.position.set (360-i*15, 5, 460)
 	bushes2.push(bb)
+	bushes0.add(bb);
 
   }
   for (let i = 0; i < 49; i++) {
 	let bb = bush.clone();
 	bb.position.set (360-i*15, 5, -460)
 	bushes3.push(bb)
+	bushes0.add(bb);
 
   }
-  scene.add(bushes, bushes1, bushes2, bushes3);
+  scene.add(bushes0);
 
 
   texture = loader.load('./pictures/HmJ4wes.jpg');
