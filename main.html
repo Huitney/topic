@@ -1,0 +1,37 @@
+<html><head>
+<link rel="stylesheet" type="text/css" href="carStyle.css">
+</head>
+
+<body style='overflow:hidden'> 
+<div id="info">
+	
+</div>
+
+<audio id="radarSound" style="display:none" muted>
+<source src="https://huitney.github.io/topic/sounds/beep_short.wav" type='audio/wav'></audio>
+<audio id="longBeep" style="display:none" muted>
+<source src="https://huitney.github.io/topic/sounds/beep-13(long).wav" type='audio/wav'></audio>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
+
+<button id="thirdPV"><img src="./pictures/OvvIh4R.png" style="width:80px;height:80px;"></button>
+<button id="firstPV"><img src="./pictures/AX5vRqY.png" style="width:80px;height:80px;"></button>
+
+<script type ="module">
+import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import {init, animate} from "./init.js";
+import {poll} from "./radarFunc.js";
+
+
+( function() {
+	Math.clamp = function(val,min,max) {
+		return Math.min(Math.max(val,min),max);
+	} 
+})();
+
+init();
+animate();
+  
+setInterval (poll, 200);
+</script></body></html>

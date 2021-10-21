@@ -2,10 +2,10 @@ import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import {car, obstacles, radarSound, longBeep} from "./init.js";
 
 var beeper = false, radarOn = false;
+let min = [];
 
 export function poll(){
 	
-	let min = [];
 	for(let i = 0;i < obstacles.length;i++){
 		let tmp = car.calculateCloseDistance(obstacles[i]);
 		if(i == 0){
@@ -21,8 +21,20 @@ export function poll(){
 		} 
 	}
 	
-	//dirAlert
-	radarAlert(min);
+	//call alert
+	if(min[0].dis < 20) setTimeout(rightFrontSensor, min[0].dis * 40, min[0].dis);
+	else car.dashboard.frontRightAlert.visible = false;
+	if(min[1].dis < 20) setTimeout(leftFrontSensor, min[1].dis * 40, min[1].dis);
+	else car.dashboard.frontLeftAlert.visible = false;
+	if(min[2].dis < 20) setTimeout(leftBackSensor, min[2].dis * 40, min[2].dis);
+	else car.dashboard.backLeftAlert.visible = false;
+	if(min[3].dis < 20) setTimeout(rightBackSensor, min[3].dis * 40, min[3].dis);
+	else car.dashboard.backRightAlert.visible = false;
+	if(min[4].dis < 20) setTimeout(backSensor, min[4].dis * 40, min[4].dis);
+	else car.dashboard.backAlert.visible = false;
+	if(min[5].dis < 20) setTimeout(frontSensor, min[5].dis * 40, min[5].dis);
+	else car.dashboard.frontAlert.visible = false;
+	
 	
 	min = min.sort(function (a, b) {
 		return a.dis > b.dis ? 1 : -1;
@@ -39,6 +51,7 @@ export function poll(){
 	else {
 		beeper = false;
 		longBeep.loop = false;
+		radarAlert.ticker = false;
 	}
 	
 }
@@ -48,10 +61,14 @@ function radarPlay(){
 	if(car.minDis < 3){
 		longBeep.play();
 		radarSound.pause();
+		radarAlert.ticker = false;
 	}else {
 		radarSound.play();
 		longBeep.pause();
 	}
+	
+	//dirAlert
+	//radarAlert(min);
 	
 	if (beeper) {
 		setTimeout (radarPlay, car.minDis * 40);
@@ -62,48 +79,118 @@ function radarPlay(){
 }
 
 function radarAlert(min){
-	car.dashboard.backAlert.visible = car.dashboard.backAlert2.visible = false;
-	car.dashboard.frontAlert.visible = car.dashboard.frontAlert2.visible = false;
-	car.dashboard.backLeftAlert.visible = car.dashboard.backLeftAlert2.visible = false;
-	car.dashboard.backRightAlert.visible = car.dashboard.backRightAlert2.visible = false;
-	car.dashboard.frontRightAlert.visible = car.dashboard.frontRightAlert2.visible = false;
-	car.dashboard.frontLeftAlert.visible = car.dashboard.frontLeftAlert2.visible = false;
+	car.dashboard.backAlert.visible = false;
+	car.dashboard.frontAlert.visible = false;
+	car.dashboard.backLeftAlert.visible = false;
+	car.dashboard.backRightAlert.visible = false;
+	car.dashboard.frontRightAlert.visible = false;
+	car.dashboard.frontLeftAlert.visible = false;
 	
-	if(min[0].dis < 20){
+	radarAlert.ticker = (radarAlert.ticker === undefined) ? true : radarAlert.ticker;
+	radarAlert.ticker = !radarAlert.ticker;
+		
+	for(let i = 0;i < 6;i++){
+		if(min[i].dis < 20 & radarAlert.ticker){
+			switch (min[i].dir) {
+				case 'xz':
+					car.dashboard.frontRightAlert.visible = true;
+					break;
+				case '-xz':
+					car.dashboard.backRightAlert.visible = true;
+					break;
+				case 'x-z':
+					car.dashboard.frontLeftAlert.visible = true;
+					break;
+				case '-x-z':
+					car.dashboard.backLeftAlert.visible = true;
+					break;
+				case '-x':
+					car.dashboard.backAlert.visible = true;
+					break;
+				case 'x':
+					car.dashboard.frontAlert.visible = true;
+					break;
+				default:
+					break;
+			}
+		}
+	}
+}
+
+function rightFrontSensor(dis){
+	rightFrontSensor.ticker = (rightFrontSensor.ticker === undefined) ? true : rightFrontSensor.ticker;
+	rightFrontSensor.ticker = !rightFrontSensor.ticker;
+	
+	if(dis < 3)
 		car.dashboard.frontRightAlert.visible = true;
-		if(min[0].dis < 10){
-			car.dashboard.frontRightAlert2.visible = true;
-		}
-	}
-	if(min[1].dis < 20){
+	else if(dis < 20 & rightFrontSensor.ticker)
+		car.dashboard.frontRightAlert.visible = true;
+	else
+		car.dashboard.frontRightAlert.visible = false;
+	
+}
+
+function leftFrontSensor(dis){
+	leftFrontSensor.ticker = (leftFrontSensor.ticker === undefined) ? true : leftFrontSensor.ticker;
+	leftFrontSensor.ticker = !leftFrontSensor.ticker;
+	
+	if(dis < 3)
 		car.dashboard.frontLeftAlert.visible = true;
-		if(min[1].dis < 10){
-			car.dashboard.frontLeftAlert2.visible = true;
-		}
-	}
-	if(min[2].dis < 20){
+	else if(dis < 20 & leftFrontSensor.ticker)
+		car.dashboard.frontLeftAlert.visible = true;
+	else
+		car.dashboard.frontLeftAlert.visible = false;
+	
+}
+
+function leftBackSensor(dis){
+	leftBackSensor.ticker = (leftBackSensor.ticker === undefined) ? true : leftBackSensor.ticker;
+	leftBackSensor.ticker = !leftBackSensor.ticker;
+	
+	if(dis < 3)
 		car.dashboard.backLeftAlert.visible = true;
-		console.log(min[2].dis)
-		if(min[2].dis < 10){
-			car.dashboard.backLeftAlert2.visible = true;
-		}
-	}
-	if(min[3].dis < 20){
+	else if(dis < 20 & leftBackSensor.ticker)
+		car.dashboard.backLeftAlert.visible = true;
+	else
+		car.dashboard.backLeftAlert.visible = false;
+	
+}
+
+function rightBackSensor(dis){
+	rightBackSensor.ticker = (rightBackSensor.ticker === undefined) ? true : rightBackSensor.ticker;
+	rightBackSensor.ticker = !rightBackSensor.ticker;
+	
+	if(dis < 3)
 		car.dashboard.backRightAlert.visible = true;
-		if(min[3].dis < 10){
-			car.dashboard.backRightAlert2.visible = true;
-		}
-	}
-	if(min[4].dis < 20){
+	else if(dis < 20 & rightBackSensor.ticker)
+		car.dashboard.backRightAlert.visible = true;
+	else
+		car.dashboard.backRightAlert.visible = false;
+	
+}
+
+function backSensor(dis){
+	backSensor.ticker = (backSensor.ticker === undefined) ? true : backSensor.ticker;
+	backSensor.ticker = !backSensor.ticker;
+	
+	if(dis < 3)
 		car.dashboard.backAlert.visible = true;
-		if(min[4].dis < 10){
-			car.dashboard.backAlert2.visible = true;
-		}
-	}
-	if(min[5].dis < 20){
+	else if(dis < 20 & backSensor.ticker)
+		car.dashboard.backAlert.visible = true;
+	else
+		car.dashboard.backAlert.visible = false;
+	
+}
+
+function frontSensor(dis){
+	frontSensor.ticker = (frontSensor.ticker === undefined) ? true : frontSensor.ticker;
+	frontSensor.ticker = !frontSensor.ticker;
+	
+	if(dis < 3)
 		car.dashboard.frontAlert.visible = true;
-		if(min[5].dis < 10){
-			car.dashboard.frontAlert2.visible = true;
-		}
-	}
+	else if(dis < 20 & frontSensor.ticker)
+		car.dashboard.frontAlert.visible = true;
+	else
+		car.dashboard.frontAlert.visible = false;
+	
 }

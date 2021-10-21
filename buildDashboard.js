@@ -1,15 +1,17 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import { Line2 } from "https://threejs.org/examples/jsm/lines/Line2.js";
+import { LineMaterial } from "https://threejs.org/examples/jsm/lines/LineMaterial.js";
+import { LineGeometry } from "https://threejs.org/examples/jsm/lines/LineGeometry.js";
 import {scene, sceneHUD} from "./init.js";
 
 var pickables = [];
 
 export class Dashboard{
 	constructor(steeringWheel, board, screen, autoBT, manuBT, gear, gearFrame
-				, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
-				, backAlert, backAlert2, backLeftAlert, frontAlert, frontAlert2, backLeftAlert2
-				, backRightAlert, backRightAlert2, frontRightAlert, frontRightAlert2, frontLeftAlert
-				, frontLeftAlert2, gasIcon, brakeIcon, mapIcon, splitLine, speedometer, pointer
-				, turnSignalL, turnSignalR){
+				, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT
+				, radarOn, radarOff, backAlert, backLeftAlert, frontAlert
+				, backRightAlert, frontRightAlert, frontLeftAlert, gasIcon, brakeIcon
+				, mapIcon, splitLine, speedometer, pointer, turnSignalL, turnSignalR){
 		this.steeringWheel = steeringWheel;
 		this.board = board;
 		this.screen = screen;
@@ -27,17 +29,11 @@ export class Dashboard{
 		this.radarOn = radarOn;
 		this.radarOff = radarOff;
 		this.backAlert = backAlert;
-		this.backAlert2 = backAlert2;
 		this.frontAlert = frontAlert;
-		this.frontAlert2 = frontAlert2;
 		this.backLeftAlert = backLeftAlert;
-		this.backLeftAlert2 = backLeftAlert2;
 		this.backRightAlert = backRightAlert;
-		this.backRightAlert2 = backRightAlert2;
 		this.frontRightAlert = frontRightAlert;
-		this.frontRightAlert2 = frontRightAlert2;
 		this.frontLeftAlert = frontLeftAlert;
-		this.frontLeftAlert2 = frontLeftAlert2;
 		this.gasIcon = gasIcon;
 		this.brakeIcon = brakeIcon;
 		this.mapIcon = mapIcon;
@@ -49,11 +45,11 @@ export class Dashboard{
 				
 		this.mesh = new THREE.Group();
 		this.mesh.add(this.steeringWheel, this.board, this.screen, this.autoBT, this.manuBT
-					, this.gear, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.CCWBT, this.zoomInBT, this.zoomOutBT
-					, this.gearFrame, this.radarOn, this.radarOff, this.backAlert, this.backAlert2, this.frontAlert, this.frontAlert2
-					, this.backLeftAlert, this.backLeftAlert2, this.backRightAlert, this.backRightAlert2, this.frontRightAlert
-					, this.frontRightAlert2, this.frontLeftAlert, this.frontLeftAlert2, this.gasIcon, this.brakeIcon, this.mapIcon
-					, this.splitLine, this.speedometer, this.pointer, this.turnSignalL, this.turnSignalR);
+					, this.gear, this.mode1BT, this.mode2BT, this.parkBT, this.topViewBT, this.CCWBT
+					, this.zoomInBT, this.zoomOutBT, this.gearFrame, this.radarOn, this.radarOff
+					, this.backAlert, this.frontAlert, this.backLeftAlert, this.backRightAlert, this.frontRightAlert
+					, this.frontLeftAlert, this.gasIcon, this.brakeIcon, this.mapIcon, this.splitLine
+					, this.speedometer, this.pointer, this.turnSignalL, this.turnSignalR);
 		
 		sceneHUD.add(this.mesh);
 	}
@@ -218,155 +214,67 @@ export function buildDashboard(){
 	topViewBT.rotation.y = -Math.PI/2;
 	topViewBT.name = 'topViewBT';
 	
+	// geometry
+	let bGeometry = new LineGeometry();
+	let geometry = new LineGeometry();
+
+	// attributes
+	let bPositions = [], i, t, positions = [];
+	for(i = 0, t = Math.PI/10;i < 30;i++, t += Math.PI/100){
+		bPositions.push(Math.cos(t)*0.12, 0, Math.sin(t)*0.12);
+	}
+	positions.push(0, 0, -0.03);
+	positions.push(0, 0, 0.03);
+	bGeometry.setPositions(bPositions);
+	geometry.setPositions(positions);
+
+	// material
+	let material = new LineMaterial( { 
+		color: 0xffff00, 
+		linewidth: 0.005,
+		scale: 1,
+		dashed: false
+	});
+
+	// line
+	let bLine = new Line2( bGeometry,  material );
+	let line = new Line2( geometry,  material );
+		
 	//frontRightAlert
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/ocrXB81.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var frontRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
-	frontRightAlert.position.y = 1.51;
-	frontRightAlert.position.z = 0.955;
-	frontRightAlert.rotation.y = -Math.PI/2;
+	var frontRightAlert = bLine.clone();
+	frontRightAlert.position.set(0, 1.45, 0.96);
+	frontRightAlert.rotation.z = Math.PI/2;
 	frontRightAlert.visible = false;
-	
-	//frontRightAlert2
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/Ss58Poh.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var frontRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
-	frontRightAlert2.position.y = 1.54;
-	frontRightAlert2.position.z = 0.985;
-	frontRightAlert2.rotation.y = -Math.PI/2;
-	frontRightAlert2.visible = false;
-	
+
 	//frontLeftAlert
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/ocrXB81.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var frontLeftAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
-	frontLeftAlert.position.y = 1.51;
-	frontLeftAlert.position.z = 0.89;
-	frontLeftAlert.rotation.y = -Math.PI/2;
-	frontLeftAlert.rotation.x = -Math.PI/2;
+	var frontLeftAlert = bLine.clone();
+	frontLeftAlert.position.set(0, 1.45, 0.9);
+	frontLeftAlert.rotation.y = Math.PI;
+	frontLeftAlert.rotation.z = Math.PI/2;
 	frontLeftAlert.visible = false;
-	
-	//frontLeftAlert2
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/Ss58Poh.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var frontLeftAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
-	frontLeftAlert2.position.y = 1.54;
-	frontLeftAlert2.position.z = 0.86;
-	frontLeftAlert2.rotation.y = -Math.PI/2;
-	frontLeftAlert2.rotation.x = -Math.PI/2;
-	frontLeftAlert2.visible = false;
-	
+
 	//backLeftAlert
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/ocrXB81.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var backLeftAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
-	backLeftAlert.position.y = 1.22;
-	backLeftAlert.position.z = 0.895;
-	backLeftAlert.rotation.y = -Math.PI/2;
-	backLeftAlert.rotation.x = Math.PI;
+	var backLeftAlert = bLine.clone();
+	backLeftAlert.position.set(0, 1.28, 0.9);
+	backLeftAlert.rotation.y = Math.PI;
+	backLeftAlert.rotation.z = -Math.PI/2;
 	backLeftAlert.visible = false;
-	
-	//backLeftAlert2
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/Ss58Poh.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var backLeftAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
-	backLeftAlert2.position.y = 1.19;
-	backLeftAlert2.position.z = 0.865;
-	backLeftAlert2.rotation.y = -Math.PI/2;
-	backLeftAlert2.rotation.x = Math.PI;
-	backLeftAlert2.visible = false;
-	
+
 	//backRightAlert
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/ocrXB81.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var backRightAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
-	backRightAlert.position.y = 1.22;
-	backRightAlert.position.z = 0.945;
-	backRightAlert.rotation.y = -Math.PI/2;
-	backRightAlert.rotation.x = Math.PI/2;
+	var backRightAlert = bLine.clone();
+	backRightAlert.position.set(0, 1.28, 0.96);
+	backRightAlert.rotation.z = -Math.PI/2;
 	backRightAlert.visible = false;
-	
-	//backRightAlert2
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/Ss58Poh.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var backRightAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.18), texMat);
-	backRightAlert2.position.y = 1.19;
-	backRightAlert2.position.z = 0.975;
-	backRightAlert2.rotation.y = -Math.PI/2;
-	backRightAlert2.rotation.x = Math.PI/2;
-	backRightAlert2.visible = false;
-	
+
 	//backAlert
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/OIYkcZm.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var backAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.1), texMat);
-	backAlert.position.y = 1.15;
-	backAlert.position.z = 0.925;
-	backAlert.rotation.y = -Math.PI/2;
+	var backAlert = line.clone();
+	backAlert.position.set(0, 1.15, 0.93);
 	backAlert.visible = false;
-	
-	//backAlert2
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/OIYkcZm.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var backAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.08), texMat);
-	backAlert2.position.y = 1.1;
-	backAlert2.position.z = 0.92;
-	backAlert2.rotation.y = -Math.PI/2;
-	backAlert2.visible = false;
-	
+
 	//frontAlert
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/OIYkcZm.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var frontAlert = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.1), texMat);
-	frontAlert.position.y = 1.59;
-	frontAlert.position.z = 0.925;
-	frontAlert.rotation.y = -Math.PI/2;
+	var frontAlert = line.clone();
+	frontAlert.position.set(0, 1.57, 0.93);
 	frontAlert.visible = false;
-	
-	//frontAlert2
-	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/OIYkcZm.png'),
-		alphaTest: 0.5,
-		side: THREE.DoubleSide
-	});
-	var frontAlert2 = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.08), texMat);
-	frontAlert2.position.y = 1.63;
-	frontAlert2.position.z = 0.92;
-	frontAlert2.rotation.y = -Math.PI/2;
-	frontAlert2.visible = false;
 	
 	//mapIcon
 	texMat = new THREE.MeshBasicMaterial({
@@ -470,7 +378,7 @@ export function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var turnSignalL = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.15), texMat);
+	var turnSignalL = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.18), texMat);
 	turnSignalL.position.set(0.2, 0.14, -3.6);
 	turnSignalL.rotation.y = -Math.PI/2;
 	turnSignalL.rotation.x = Math.PI;
@@ -482,17 +390,16 @@ export function buildDashboard(){
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
-	var turnSignalR = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.15), texMat);
+	var turnSignalR = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.18), texMat);
 	turnSignalR.position.set(0.2, 0.135, -2.29);
 	turnSignalR.rotation.y = -Math.PI/2;
 	turnSignalR.material.color.set('dimgrey');
 		
 	var dashboard = new Dashboard(steeringWheel, board, screen, autoBT, manuBT, gear, gearFrame
-								, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn, radarOff
-								, backAlert, backAlert2, backLeftAlert, frontAlert, frontAlert2, backLeftAlert2
-								, backRightAlert, backRightAlert2, frontRightAlert, frontRightAlert2, frontLeftAlert
-								, frontLeftAlert2, gasIcon, brakeIcon, mapIcon, splitLine, speedometer, pointer
-								, turnSignalL, turnSignalR);
+								, mode1BT, mode2BT, parkBT, topViewBT, CCWBT, zoomInBT, zoomOutBT, radarOn
+								, radarOff, backAlert, backLeftAlert, frontAlert, backRightAlert
+								, frontRightAlert, frontLeftAlert, gasIcon, brakeIcon, mapIcon, splitLine
+								, speedometer, pointer, turnSignalL, turnSignalR);
 	
 	pickables.push(dashboard.parkBT, dashboard.CCWBT, dashboard.zoomInBT, dashboard.zoomOutBT, dashboard.autoBT, dashboard.mode1BT
 					, dashboard.radarOn, dashboard.topViewBT, dashboard.gear, dashboard.mapIcon);
