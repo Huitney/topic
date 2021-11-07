@@ -1,0 +1,23 @@
+{
+  "name": "socket-chat-car",
+  "version": "0.0.1",
+  "description": "use socket.io to drive",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.3.1"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Huitney/topic.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Huitney/topic/issues"
+  },
+  "homepage": "https://github.com/Huitney/topic#readme"
+}

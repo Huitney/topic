@@ -3,12 +3,13 @@ import {carParameter, scene} from "./init.js";
 import {buildDashboard} from "./buildDashboard.js";
 
 export class Car {
-	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, brakeLight, turnSignal, colorName = 'white') {
+	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, sign, colorName = 'white') {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0] * 2, size[1] * 2, size[2] * 2), materialArray);
 		this.mesh.position.copy(pos);
 		this.speed = 0;
+		this.theta = 0.001;
 		this.minDis = 0;
 		
 		this.materialArray = materialArray;
@@ -17,19 +18,26 @@ export class Car {
 		this.dashboard.mesh.visible = false;
 		this.mapArrow = mapArrow;
 		
-		this.brakeLightR = brakeLight;
+		this.brakeLightR = sign[0];
 		this.brakeLightR.material.color.set('darkred');
 		this.brakeLightR.position.set(-19.02, -6, 8);
-		this.brakeLightL = brakeLight.clone();
+		this.brakeLightL = sign[0].clone();
 		this.brakeLightL.material.color.set('darkred');
 		this.brakeLightL.position.set(-19.02, -6, -8);
 		
-		this.turnSignalR = turnSignal[0];
+		this.turnSignalR = sign[1];
 		this.turnSignalR.material.color.set(0x998000);
 		this.turnSignalR.position.set(-19.01, -6, 8);
-		this.turnSignalL = turnSignal[1];
+		this.turnSignalL = sign[2];
 		this.turnSignalL.material.color.set(0x998000);
 		this.turnSignalL.position.set(-19.01, -6, -8);
+		
+		this.backUpLightR = sign[3];
+		this.backUpLightR.material.color.set('darkgray');
+		this.backUpLightR.position.set(-19.01, -6, 8);
+		this.backUpLightL = sign[3].clone();
+		this.backUpLightL.material.color.set('darkgray');
+		this.backUpLightL.position.set(-19.01, -6, -8);
 				
 		this.leftfrontWheel = new THREE.Group();
 		this.rightfrontWheel = new THREE.Group();
@@ -38,7 +46,8 @@ export class Car {
 		this.seats = buildSeats();
 		
 		this.mesh.add(this.leftfrontWheel, this.rightfrontWheel, this.leftRearWheel, this.rightRearWheel
-					, this.brakeLightR, this.brakeLightL, this.seats, this.turnSignalR, this.turnSignalL);
+					, this.brakeLightR, this.brakeLightL, this.seats, this.turnSignalR, this.turnSignalL
+					, this.backUpLightR, this.backUpLightL);
 		scene.add(this.mesh, this.mapArrow);
 		
 		this.rotate(0); // set initial axes
@@ -333,7 +342,7 @@ export function buildCar(pos) {
 	mapArrow.visible = false;
 	
 	//brakeLight
-	var brakeLight = new THREE.Mesh(new THREE.RingGeometry(1.3, 2, 32), new THREE.MeshBasicMaterial({
+	var brakeLight = new THREE.Mesh(new THREE.CircleGeometry(1.3, 32), new THREE.MeshBasicMaterial({
 																		map: loader.load('./pictures/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
@@ -341,21 +350,29 @@ export function buildCar(pos) {
 	brakeLight.rotation.y = Math.PI/2;
 	
 	//turnSignal
-	var turnSignalR = new THREE.Mesh(new THREE.CircleGeometry(1.3, 32), new THREE.MeshBasicMaterial({
+	var turnSignalR = new THREE.Mesh(new THREE.RingGeometry(1.3, 2, 32, 8, Math.PI, Math.PI), new THREE.MeshBasicMaterial({
 																		map: loader.load('./pictures/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
 																	}));
 	turnSignalR.rotation.y = Math.PI/2;
-	var turnSignalL = new THREE.Mesh(new THREE.CircleGeometry(1.3, 32), new THREE.MeshBasicMaterial({
+	var turnSignalL = new THREE.Mesh(new THREE.RingGeometry(1.3, 2, 32, 8, Math.PI, Math.PI), new THREE.MeshBasicMaterial({
 																		map: loader.load('./pictures/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
 																	}));
 	turnSignalL.rotation.y = Math.PI/2;
+	
+	//backUpLight
+	var backUpLight = new THREE.Mesh(new THREE.RingGeometry(1.3, 2, 32, 8, 0, Math.PI), new THREE.MeshBasicMaterial({
+																		map: loader.load('./pictures/CrbaIo1.png'),
+																		alphaTest: 0.5,
+																		side: THREE.DoubleSide
+																	}));
+	backUpLight.rotation.y = Math.PI/2;
   
     // assembly
-    let car = new Car(pos, [bodyLength/2, bodyWidth/2, 10], materialArray, materialArray2, dashboard, mapArrow, brakeLight, [turnSignalR, turnSignalL], 'white');
+    let car = new Car(pos, [bodyLength/2, bodyWidth/2, 10], materialArray, materialArray2, dashboard, mapArrow, [brakeLight, turnSignalR, turnSignalL, backUpLight], 'white');
 	
     // wheels
     let mesh1 = new THREE.Mesh(wheelGeometry, wheelMaterial);

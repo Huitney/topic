@@ -101,9 +101,9 @@ export function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var gear = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.2), texMat);
-	gear.position.y = 0.85;
+	gear.position.y = -0.18;
 	gear.position.x = 0.1;
-	gear.position.z = -0.05;
+	gear.position.z = -2.9;
 	gear.rotation.y = -Math.PI/2;
 	gear.name = 'gear';
 	
@@ -114,8 +114,8 @@ export function buildDashboard(){
 		side: THREE.DoubleSide
 	});
 	var gearFrame = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.2), texMat);
-	gearFrame.position.y = 0.88;
-	gearFrame.position.z = -0.28;
+	gearFrame.position.y = -0.14;
+	gearFrame.position.z = -3.08;
 	gearFrame.rotation.y = -Math.PI/2;
 	
 	//parkBT
@@ -287,6 +287,7 @@ export function buildDashboard(){
 	mapIcon.position.z = 0.99;
 	mapIcon.rotation.y = -Math.PI/2;
 	mapIcon.name = 'mapIcon';
+	mapIcon.visible = false;
 	
 	//CCW
 	texMat = new THREE.MeshBasicMaterial({

@@ -16,8 +16,10 @@ var clock = new THREE.Clock();
 var car, obstacles = [];
 var raycaster;
 var radarSound, RCmesh, longBeep;
-var topView = false, GPSView = false;
+var topView = false;
 var carParameter;
+
+var socket;
 
 export function init() {
 
@@ -104,7 +106,6 @@ export function animate() {
     keyboard.update();
   
     // 'static' variables  
-	animate.theta = (animate.theta === undefined) ? 0.001 : animate.theta;
     animate.fSlowDown = (animate.fSlowDown === undefined) ? 0 : animate.fSlowDown;
     animate.bSlowDown = (animate.bSlowDown === undefined) ? 0 : animate.bSlowDown;
 	
@@ -112,20 +113,19 @@ export function animate() {
     //move car	
 	var deltaT = clock.getDelta();
 	
-	let paraArray = keyboardAndRC(animate.theta, animate.fSlowDown, animate.bSlowDown, deltaT);
-	animate.theta = paraArray[0];
-	animate.fSlowDown = paraArray[1];
-	animate.bSlowDown = paraArray[2];
-	let RC = paraArray[3];
+	let paraArray = keyboardAndRC(animate.fSlowDown, animate.bSlowDown, deltaT);
+	animate.fSlowDown = paraArray[0];
+	animate.bSlowDown = paraArray[1];
+	let RC = paraArray[2];
     
 	let frontWheelToBackWheel = carParameter[carParameter.map(x =>x.name).indexOf('frontWheelToBackWheel')].value;
-    moveCar(RC, (car.speed * Math.tan(animate.theta)/frontWheelToBackWheel), deltaT);
+    moveCar(RC, (car.speed * Math.tan(car.theta)/frontWheelToBackWheel), deltaT);
 	
     //camera position
-	cameraUpdate(animate.theta, animate.fSlowDown, animate.bSlowDown);
+	cameraUpdate(animate.fSlowDown, animate.bSlowDown);
 	
     //parking 
-	animate.theta = parking(animate.theta);
+	parking();
 		  
     /////////////////////////////////////////////
     // purely cosmetic ...    wheel turn  
@@ -155,9 +155,8 @@ function render() {
 	if(firstPV){
 		car.mesh.visible = false;
 		renderer.render(sceneHUD, camera);
-		//car.mesh.visible = true;
 		//reversing Camera
-		if(car.dashboard.gearFrame.position.z == -0.13){
+		if(car.dashboard.gearFrame.position.z == -2.93){
 			renderer.setViewport(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.setScissor(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.clear();
@@ -173,22 +172,22 @@ function render() {
 			renderer.setViewport(WW/2.41, HH/4, WW/13, HH/6);
 			renderer.setScissor(WW/2.41, HH/4, WW/13, HH/6);
 			renderer.clear();
+			car.mesh.visible = true;
 			renderer.render(scene, topCamera);
 			renderer.setViewport(WW*1.545/3.13, HH/4, WW/13, HH/6);
 			renderer.setScissor(WW*1.545/3.13, HH/4, WW/13, HH/6);
 			renderer.clear();
 			renderer.render(scene, thirdPVCamera);
+			car.mesh.visible = false;
 		}
-		else if(GPSView){
+		else{
 			renderer.setViewport(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.setScissor(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.clear();
-			car.mesh.visible = false;
 			car.mapArrow.visible = true;
 			treesVisible(false);
 			renderer.render(scene, GPSCamera);
 			treesVisible(true);
-			car.mesh.visible = true;
 			car.mapArrow.visible = false;
 		}
 	}
@@ -202,5 +201,9 @@ function onWindowResize() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+export function changeTopView(){
+	topView =! topView;
+}
+
 export {scene, sceneHUD, camera, GPSCamera, topCamera, thirdPVCamera, reversingCamera, keyboard
-		, car, obstacles, raycaster, radarSound, RCmesh, longBeep, topView, GPSView, carParameter};
+		, car, obstacles, raycaster, radarSound, RCmesh, longBeep, topView, carParameter, socket};

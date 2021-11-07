@@ -1,6 +1,7 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {parkingMode, parkingAngle, parkingModeButton} from "./carMove.js";
-import {car, camera, topCamera, raycaster, radarSound, longBeep, topView, GPSView} from "./init.js";
+import {changeParkingMode, changeParkingModeButton, storeParkingAngle} from "./carMove.js";
+import {car, camera, topCamera, raycaster, radarSound, longBeep, topView} from "./init.js";
+import {changeTopView} from "./init.js";
 import {pickables} from "./buildDashboard.js";
 
 var mouse = new THREE.Vector2();
@@ -18,12 +19,10 @@ export function onPointerDown (event) {
 	if (intersects.length > 0) {
 		if(intersects[0].object.name == 'parkBT'){
 			parkBTDown();
-			console.log('1')
 		}
 		
 		if(intersects[0].object.name == 'topViewBT'){
 			topViewBTDown();
-			console.log('1')
 		}
 		
 		if(intersects[0].object.name == 'CCWBT'){
@@ -60,23 +59,21 @@ export function onPointerDown (event) {
 		}
 		
 		if(intersects[0].object.name == 'mapIcon'){
-			mapIconDown();
+			//mapIconDown();
 		}
 				
 	}
 }	
 
 function parkBTDown(){
-	parkingMode = 1;
-	parkingAngle = car.angle;
+	changeParkingMode(1);
+	storeParkingAngle();
 	car.dashboard.autoBT.visible = true;
 	car.dashboard.manuBT.visible = false;
 }
 
 function topViewBTDown(){
-	topView = !topView;
-	GPSView = false;
-	//viewControl = 
+	changeTopView();
 	if(topView){
 		car.dashboard.CCWBT.visible = true;
 		car.dashboard.zoomInBT.visible = true;
@@ -128,19 +125,19 @@ function zoomOutBTDown(){
 }
 
 function autoBTDown(){
-	parkingMode = 0;
+	changeParkingMode(0);
 	car.dashboard.autoBT.visible = false;
 	car.dashboard.manuBT.visible = true;
 }
 
 function manuBTDown(){
-	parkingMode = 2;
+	changeParkingMode(2);
 	car.dashboard.autoBT.visible = true;
 	car.dashboard.manuBT.visible = false;
 }
 
 function mode1BTDown(){
-	parkingModeButton = true;
+	changeParkingModeButton(true);
 	car.move(new THREE.Vector3(-112.5, 13, 13));
 	car.rotate(0);
 	car.dashboard.mode1BT.visible = false;
@@ -148,7 +145,7 @@ function mode1BTDown(){
 }
 
 function mode2BTDown(){
-	parkingModeButton = false;
+	changeParkingModeButton(false);
 	car.move(new THREE.Vector3(-118, 13, 23));
 	car.rotate(0);
 	car.dashboard.mode1BT.visible = true;
@@ -176,13 +173,13 @@ function radarOffDown(){
 }
 
 function mapIconDown(){
-	GPSView = !GPSView;
+	//GPSView = !GPSView;
 	topView = false;
-	if(GPSView){
+	/*if(GPSView){
 		car.dashboard.mapArrow.visible = true;
 	}else{
 		car.dashboard.mapArrow.visible = false;	
-	}
+	}*/
 	car.dashboard.CCWBT.visible = false;
 	car.dashboard.zoomInBT.visible = false;
 	car.dashboard.zoomOutBT.visible = false;

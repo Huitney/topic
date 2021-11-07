@@ -5,6 +5,15 @@ var beeper = false, radarOn = false;
 let min = [];
 
 export function poll(){
+	if(car.dashboard.gearFrame.position.z === -3.08 | car.dashboard.gearFrame.position.z === -2.78){//P | N
+		car.dashboard.frontRightAlert.visible = false;
+		car.dashboard.frontLeftAlert.visible = false;
+		car.dashboard.backLeftAlert.visible = false;
+		car.dashboard.backRightAlert.visible = false;
+		car.dashboard.backAlert.visible = false;
+		car.dashboard.frontAlert.visible = false;
+		return;
+	}
 	
 	for(let i = 0;i < obstacles.length;i++){
 		let tmp = car.calculateCloseDistance(obstacles[i]);

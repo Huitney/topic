@@ -17,7 +17,7 @@ $("#firstPV").click(function() {
 		thirdPV = false;
 });
 
-export function cameraUpdate(theta, fSlowDown, bSlowDown){
+export function cameraUpdate(fSlowDown, bSlowDown){
 	car.dashboard.mesh.visible = false;
     if (thirdPV) {
 		let carEnd = car.mesh.localToWorld (new THREE.Vector3(-10,0,0));
@@ -43,13 +43,13 @@ export function cameraUpdate(theta, fSlowDown, bSlowDown){
 		car.dashboard.mesh.position.y -= 2;
 		car.dashboard.mesh.rotation.y = car.angle;
 		car.dashboard.mesh.rotation.z = -0.1;
-		car.dashboard.steeringWheel.rotation.z = theta * -21;
+		car.dashboard.steeringWheel.rotation.z = car.theta * -21;
 		
 		if (keyboard.pressed('down')){
-			car.dashboard.gearFrame.position.z = -0.13;
+			car.dashboard.gearFrame.position.z =-2.93;
 		}
 		else if(keyboard.pressed('up')){
-			car.dashboard.gearFrame.position.z = 0.17;
+			car.dashboard.gearFrame.position.z = -2.63;
 		}
     }
     else {
@@ -58,18 +58,16 @@ export function cameraUpdate(theta, fSlowDown, bSlowDown){
     }
 }
 
-export function PDControl(theta, dt){
+export function PDControl(dt){
 	var KP = 50;
 	var KD = 15;
 	PDControl.vv = (PDControl.vv === undefined) ? 0 : PDControl.vv;
 	
-	var f = KP*(-theta) - KD*PDControl.vv;
+	var f = KP*(-car.theta) - KD*PDControl.vv;
 
 	// plant dynamics 
 	PDControl.vv += f*dt;
-	theta += PDControl.vv*dt
-	
-	return theta;
+	car.theta += PDControl.vv*dt
 }
 
 export function treesLootAt(){
