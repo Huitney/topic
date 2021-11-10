@@ -19,7 +19,7 @@ var radarSound, RCmesh, longBeep;
 var topView = false;
 var carParameter;
 
-var socket;
+var socket = io();
 
 export function init() {
 

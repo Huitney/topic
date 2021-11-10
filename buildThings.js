@@ -262,7 +262,7 @@ export function buildCar(pos) {
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('https://i.imgur.com/oPWLR0Y3.png'),
+		map: loader.load ('https://i.imgur.com/m8OcKV5.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
@@ -288,7 +288,7 @@ export function buildCar(pos) {
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray2.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('https://i.imgur.com/qTj48LDP3.png'),
+		map: loader.load ('https://i.imgur.com/E6Aa12z.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray2.push(new THREE.MeshLambertMaterial({
