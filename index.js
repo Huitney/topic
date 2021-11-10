@@ -11,7 +11,8 @@ app.get('/', (req, res) => {
 });
 */
 
-app.use('/static', express.static('public'));
+app.use (express.static ('public'));
+//app.use(express.static(__dirname + '/public'));
 
 app.get('/ctrl', (req, res) => {
 	res.sendFile(__dirname + '/controller0.html');
