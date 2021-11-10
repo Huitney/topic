@@ -19,7 +19,25 @@ var radarSound, RCmesh, longBeep;
 var topView = false;
 var carParameter;
 
-var socket = io();
+var socket;
+
+//////////////////
+// when document.ready()    
+$(function () {
+	socket = io();
+
+	socket.on('angle sent', function(msg) {
+		car.theta = (msg / (Math.PI*3)) * (Math.PI/7) * 2;
+		//console.log(msg, car.theta);
+	});
+	
+	socket.on('value sent', function(msg) {
+		let tmp = `${(msg*50).toFixed(0)}`;
+		car.speed = tmp;
+		//console.log(tmp);
+	});
+
+});
 
 export function init() {
 

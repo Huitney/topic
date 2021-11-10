@@ -21,7 +21,7 @@
 
 <script type ="module">
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {init, animate, socket} from "https://raw.githack.com/Huitney/topic/master/init.js";
+import {init, animate} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {poll} from "https://raw.githack.com/Huitney/topic/master/radarFunc.js";
 
 
@@ -33,24 +33,6 @@ import {poll} from "https://raw.githack.com/Huitney/topic/master/radarFunc.js";
 
 init();
 animate();
-
-//////////////////
-// when document.ready()    
-$(function () {
-	//socket = io();
-
-	socket.on('angle sent', function(msg) {
-		car.theta = (msg / (Math.PI*3)) * (Math.PI/7) * 2;
-		//console.log(msg, car.theta);
-	});
-	
-	socket.on('value sent', function(msg) {
-		let tmp = `${(msg*50).toFixed(0)}`;
-		car.speed = tmp;
-		//console.log(tmp);
-	});
-
-});
   
 setInterval (poll, 200);
 </script></body></html>
