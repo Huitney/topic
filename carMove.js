@@ -156,7 +156,7 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 			car.theta = 0.00001;
 	}
     car.theta = Math.clamp (car.theta, -Math.PI/7, Math.PI/7);
-	//socket.emit ('angle from scene', car.theta);
+	socket.emit ('angle from scene', car.theta);
 	
 	let axelLength = carParameter[carParameter.map(x =>x.name).indexOf('axelLength')].value
 	, frontWheelToBackWheel = carParameter[carParameter.map(x =>x.name).indexOf('frontWheelToBackWheel')].value;
