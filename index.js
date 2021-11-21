@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 
 /*
 app.get('/', (req, res) => {
@@ -40,9 +40,19 @@ io.on('connection', (socket) => {
 		socket.broadcast.emit ('gear sent', msg);  // to all others    
 	});
 	
-	socket.on('picked from ctrl', msg => {
+	socket.on('picked wheel from ctrl', msg => {
 		console.log ('picked: ' + msg);
-		socket.broadcast.emit ('picked sent', msg);  // to all others    
+		socket.broadcast.emit ('picked wheel sent', msg);  // to all others    
+	});
+	
+	socket.on('picked gas from ctrl', msg => {
+		console.log ('picked: ' + msg);
+		socket.broadcast.emit ('picked gas sent', msg);  // to all others    
+	});
+	
+	socket.on('picked brake from ctrl', msg => {
+		console.log ('picked: ' + msg);
+		socket.broadcast.emit ('picked brake sent', msg);  // to all others    
 	});
 });
 

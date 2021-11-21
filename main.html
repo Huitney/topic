@@ -74,9 +74,16 @@ $(function () {
 		}
 	});
 	
-	socket.on('picked sent', function(msg) {
-		changePicked(msg);
-		//console.log(msg);
+	socket.on('picked wheel sent', function(msg) {
+		changePickedWheel(msg);
+	});
+	
+	socket.on('picked gas sent', function(msg) {
+		changePickedGas(msg);
+	});
+	
+	socket.on('picked brake sent', function(msg) {
+		changePickedBrake(msg);
 	});
 
 });

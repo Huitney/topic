@@ -3,7 +3,8 @@ import {car, topCamera, thirdPVCamera, GPSCamera, keyboard, obstacles, RCmesh, c
 import {PDControl} from "./func.js";
 
 var parkingMode = 0, parkingAngle = 0, PPart = 0;
-var parkingModeButton = false, picked = false;
+var parkingModeButton = false, pickedWheel = false;
+var pickedGas = false, pickedBrake = false;
 
 export function parking(){
 	//parkingMode 0 manual 1 auto parking 2 stop parking      
@@ -131,6 +132,13 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 		car.backUpLightL.material.color.set('darkgray');
 	}
 	
+	if(pickedGas){
+		car.dashboard.gasIcon.material.color.set('springgreen');
+	}
+	if(pickedBrake){
+		car.dashboard.brakeIcon.material.color.set('springgreen');
+	}
+	
 	if (keyboard.pressed('down')){
 		car.speed -= 1;
 		car.dashboard.gasIcon.material.color.set('springgreen');
@@ -152,13 +160,12 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
     if (keyboard.pressed('left')){
 		car.theta += 0.002;  
 	}
-	if(!keyboard.pressed('left') & !keyboard.pressed('right') & parkingMode !== 1 & !picked){
+	if(!keyboard.pressed('left') & !keyboard.pressed('right') & parkingMode !== 1 & !pickedWheel){
 		PDControl(deltaT);
 		if(car.theta.toFixed(5) == 0.00000)
 			car.theta = 0.00001;
 	}
     car.theta = Math.clamp (car.theta, -Math.PI/7, Math.PI/7);
-	//socket.emit ('angle from scene', car.theta);
 	
 	let axelLength = carParameter[carParameter.map(x =>x.name).indexOf('axelLength')].value
 	, frontWheelToBackWheel = carParameter[carParameter.map(x =>x.name).indexOf('frontWheelToBackWheel')].value;
@@ -379,7 +386,15 @@ export function storeParkingAngle(){
 	parkingAngle = car.angle;
 }
 
-export function changePicked(mode){
-	picked = mode;
+export function changePickedGas(mode){
+	pickedGas = mode;
+}
+
+export function changePickedBrake(mode){
+	pickedBrake = mode;
+}
+
+export function changePickedWheel(mode){
+	pickedWheel = mode;
 }
 

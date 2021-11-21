@@ -36,7 +36,8 @@ var pIcon, rIcon, nIcon, dIcon;
 var gear = 'p';
 var currentDialPt = null;
 var gasLevel = 0.1;
-var stillGassing, stillbraking;
+var stillGassing, stillBraking;
+var clock = new THREE.Clock();
 
 var socket; // my socket with server
 
@@ -47,13 +48,7 @@ animate();
 //////////////////
 // when document.ready()    
 $(function () {
-	socket = io();
-
-	socket.on('angle from scece', function(msg) {
-		dialAngle = (msg / (Math.PI/7)) * (Math.PI * 3/2);
-		//console.log(msg, car.theta);
-	});
-	
+	socket = io();	
 });
 
 function init() {
@@ -190,13 +185,13 @@ function onTouchStart(event) {
 			$('#msg').text('hit gas');
 			setTimeout (stepOnGas, 0);
 			stillGassing = true;
-			stillbraking = false;
+			stillBraking = false;
 			currentDialPt = null;
 		} else if (Math.abs(mouseX-5)<5 && Math.abs(mouseY-10)<5) {  // fall into brake area
 			$('#msg').text('hit brake');
 			setTimeout (pushBrake, 0);
 			stillGassing = false;
-			stillbraking = true;
+			stillBraking = true;
 			currentDialPt = null;
 		} else if (Math.abs(mouseX-7.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into p
 			$('#msg').text('hit p');
@@ -262,13 +257,13 @@ function onMouseDown(event) {
 		$('#msg').text('hit gas');
 		setTimeout (stepOnGas, 0);
 		stillGassing = true;
-		stillbraking = false;
+		stillBraking = false;
 		currentDialPt = null;
 	} else if (Math.abs(mouseX-5)<5 && Math.abs(mouseY-10)<5) {  // fall into brake area
 		$('#msg').text('hit brake');
 		setTimeout (pushBrake, 0);
 		stillGassing = false;
-		stillbraking = true;
+		stillBraking = true;
 		currentDialPt = null;
 	} else if (Math.abs(mouseX-7.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into p
 		$('#msg').text('hit p');
@@ -401,8 +396,8 @@ function onTouchEnd(event) {
 		if (stillGassing === true) {  // gas pedal was down
 			stillGassing = false;
 			setTimeout (DGear, 0);
-		} else if(stillbraking === true){
-			stillbraking = false;
+		} else if(stillBraking === true){
+			stillBraking = false;
 			setTimeout (DGear, 0);
 		}
 	}
@@ -414,8 +409,8 @@ function onMouseUp(event) {
 	if (stillGassing === true) {  // gas pedal was down
 		stillGassing = false;
 		setTimeout (DGear, 0);
-	} else if(stillbraking === true){
-		stillbraking = false;
+	} else if(stillBraking === true){
+		stillBraking = false;
 		setTimeout (DGear, 0);
 	}
 }
@@ -423,6 +418,8 @@ function onMouseUp(event) {
 function animate() {
 	requestAnimationFrame(animate);
 	renderer.render(scene, camera);
+	
+	var deltaT = clock.getDelta();
 
 	dial.rotation.z = dialAngle;
 	if(socket)
@@ -431,15 +428,29 @@ function animate() {
 	///////
 	gasIcon.material.color.set('dimgrey');
 	brakeIcon.material.color.set('dimgrey');
-	if(stillGassing) 
+	if(stillGassing) {
 		gasIcon.material.color.set('springgreen');
-	if(stillbraking) 
+		socket.emit ('picked gas from ctrl', true);
+	}
+	else socket.emit ('picked gas from ctrl', false);
+	
+	if(stillBraking) {
 		brakeIcon.material.color.set('red');
-		
-	if(currentDialPt)
-		socket.emit ('picked from ctrl', true);
-	else
-		socket.emit ('picked from ctrl', false);
+		socket.emit ('picked brake from ctrl', true);
+	}
+	else socket.emit ('picked brake from ctrl', false);
+	
+	if(socket){
+		if(currentDialPt){
+			socket.emit ('picked wheel from ctrl', true);
+		}
+		else{
+			socket.emit ('picked wheel from ctrl', false);
+			PDControl(deltaT);
+			if(dialAngle == 0.00000)
+				dialAngle = 0.00001;
+		}
+	}
 }
 
 //////////////////////////////////////////////////////
@@ -491,7 +502,7 @@ function pushBrake(){
 	gasLevel -= 0.02;
 	gasLevel = clamp (gasLevel,0,1);
 	
-	if (stillbraking)
+	if (stillBraking)
 		setTimeout (pushBrake, 50);
 }
 
@@ -505,8 +516,20 @@ function DGear(){
 		gasLevel = 0.1;
 	gasLevel = clamp (gasLevel,0,1);
 	
-	if (!stillGassing & !stillbraking)
+	if (!stillGassing & !stillBraking)
 		setTimeout (DGear, 50);
+}
+
+function PDControl(dt){
+	var KP = 50;
+	var KD = 15;
+	PDControl.vv = (PDControl.vv === undefined) ? 0 : PDControl.vv;
+	
+	var f = KP*(-dialAngle) - KD*PDControl.vv;
+
+	// plant dynamics 
+	PDControl.vv += f*dt;
+	dialAngle += PDControl.vv*dt
 }
 
 function onWindowResize() {
