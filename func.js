@@ -47,9 +47,11 @@ export function cameraUpdate(fSlowDown, bSlowDown){
 		
 		if (keyboard.pressed('down')){
 			car.gear = 'r';
+			car.dashboard.gearFrame.position.z = -2.93;//R
 		}
 		else if(keyboard.pressed('up')){
 			car.gear = 'd';
+			car.dashboard.gearFrame.position.z = -2.63;//D
 		}
     }
     else {

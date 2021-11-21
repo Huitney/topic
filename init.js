@@ -154,7 +154,7 @@ function render() {
 		car.mesh.visible = false;
 		renderer.render(sceneHUD, camera);
 		//reversing Camera
-		if(car.gear = 'r'){
+		if(car.gear === 'r'){
 			renderer.setViewport(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.setScissor(WW/2.41, HH/4, WW/6.5, HH/6);
 			renderer.clear();
