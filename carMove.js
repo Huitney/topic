@@ -136,7 +136,7 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 		car.dashboard.gasIcon.material.color.set('springgreen');
 	}
 	if(pickedBrake){
-		car.dashboard.brakeIcon.material.color.set('springgreen');
+		car.dashboard.brakeIcon.material.color.set('red');
 	}
 	
 	if (keyboard.pressed('down')){

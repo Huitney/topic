@@ -430,17 +430,22 @@ function animate() {
 	brakeIcon.material.color.set('dimgrey');
 	if(stillGassing) {
 		gasIcon.material.color.set('springgreen');
-		socket.emit ('picked gas from ctrl', true);
-	}
-	else socket.emit ('picked gas from ctrl', false);
-	
+	}	
 	if(stillBraking) {
 		brakeIcon.material.color.set('red');
-		socket.emit ('picked brake from ctrl', true);
 	}
-	else socket.emit ('picked brake from ctrl', false);
 	
 	if(socket){
+		if(stillGassing) 
+			socket.emit ('picked gas from ctrl', true);
+		else 
+			socket.emit ('picked gas from ctrl', false);
+		
+		if(stillBraking) 
+			socket.emit ('picked brake from ctrl', true);
+		else 
+			socket.emit ('picked brake from ctrl', false);
+	
 		if(currentDialPt){
 			socket.emit ('picked wheel from ctrl', true);
 		}
