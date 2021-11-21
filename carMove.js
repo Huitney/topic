@@ -123,7 +123,7 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 	car.dashboard.gasIcon.material.color.set('dimgrey');
 	car.brakeLightR.material.color.set('darkred');
 	car.brakeLightL.material.color.set('darkred');
-	if(car.dashboard.gearFrame.position.z === -2.93){
+	if(car.gear = 'r'){
 		car.backUpLightR.material.color.set('white');
 		car.backUpLightL.material.color.set('white');
 	}else{
@@ -135,11 +135,13 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 		car.speed -= 1;
 		car.dashboard.gasIcon.material.color.set('springgreen');
 		car.dashboard.gearFrame.position.z = -2.93;//R
+		car.gear = 'r';
 	}
 	if (keyboard.pressed('up')){
 		car.speed += 1;
 		car.dashboard.gasIcon.material.color.set('springgreen');
 		car.dashboard.gearFrame.position.z = -2.63;//D
+		car.gear = 'd';
 	}
 	car.speed = Math.clamp (car.speed, -15, 50);
 
@@ -197,22 +199,22 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 			bSlowDown = 0;
 		}
     } else if(!keyboard.pressed("up") & !keyboard.pressed("down") & !keyboard.pressed("space") & !keyboard.pressed("alt") & !keyboard.pressed("ctrl")){
-		if(car.dashboard.gearFrame.position.z == -2.93 & car.speed > -2){ //R
+		if(car.gear = 'r' & car.speed > -2){ //R
 			car.speed -= 0.1;
 			if(car.speed.toFixed(1) == -2.0)
 				car.speed = -2;
 		} 
-		else if(car.dashboard.gearFrame.position.z == -2.93 & car.speed < -2){ //R
+		else if(car.gear = 'r' & car.speed < -2){ //R
 			car.speed += 0.1;
 			if(car.speed.toFixed(1) == -2.0)
 				car.speed = -2;
 		}
-		else if(car.dashboard.gearFrame.position.z == -2.63 & car.speed > 2){//D
+		else if(car.gear = 'd' & car.speed > 2){//D
 			car.speed -= 0.1;
 			if(car.speed.toFixed(1) == 2.0)
 				car.speed = 2;
 		}
-		else if(car.dashboard.gearFrame.position.z == -2.63 & car.speed < 2){//D
+		else if(car.gear = 'd' & car.speed < 2){//D
 			car.speed += 0.1;
 			if(car.speed.toFixed(1) == 2.0)
 				car.speed = 2;
@@ -234,9 +236,9 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 	}
 	
 	if (keyboard.pressed("space")){ //accelerator
-		if(car.dashboard.gearFrame.position.z == -2.93){
+		if(car.gear = 'r'){
 			car.speed -= 1;
-		}else if(car.dashboard.gearFrame.position.z == -2.63){
+		}else if(car.gear = 'd'){
 			car.speed += 1;
 		}
 		car.dashboard.gasIcon.material.color.set('springgreen');
@@ -245,14 +247,14 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 	else if (keyboard.pressed('down') | keyboard.pressed('up') | parkingMode == 1){
 		bSlowDown = 0;
 	}
-	else if(car.dashboard.gearFrame.position.z == -2.93){///R
+	else if(car.gear = 'r'){///R
 		if(car.speed > -2)
 			car.speed -= 1;
 		else if(car.speed < -2)
 			car.speed += 1;
 		car.speed = Math.clamp (car.speed, -15, 50);
 	}
-	else if(car.dashboard.gearFrame.position.z == -2.63){///D
+	else if(car.gear = 'd'){///D
 		if(car.speed > 2)
 			car.speed -= 1;
 		else if(car.speed < 2)
@@ -264,9 +266,9 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 	}
 	
 	if(keyboard.up("space")){
-		if(car.dashboard.gearFrame.position.z == -2.93){
+		if(car.gear = 'r'){
 			bSlowDown = 1;
-		}else if(car.dashboard.gearFrame.position.z == -2.63){
+		}else if(car.gear = 'd'){
 			fSlowDown = 1;
 		}
 		car.dashboard.gasIcon.material.color.set('dimgrey');
@@ -292,14 +294,22 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 	}
 	
 	if (keyboard.down("shift")){ //gear
-		if(car.dashboard.gearFrame.position.z == -2.63)
+		if(car.gear = 'r'){
 			car.dashboard.gearFrame.position.z = -3.08;//P
-		else if(car.dashboard.gearFrame.position.z == -3.08)
+			car.gear = 'p';
+		}
+		else if(car.gear = 'p'){
 			car.dashboard.gearFrame.position.z = -2.93;//R
-		else if(car.dashboard.gearFrame.position.z == -2.93)
+			car.gear = 'r';
+		}
+		else if(car.gear = 'r'){
 			car.dashboard.gearFrame.position.z = -2.78;//N
-		else if(car.dashboard.gearFrame.position.z == -2.78)
+			car.gear = 'n';
+		}
+		else if(car.gear = 'n'){
 			car.dashboard.gearFrame.position.z = -2.63;//D
+			car.gear = 'd';
+		}
 	}
 	
 	//car speed pointer

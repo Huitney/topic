@@ -46,10 +46,10 @@ export function cameraUpdate(fSlowDown, bSlowDown){
 		car.dashboard.steeringWheel.rotation.z = car.theta * -21;
 		
 		if (keyboard.pressed('down')){
-			car.dashboard.gearFrame.position.z =-2.93;
+			car.gear = 'r';
 		}
 		else if(keyboard.pressed('up')){
-			car.dashboard.gearFrame.position.z = -2.63;
+			car.gear = 'd';
 		}
     }
     else {

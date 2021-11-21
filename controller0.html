@@ -206,6 +206,7 @@ function onTouchStart(event) {
 			nIcon.material.color.set('dimgrey');
 			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
+			socket.emit ('gear from ctrl', 'p');
 		} else if (Math.abs(mouseX-12.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into r
 			$('#msg').text('hit r');
 			gear = 'r';
@@ -214,6 +215,7 @@ function onTouchStart(event) {
 			nIcon.material.color.set('dimgrey');
 			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
+			socket.emit ('gear from ctrl', 'r');
 		} else if (Math.abs(mouseX-17.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into n
 			$('#msg').text('hit n');
 			gear = 'n';
@@ -222,6 +224,7 @@ function onTouchStart(event) {
 			rIcon.material.color.set('dimgrey');
 			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
+			socket.emit ('gear from ctrl', 'n');
 		} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into d
 			$('#msg').text('hit d');
 			gear = 'd';
@@ -230,6 +233,7 @@ function onTouchStart(event) {
 			rIcon.material.color.set('dimgrey');
 			nIcon.material.color.set('dimgrey');
 			currentDialPt = null;
+			socket.emit ('gear from ctrl', 'd');
 		} else {
 			$('#msg').text('no hit');
 			currentDialPt = null;  
@@ -274,6 +278,7 @@ function onMouseDown(event) {
 		nIcon.material.color.set('dimgrey');
 		dIcon.material.color.set('dimgrey');
 		currentDialPt = null;
+		socket.emit ('gear from ctrl', 'p');
 	} else if (Math.abs(mouseX-12.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into r
 		$('#msg').text('hit r');
 		gear = 'r';
@@ -282,6 +287,7 @@ function onMouseDown(event) {
 		nIcon.material.color.set('dimgrey');
 		dIcon.material.color.set('dimgrey');
 		currentDialPt = null;
+		socket.emit ('gear from ctrl', 'r');
 	} else if (Math.abs(mouseX-17.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into n
 		$('#msg').text('hit n');
 		gear = 'n';
@@ -290,6 +296,7 @@ function onMouseDown(event) {
 		rIcon.material.color.set('dimgrey');
 		dIcon.material.color.set('dimgrey');
 		currentDialPt = null;
+		socket.emit ('gear from ctrl', 'n');
 	} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into d
 		$('#msg').text('hit d');
 		gear = 'd';
@@ -298,6 +305,7 @@ function onMouseDown(event) {
 		rIcon.material.color.set('dimgrey');
 		nIcon.material.color.set('dimgrey');
 		currentDialPt = null;
+		socket.emit ('gear from ctrl', 'd');
 	} else {
 		$('#msg').text('no hit');
 		currentDialPt = null;  
@@ -454,7 +462,7 @@ function updateTachometer (power) {
 		socket.emit ('value from ctrl', 0);
 	else if(gear === 'r')
 		socket.emit ('value from ctrl', -gasLevel);
-	else
+	else if(gear === 'd')
 		socket.emit ('value from ctrl', gasLevel);
 }
 

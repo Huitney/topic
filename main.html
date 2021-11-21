@@ -21,7 +21,7 @@
 
 <script type ="module">
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {init, animate} from "https://raw.githack.com/Huitney/topic/master/init.js";
+import {init, animate, car} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {poll} from "https://raw.githack.com/Huitney/topic/master/radarFunc.js";
 
 
@@ -50,6 +50,27 @@ $(function () {
 		let tmp = `${(msg*50).toFixed(0)}`;
 		car.speed = tmp;
 		//console.log(tmp);
+	});
+	
+	socket.on('gear sent', function(msg) {
+		car.gear = msg;
+		switch(msg){
+			case 'p':
+				car.dashboard.gearFrame.position.z = -3.08;//P
+				break;
+			case 'r':
+				car.dashboard.gearFrame.position.z = -2.93;//R
+				break;
+			case 'n':
+				car.dashboard.gearFrame.position.z = -2.78;//N
+				break;
+			case 'd':
+				car.dashboard.gearFrame.position.z = -2.63;//D
+				break;
+			default:
+				console.log(msg);
+				break;
+		}
 	});
 
 });

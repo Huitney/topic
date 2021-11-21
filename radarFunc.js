@@ -5,7 +5,7 @@ var beeper = false, radarOn = false;
 let min = [];
 
 export function poll(){
-	if(car.dashboard.gearFrame.position.z === -3.08 | car.dashboard.gearFrame.position.z === -2.78){//P | N
+	if(car.gear = 'p' | car.gear = 'n'){
 		car.dashboard.frontRightAlert.visible = false;
 		car.dashboard.frontLeftAlert.visible = false;
 		car.dashboard.backLeftAlert.visible = false;

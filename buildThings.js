@@ -11,6 +11,7 @@ export class Car {
 		this.speed = 0;
 		this.theta = 0.001;
 		this.minDis = 0;
+		this.gear = 'p';
 		
 		this.materialArray = materialArray;
 		this.materialArray2 = materialArray2;

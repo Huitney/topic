@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8888;
 
 /*
 app.get('/', (req, res) => {
@@ -35,10 +35,9 @@ io.on('connection', (socket) => {
 		socket.broadcast.emit ('value sent', msg);  // to all others    
 	});
 	
-	//from scece
-	socket.on('angle from scece', msg => {
-		console.log ('from scece angle: ' + msg);
-		socket.broadcast.emit ('angle from scece', msg);  // to all others    
+	socket.on('gear from ctrl', msg => {
+		console.log ('from ctrl angle: ' + msg);
+		socket.broadcast.emit ('gear sent', msg);  // to all others    
 	});
 });
 
