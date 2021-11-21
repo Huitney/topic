@@ -39,6 +39,11 @@ io.on('connection', (socket) => {
 		console.log ('from ctrl angle: ' + msg);
 		socket.broadcast.emit ('gear sent', msg);  // to all others    
 	});
+	
+	socket.on('picked from ctrl', msg => {
+		console.log ('picked: ' + msg);
+		socket.broadcast.emit ('picked sent', msg);  // to all others    
+	});
 });
 
 http.listen(port, () => {

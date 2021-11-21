@@ -3,7 +3,7 @@ import {car, topCamera, thirdPVCamera, GPSCamera, keyboard, obstacles, RCmesh, c
 import {PDControl} from "./func.js";
 
 var parkingMode = 0, parkingAngle = 0, PPart = 0;
-var parkingModeButton = false;
+var parkingModeButton = false, picked = false;
 
 export function parking(){
 	//parkingMode 0 manual 1 auto parking 2 stop parking      
@@ -152,7 +152,7 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
     if (keyboard.pressed('left')){
 		car.theta += 0.002;  
 	}
-	if(!keyboard.pressed('left') & !keyboard.pressed('right') & parkingMode !== 1){
+	if(!keyboard.pressed('left') & !keyboard.pressed('right') & parkingMode !== 1 & !picked){
 		PDControl(deltaT);
 		if(car.theta.toFixed(5) == 0.00000)
 			car.theta = 0.00001;
@@ -377,5 +377,9 @@ export function changeParkingModeButton(mode){
 
 export function storeParkingAngle(){
 	parkingAngle = car.angle;
+}
+
+export function changePicked(mode){
+	picked = mode;
 }
 

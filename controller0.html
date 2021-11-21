@@ -435,6 +435,11 @@ function animate() {
 		gasIcon.material.color.set('springgreen');
 	if(stillbraking) 
 		brakeIcon.material.color.set('red');
+		
+	if(currentDialPt)
+		socket.emit ('picked from ctrl', true);
+	else
+		socket.emit ('picked from ctrl', false);
 }
 
 //////////////////////////////////////////////////////

@@ -23,6 +23,7 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import {init, animate, car} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {poll} from "https://raw.githack.com/Huitney/topic/master/radarFunc.js";
+import {changePicked} from "https://raw.githack.com/Huitney/topic/master/carMode.js";
 
 
 ( function() {
@@ -71,6 +72,11 @@ $(function () {
 				console.log(msg);
 				break;
 		}
+	});
+	
+	socket.on('picked sent', function(msg) {
+		changePicked(msg);
+		//console.log(msg);
 	});
 
 });
