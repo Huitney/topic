@@ -1,12 +1,11 @@
-import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {car, scene} from "./init.js";
+import * as THREE from "https://threejs.org/build/three.module.js";
 
-var traceMeshes = [];
+import {scene} from './init.js';
 var bushes = [], bushes1 = [], bushes2 = [], bushes3 = [];
-
-export function buildScenes(){
+function buildScenes(){
 	//ground
 
+	
 	let loader = new THREE.TextureLoader()
 	loader.setCrossOrigin ("")
 
@@ -23,7 +22,7 @@ export function buildScenes(){
 	scene.add( ground );
 
 /////////////////////////////////////////  sidewalk  //////////////////////////////////////////////////
-	let map1 = loader.load ("https://i.imgur.com/KIQL2BB.jpg")
+	let map1 = loader.load ("./pictures/KIQL2BB.jpg")
 	map1.wrapS = map1.wrapT = THREE.WrapRepeating
 	map1.repeat.set (.05,.05)
 	var length = 108, width = 291;
@@ -356,22 +355,17 @@ export function buildScenes(){
 
 
 /////////////////////////// grass trees bushes ///////////////////////////////////////////
-	var texture = loader.load('https://i.imgur.com/xwa8Bod.png');
-
-	var texMat = new THREE.MeshBasicMaterial({
-	  map: texture,
-	  //transparent: true
-	  alphaTest: 0.5
-	});
-	texture = loader.load('https://i.imgur.com/f4TTvV5.png');
+	
+	var texture = loader.load('./pictures/f4TTvV5.png');
 
 	var texMat1 = new THREE.MeshBasicMaterial({
 	  map: texture,
 	  transparent: true,
 	  alphaTest: 0.5
 	});
-	
-	//bushes
+
+//bushes
+
 	var bush = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), texMat1);
 	var bushes0 = new THREE.Group();
 	//var bushes = [], bushes1 = [], bushes2 = [], bushes3 = [];
@@ -407,7 +401,7 @@ export function buildScenes(){
   scene.add(bushes0);
 
 
-  texture = loader.load('https://i.imgur.com/HmJ4wes.jpg');
+  texture = loader.load('./pictures/HmJ4wes.jpg');
 
 	var texMat2 = new THREE.MeshBasicMaterial({
 	  map: texture,
@@ -427,7 +421,7 @@ export function buildScenes(){
 	var grass1 = grass.clone();
 	grass1.position.set(-360, 0, 0);
 
-	var texture1 = loader.load('https://i.imgur.com/HmJ4wes.jpg');
+	var texture1 = loader.load('./pictures/HmJ4wes.jpg');
 
 	var texMat2 = new THREE.MeshBasicMaterial({
 	  map: texture1,
@@ -450,7 +444,7 @@ export function buildScenes(){
 
 
 ///////////////////////////////////////////   zebraCrossing  //////////////////////////////////////////////////
-	texture = loader.load('https://i.imgur.com/09w3f06.png');
+	texture = loader.load('./pictures/09w3f06.png');
 /*
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
@@ -485,7 +479,7 @@ export function buildScenes(){
 
 
 ///////////////////////////////////////////     road      //////////////////////////////////////////////////
-	texture = loader.load('https://i.imgur.com/rOQ1vf5.png');
+	texture = loader.load('./pictures/rOQ1vf5.png');
 
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
@@ -503,7 +497,7 @@ export function buildScenes(){
 	road1.rotation.x = Math.PI/2;
 
 
-	texture1 = loader.load('https://i.imgur.com/KvjCb5P.png');
+	texture1 = loader.load('./pictures/KvjCb5P.png');
 	texture1.minFilter = THREE.NearestFilter;
 	texture1.needsUpdate = true;
 	var road2 = new THREE.Mesh(new THREE.PlaneGeometry(70, 80), new THREE.MeshBasicMaterial({
@@ -517,7 +511,7 @@ export function buildScenes(){
 	road2.rotation.x = Math.PI/2;
 
 
-	var texture2 = loader.load('https://i.imgur.com/VPddEdt.png');
+	var texture2 = loader.load('./pictures/VPddEdt.png');
 
 	texture2.wrapS = THREE.RepeatWrapping;
 	texture2.wrapT = THREE.RepeatWrapping;
@@ -654,7 +648,7 @@ export function buildScenes(){
 	road15.rotation.x = Math.PI/2;
 
 
-	var texture3 = loader.load('https://i.imgur.com/Q8DzNSQ.png');
+	var texture3 = loader.load('./pictures/Q8DzNSQ.png');
 	texture3.minFilter = THREE.NearestFilter;	
 	texture3.needsUpdate = true;
 	var road16 = new THREE.Mesh(new THREE.PlaneGeometry(80, 40), new THREE.MeshBasicMaterial({
@@ -706,7 +700,7 @@ export function buildScenes(){
 	road21.rotation.x =  -Math.PI/2;
 	road21.rotation.z =  -Math.PI/2;
 
-	var texture4 = loader.load('https://i.imgur.com/LeLVX2W.png');
+	var texture4 = loader.load('./pictures/LeLVX2W.png');
 	texture4.minFilter = THREE.NearestFilter;	
 	texture4.needsUpdate = true;
 	var road22 = new THREE.Mesh(new THREE.PlaneGeometry(85, 85), new THREE.MeshBasicMaterial({
@@ -997,7 +991,7 @@ export function buildScenes(){
 
 	
 	//////////////////////////////////////////////////////   parking space  ////////////////////////////////////////////////////////////////////
-	texture4 = loader.load('https://i.imgur.com/ifr2RZj.png');
+	texture4 = loader.load('./pictures/ifr2RZj.png');
 	var space1 = new THREE.Mesh(new THREE.PlaneGeometry(55, 27), new THREE.MeshBasicMaterial({
 		map: texture4,
 		alphaTest: 0.5,
@@ -1068,7 +1062,7 @@ export function buildScenes(){
 	scene.add(space15, space16);
 
 	/////////////////////////////////////////////arrow//////////////////////////////////////////////////
-	var texture6 = loader.load('https://i.imgur.com/hu3ZIWY.png');
+	var texture6 = loader.load('./pictures/hu3ZIWY.png');
 
 	texture6.minFilter = THREE.NearestFilter;
 	texture6.needsUpdate = true;
@@ -1090,7 +1084,7 @@ export function buildScenes(){
 		arrow2.rotation.z =Math.PI;
 
 
-	var texture7 = loader.load('https://i.imgur.com/f5UGMBz.png');
+	var texture7 = loader.load('./pictures/f5UGMBz.png');
 
 	texture7.minFilter = THREE.NearestFilter;
 	texture7.needsUpdate = true;
@@ -1113,38 +1107,8 @@ export function buildScenes(){
 	arrow4.rotation.z = Math.PI/2;
 	scene.add(arrow1, arrow2, arrow3, arrow4);
 	//scene.add(arrow11);
+
 	
-	//stop sign
-	var texture8 = loader.load('https://i.imgur.com/dB4AdSy.png');
-
-	var stopSign = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), new THREE.MeshBasicMaterial({
-								map: texture8,
-								alphaTest: 0.5,
-								side: THREE.DoubleSide}));
-	stopSign.rotation.y = -Math.PI/2;	
-	stopSign.position.set(230, 25, 68);
-	var stopSignPole = new THREE.Mesh( new THREE.CylinderGeometry( 0.5, 0.5, 20, 32 ), new THREE.MeshBasicMaterial( {color: 'darkgray'} ) );
-	stopSignPole.rotation.y = Math.PI/2;	
-	stopSignPole.position.y = -15;
-	stopSign.add( stopSignPole );
-
-	scene.add(stopSign);
-
 }
 
-export function drawReversingLine(){
-	//Reversing display line
-	const material = new THREE.LineBasicMaterial( {color: 0xffffff } );
-	const points = [];
-	points.push( car.mesh.localToWorld (new THREE.Vector3(0,0,10)) );
-	points.push( car.mesh.localToWorld (new THREE.Vector3(0,0,-10)) );
-
-	const geometry = new THREE.BufferGeometry().setFromPoints( points );
-	const traceMesh = new THREE.Line( geometry, material );
-	for (var i = 0; i < 3; i++) {
-  		traceMeshes.push (traceMesh.clone());
-    	scene.add (traceMeshes[i]);
-	}
-}
-
-export {bushes, bushes1, bushes2, bushes3};
+export {buildScenes, bushes, bushes1, bushes2, bushes3};
