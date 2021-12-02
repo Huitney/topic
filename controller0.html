@@ -3,6 +3,7 @@
 <html>
 
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
 #info {
   position: absolute;
@@ -15,6 +16,7 @@
 
 body {
   overflow: hidden;
+  -webkit-user-select: none;
 }
 </style>
 </head>
@@ -81,6 +83,9 @@ function init() {
 	window.addEventListener('touchstart', onTouchStart, false);
 	window.addEventListener('touchmove', onTouchMove, false);
 	window.addEventListener('touchend', onTouchEnd, false);
+	document.addEventListener('gesturestart', function (event) {
+		event.preventDefault();
+    });
 
 	let loader = new THREE.TextureLoader();
 	let dialmap = loader.load('https://i.imgur.com/pGBWmvB.png?1');
@@ -91,6 +96,7 @@ function init() {
 	dial.position.x = -15;
 
 	tachometer = makeTachometer();
+	//scene.add(tachometer);
 	tachometer.position.set (15, -15,0);
 	
 	//gasIcon
@@ -402,7 +408,7 @@ function onTouchMove(event) {
 		// register now point [mouseX, mouseY];
 		// compute turning angle
 		let movePt = [mouseX, mouseY];
-		console.log(touchDial1, movePt);
+		//console.log(movePt, '1');
 		
 		/////////////////////////////////////////
 		let dialCenter = new THREE.Vector3(-15,0,0);
@@ -427,8 +433,8 @@ function onTouchMove(event) {
 	}
 	
 	if (event.touches.length === 2 & touchDial2) {
-		let mouseX = (event.touches[1].pageX / window.innerWidth) * 2 - 1;
-		let mouseY = -(event.touches[1].pageY / window.innerHeight) * 2 + 1;
+		let mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+		let mouseY = -(event.touches[0].pageY / window.innerHeight) * 2 + 1;
 
 		// transform to world coordinate ...
 		mouseX = mouseX / 2 * 60;
@@ -438,7 +444,7 @@ function onTouchMove(event) {
 		// register now point [mouseX, mouseY];
 		// compute turning angle
 		let movePt = [mouseX, mouseY];
-		console.log(touchDial2, movePt);
+		//console.log(movePt, '2');
 		
 		/////////////////////////////////////////
 		let dialCenter = new THREE.Vector3(-15,0,0);
