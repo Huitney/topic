@@ -35,6 +35,7 @@ var gasIcon, brakeIcon;
 var pIcon, rIcon, nIcon, dIcon;
 var gear = 'p';
 var currentDialPt = null;
+var touchDial1 = false, touchDial2 = false;
 var gasLevel = 0.1;
 var stillGassing, stillBraking;
 var clock = new THREE.Clock();
@@ -181,18 +182,21 @@ function onTouchStart(event) {
 			$('#msg').text('hit mouse');
 			currentDialPt = [mouseX, mouseY];
 			currentAngle = Math.atan2(mouseY, mouseX - (-15));
+			touchDial1 = true;
 		} else if (Math.abs(mouseX-20)<5 && Math.abs(mouseY-10)<5) {  // fall into gas area
 			$('#msg').text('hit gas');
 			setTimeout (stepOnGas, 0);
 			stillGassing = true;
 			stillBraking = false;
 			currentDialPt = null;
+			touchDial1 = false;
 		} else if (Math.abs(mouseX-5)<5 && Math.abs(mouseY-10)<5) {  // fall into brake area
 			$('#msg').text('hit brake');
 			setTimeout (pushBrake, 0);
 			stillGassing = false;
 			stillBraking = true;
 			currentDialPt = null;
+			touchDial1 = false;
 		} else if (Math.abs(mouseX-7.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into p
 			$('#msg').text('hit p');
 			gear = 'p';
@@ -201,6 +205,7 @@ function onTouchStart(event) {
 			nIcon.material.color.set('dimgrey');
 			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
+			touchDial1 = false;
 			socket.emit ('gear from ctrl', 'p');
 		} else if (Math.abs(mouseX-12.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into r
 			$('#msg').text('hit r');
@@ -210,6 +215,7 @@ function onTouchStart(event) {
 			nIcon.material.color.set('dimgrey');
 			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
+			touchDial1 = false;
 			socket.emit ('gear from ctrl', 'r');
 		} else if (Math.abs(mouseX-17.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into n
 			$('#msg').text('hit n');
@@ -219,6 +225,7 @@ function onTouchStart(event) {
 			rIcon.material.color.set('dimgrey');
 			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
+			touchDial1 = false;
 			socket.emit ('gear from ctrl', 'n');
 		} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into d
 			$('#msg').text('hit d');
@@ -228,10 +235,80 @@ function onTouchStart(event) {
 			rIcon.material.color.set('dimgrey');
 			nIcon.material.color.set('dimgrey');
 			currentDialPt = null;
+			touchDial1 = false;
 			socket.emit ('gear from ctrl', 'd');
 		} else {
 			$('#msg').text('no hit');
 			currentDialPt = null;  
+			touchDial1 = false;
+		}
+	}
+	if (event.touches.length === 2) {
+		let mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+		let mouseY = -(event.touches[0].pageY / window.innerHeight) * 2 + 1;
+
+		// transform to world coordinate ...
+		mouseX = mouseX / 2 * 60;
+		mouseY = mouseY / 2 * 35;
+		let r = 10;
+		
+		// if fall in mouse area, register currentXY
+		if (Math.abs(mouseX - (-15)) < r && Math.abs(mouseY - 0) < r) {
+			$('#msg').text('hit mouse');
+			currentDialPt = [mouseX, mouseY];
+			touchDial2 = true;
+			currentAngle = Math.atan2(mouseY, mouseX - (-15));
+		} else if (Math.abs(mouseX-20)<5 && Math.abs(mouseY-10)<5) {  // fall into gas area
+			$('#msg').text('hit gas');
+			setTimeout (stepOnGas, 0);
+			stillGassing = true;
+			stillBraking = false;
+			touchDial2 = false;
+		} else if (Math.abs(mouseX-5)<5 && Math.abs(mouseY-10)<5) {  // fall into brake area
+			$('#msg').text('hit brake');
+			setTimeout (pushBrake, 0);
+			stillGassing = false;
+			stillBraking = true;
+			touchDial2 = false;
+		} else if (Math.abs(mouseX-7.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into p
+			$('#msg').text('hit p');
+			gear = 'p';
+			pIcon.material.color.set('white');
+			rIcon.material.color.set('dimgrey');
+			nIcon.material.color.set('dimgrey');
+			dIcon.material.color.set('dimgrey');
+			socket.emit ('gear from ctrl', 'p');
+			touchDial2 = false;
+		} else if (Math.abs(mouseX-12.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into r
+			$('#msg').text('hit r');
+			gear = 'r';
+			rIcon.material.color.set('white');
+			pIcon.material.color.set('dimgrey');
+			nIcon.material.color.set('dimgrey');
+			dIcon.material.color.set('dimgrey');
+			socket.emit ('gear from ctrl', 'r');
+			touchDial2 = false;
+		} else if (Math.abs(mouseX-17.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into n
+			$('#msg').text('hit n');
+			gear = 'n';
+			nIcon.material.color.set('white');
+			pIcon.material.color.set('dimgrey');
+			rIcon.material.color.set('dimgrey');
+			dIcon.material.color.set('dimgrey');
+			socket.emit ('gear from ctrl', 'n');
+			touchDial2 = false;
+		} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into d
+			$('#msg').text('hit d');
+			gear = 'd';
+			dIcon.material.color.set('white');
+			pIcon.material.color.set('dimgrey');
+			rIcon.material.color.set('dimgrey');
+			nIcon.material.color.set('dimgrey');
+			socket.emit ('gear from ctrl', 'd');
+			touchDial2 = false;
+		} else {
+			$('#msg').text('no hit');
+			touchDial2 = false;
 		}
 	}
 }
@@ -313,7 +390,7 @@ function onTouchMove(event) {
 		return;
 
 	event.preventDefault();
-	if (event.touches.length === 1) {
+	if (event.touches.length === 1 & touchDial1) {
 		let mouseX = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
 		let mouseY = -(event.touches[0].pageY / window.innerHeight) * 2 + 1;
 
@@ -325,6 +402,43 @@ function onTouchMove(event) {
 		// register now point [mouseX, mouseY];
 		// compute turning angle
 		let movePt = [mouseX, mouseY];
+		console.log(touchDial1, movePt);
+		
+		/////////////////////////////////////////
+		let dialCenter = new THREE.Vector3(-15,0,0);
+		let moveVec = new THREE.Vector3(movePt[0],movePt[1],0).sub(dialCenter);
+		let currentVec = new THREE.Vector3(currentDialPt[0],currentDialPt[1],0).sub(dialCenter);
+
+		let ccw = (moveVec.clone().cross (currentVec)).dot(new THREE.Vector3(0,0,1)) < 0;  // (move x current).dot (0,0,1) < 0
+		let deltaAngle = moveVec.angleTo (currentVec) * (ccw ? 1 : -1);
+
+		//  console.log (ccw);
+		dialAngle += deltaAngle;
+		dialAngle = clamp (dialAngle, -3*Math.PI, 3*Math.PI);
+
+		//////////////////////////////////////////
+		let msg = dialAngle.toFixed(2); //`${(moveAngle-Math.PI/2).toFixed(2)}`;
+		$('#msg').text(msg);
+
+		//console.log (`moveX: ${movePt[0].toFixed(2)}; currentX: ${currentDialPt[0].toFixed(2)}; ` );
+		currentDialPt = [movePt[0], movePt[1]];
+			
+		socket.emit ('angle from ctrl', dialAngle);
+	}
+	
+	if (event.touches.length === 2 & touchDial2) {
+		let mouseX = (event.touches[1].pageX / window.innerWidth) * 2 - 1;
+		let mouseY = -(event.touches[1].pageY / window.innerHeight) * 2 + 1;
+
+		// transform to world coordinate ...
+		mouseX = mouseX / 2 * 60;
+		mouseY = mouseY / 2 * 35;
+		let r = 10;
+
+		// register now point [mouseX, mouseY];
+		// compute turning angle
+		let movePt = [mouseX, mouseY];
+		console.log(touchDial2, movePt);
 		
 		/////////////////////////////////////////
 		let dialCenter = new THREE.Vector3(-15,0,0);
@@ -392,6 +506,7 @@ function onMouseMove(event) {
 function onTouchEnd(event) {
 	if (event.touches.length === 1) {
 		currentDialPt = null;
+		//console.log();
 
 		if (stillGassing === true) {  // gas pedal was down
 			stillGassing = false;

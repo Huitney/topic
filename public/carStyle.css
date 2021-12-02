@@ -6,6 +6,11 @@
 	text-align: center;
 	color: #ff0000;
 }
+#body {
+	position: absolute;
+	overflow:hidden;
+	-webkit-user-select: none;
+}
 #topView {
 	position: absolute;
 	border-radius: 100px;
