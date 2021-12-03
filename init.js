@@ -4,7 +4,7 @@ import {firstPV} from "./func.js";
 import {cameraUpdate, treesLootAt, treesVisible} from "./func.js";
 import {onPointerDown} from "./buttonFunc.js";
 import {parking, keyboardAndRC, moveCar, flashTurnSignal} from "./carMove.js";
-import {buildScenes, drawReversingLine} from "./buildScenes.js";
+import {buildScenes} from "./buildScenes.js";
 
 var scene, renderer, camera;
 var sceneHUD, GPSCamera;
