@@ -22,7 +22,7 @@ function buildScenes(){
 	scene.add( ground );
 
 /////////////////////////////////////////  sidewalk  //////////////////////////////////////////////////
-	let map1 = loader.load ("./pictures/KIQL2BB.jpg")
+	let map1 = loader.load ("https://i.imgur.com/KIQL2BB.jpg")
 	map1.wrapS = map1.wrapT = THREE.WrapRepeating
 	map1.repeat.set (.05,.05)
 	var length = 108, width = 291;
@@ -356,7 +356,7 @@ function buildScenes(){
 
 /////////////////////////// grass trees bushes ///////////////////////////////////////////
 	
-	var texture = loader.load('./pictures/f4TTvV5.png');
+	var texture = loader.load('https://i.imgur.com/f4TTvV5.png');
 
 	var texMat1 = new THREE.MeshBasicMaterial({
 	  map: texture,
@@ -401,7 +401,7 @@ function buildScenes(){
   scene.add(bushes0);
 
 
-  texture = loader.load('./pictures/HmJ4wes.jpg');
+  texture = loader.load('https://i.imgur.com/HmJ4wes.jpg');
 
 	var texMat2 = new THREE.MeshBasicMaterial({
 	  map: texture,
@@ -421,7 +421,7 @@ function buildScenes(){
 	var grass1 = grass.clone();
 	grass1.position.set(-360, 0, 0);
 
-	var texture1 = loader.load('./pictures/HmJ4wes.jpg');
+	var texture1 = loader.load('https://i.imgur.com/HmJ4wes.jpg');
 
 	var texMat2 = new THREE.MeshBasicMaterial({
 	  map: texture1,
@@ -444,7 +444,7 @@ function buildScenes(){
 
 
 ///////////////////////////////////////////   zebraCrossing  //////////////////////////////////////////////////
-	texture = loader.load('./pictures/09w3f06.png');
+	texture = loader.load('https://i.imgur.com/09w3f06.png');
 /*
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
@@ -479,7 +479,7 @@ function buildScenes(){
 
 
 ///////////////////////////////////////////     road      //////////////////////////////////////////////////
-	texture = loader.load('./pictures/rOQ1vf5.png');
+	texture = loader.load('https://i.imgur.com/rOQ1vf5.png');
 
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
@@ -497,7 +497,7 @@ function buildScenes(){
 	road1.rotation.x = Math.PI/2;
 
 
-	texture1 = loader.load('./pictures/KvjCb5P.png');
+	texture1 = loader.load('https://i.imgur.com/KvjCb5P.png');
 	texture1.minFilter = THREE.NearestFilter;
 	texture1.needsUpdate = true;
 	var road2 = new THREE.Mesh(new THREE.PlaneGeometry(70, 80), new THREE.MeshBasicMaterial({
@@ -511,7 +511,7 @@ function buildScenes(){
 	road2.rotation.x = Math.PI/2;
 
 
-	var texture2 = loader.load('./pictures/VPddEdt.png');
+	var texture2 = loader.load('https://i.imgur.com/VPddEdt.png');
 
 	texture2.wrapS = THREE.RepeatWrapping;
 	texture2.wrapT = THREE.RepeatWrapping;
@@ -648,7 +648,7 @@ function buildScenes(){
 	road15.rotation.x = Math.PI/2;
 
 
-	var texture3 = loader.load('./pictures/Q8DzNSQ.png');
+	var texture3 = loader.load('https://i.imgur.com/Q8DzNSQ.png');
 	texture3.minFilter = THREE.NearestFilter;	
 	texture3.needsUpdate = true;
 	var road16 = new THREE.Mesh(new THREE.PlaneGeometry(80, 40), new THREE.MeshBasicMaterial({
@@ -700,7 +700,7 @@ function buildScenes(){
 	road21.rotation.x =  -Math.PI/2;
 	road21.rotation.z =  -Math.PI/2;
 
-	var texture4 = loader.load('./pictures/LeLVX2W.png');
+	var texture4 = loader.load('https://i.imgur.com/LeLVX2W.png');
 	texture4.minFilter = THREE.NearestFilter;	
 	texture4.needsUpdate = true;
 	var road22 = new THREE.Mesh(new THREE.PlaneGeometry(85, 85), new THREE.MeshBasicMaterial({
@@ -991,7 +991,7 @@ function buildScenes(){
 
 	
 	//////////////////////////////////////////////////////   parking space  ////////////////////////////////////////////////////////////////////
-	texture4 = loader.load('./pictures/ifr2RZj.png');
+	texture4 = loader.load('https://i.imgur.com/ifr2RZj.png');
 	var space1 = new THREE.Mesh(new THREE.PlaneGeometry(55, 27), new THREE.MeshBasicMaterial({
 		map: texture4,
 		alphaTest: 0.5,
@@ -1062,7 +1062,7 @@ function buildScenes(){
 	scene.add(space15, space16);
 
 	/////////////////////////////////////////////arrow//////////////////////////////////////////////////
-	var texture6 = loader.load('./pictures/hu3ZIWY.png');
+	var texture6 = loader.load('https://i.imgur.com/hu3ZIWY.png');
 
 	texture6.minFilter = THREE.NearestFilter;
 	texture6.needsUpdate = true;
@@ -1084,7 +1084,7 @@ function buildScenes(){
 		arrow2.rotation.z =Math.PI;
 
 
-	var texture7 = loader.load('./pictures/f5UGMBz.png');
+	var texture7 = loader.load('https://i.imgur.com/f5UGMBz.png');
 
 	texture7.minFilter = THREE.NearestFilter;
 	texture7.needsUpdate = true;
