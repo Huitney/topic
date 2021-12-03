@@ -93,7 +93,7 @@ export function init() {
 	window.addEventListener ('pointerdown', onPointerDown, false);
 	raycaster = new THREE.Raycaster();
 	
-	drawReversingLine();
+	//drawReversingLine();
 	flashTurnSignal();
 }
   
