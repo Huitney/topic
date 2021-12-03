@@ -141,7 +141,7 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 	
 	if (keyboard.pressed('down')){
 		car.speed -= 1;
-		car.dashboard.gasIcon.material.color.set('springgreen');
+		car.dashboard.brakeIcon.material.color.set('red');
 		car.dashboard.gearFrame.position.z = -2.93;//R
 		car.gear = 'r';
 	}
@@ -301,7 +301,7 @@ export function keyboardAndRC(fSlowDown, bSlowDown, deltaT){
 	}
 	
 	if (keyboard.down("shift")){ //gear
-		if(car.gear === 'r'){
+		if(car.gear === 'd'){
 			car.dashboard.gearFrame.position.z = -3.08;//P
 			car.gear = 'p';
 		}
