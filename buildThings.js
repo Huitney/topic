@@ -1,4 +1,6 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+import { MTLLoader } from 'https://unpkg.com/three/examples/jsm/loaders/MTLLoader.js';
+import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
 import {carParameter, scene} from "./init.js";
 import {buildDashboard} from "./buildDashboard.js";
 
@@ -185,6 +187,86 @@ export class Obstacle {
 				
 		scene.add(this.mesh);
 		this.rotate(0); // set initial axes
+	}
+
+	rotate(angle) {
+		this.angle = angle;
+
+		let yAxis = new THREE.Vector3(0, 1, 0);
+		this.axes = [];
+		this.axes[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
+		this.axes[1] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+				
+		this.dir = [];
+		this.dir[0] = (new THREE.Vector3(1, 0, 0)).applyAxisAngle(yAxis, angle);
+		this.dir[1] = (new THREE.Vector3(-1, 0, 0)).applyAxisAngle(yAxis, angle);
+		this.dir[2] = (new THREE.Vector3(0, 0, 1)).applyAxisAngle(yAxis, angle);
+		this.dir[3] = (new THREE.Vector3(0, 0, -1)).applyAxisAngle(yAxis, angle);
+		
+		this.c = [];
+		this.mesh.updateWorldMatrix(true, false);
+		this.c[0] = this.mesh.localToWorld(new THREE.Vector3(this.size[0], 0, 0));
+		this.c[1] = this.mesh.localToWorld(new THREE.Vector3(-this.size[0], 0, 0));
+		this.c[2] = this.mesh.localToWorld(new THREE.Vector3(0, 0, this.size[2]));
+		this.c[3] = this.mesh.localToWorld(new THREE.Vector3(0, 0, -this.size[2]));
+		
+		this.mesh.rotation.y = angle;
+	}
+	
+	calculateDistance(pointB) {
+		// four axes to check
+		let obbA = this;
+
+		let x1 = (pointB.clone().sub(obbA.c[0])).dot(obbA.dir[0]);
+		let x2 = (pointB.clone().sub(obbA.c[1])).dot(obbA.dir[1]);
+		let z1 = (pointB.clone().sub(obbA.c[2])).dot(obbA.dir[2]);
+		let z2 = (pointB.clone().sub(obbA.c[3])).dot(obbA.dir[3]);
+
+		let dis = new THREE.Vector3(0, 0, 0);
+		if(x1 > 0){
+			if(z1 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, obbA.size[2])));
+			}else if(z2 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(obbA.size[0], 0, -obbA.size[2])));
+			}else {
+				dis.x = pointB.clone().sub(obbA.c[0]).dot(obbA.dir[0]);
+				dis.z = 0;
+			}
+		}else if(x2 > 0){
+			if(z1 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, obbA.size[2])));
+			}else if(z2 > 0){
+				dis = pointB.clone().sub(obbA.mesh.localToWorld(new THREE.Vector3(-obbA.size[0], 0, -obbA.size[2])));
+			}else {
+				dis.x = pointB.clone().sub(obbA.c[1]).dot(obbA.dir[1]);
+				dis.z = 0;
+			}
+		}else if(z1 > 0){
+			dis.z = pointB.clone().sub(obbA.c[2]).dot(obbA.dir[2]);
+			dis.x = 0;
+		}else if(z2 > 0){
+			dis.z = pointB.clone().sub(obbA.c[3]).dot(obbA.dir[3]);
+			dis.x = 0;
+		}else{
+			dis.x = dis.z = 0;
+		}
+		return Math.sqrt(dis.x*dis.x + dis.z*dis.z);
+
+	}
+}
+
+export class ObstacleCar {
+	constructor(pos, size, modelName = 'Hyundai') {
+		this.center = pos;
+		this.size = size; // array of halfwidth's
+		//this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0]*2, size[1]*2, size[2]*2), new THREE.MeshBasicMaterial({map: texture, transparent:true}));
+		this.mesh = readModel(modelName, size[0]);
+		
+		if(this.mesh){
+			this.mesh.position.copy(pos);
+			scene.add(this.mesh);
+			this.rotate(0); // set initial axes
+		}
 	}
 
 	rotate(angle) {
@@ -461,3 +543,62 @@ function buildSeats(){
 	return seats;
 }
 
+function readModel (modelName, targetSize=40) {
+	var onProgress = function(xhr) {
+	if (xhr.lengthComputable) {
+		var percentComplete = xhr.loaded / xhr.total * 100;
+			console.log(Math.round(percentComplete, 2) + '% downloaded');
+		}
+	};
+
+	var onError = function(xhr) {};
+
+	var mtlLoader =  new THREE.MTLLoader();
+	mtlLoader.setPath('models/');
+	mtlLoader.load(modelName+'.mtl', function(materials) {
+		materials.preload();
+
+		var objLoader =  new OBJLoader();
+		objLoader.setMaterials(materials);
+		objLoader.setPath('models/');
+		objLoader.load(modelName+'.obj', function(object) {
+
+		let theObject =  unitize (object, targetSize);
+		theObject.add(new THREE.BoxHelper(theObject));
+		theObject.name = 'OBJ'
+
+		carModel = new THREE.Object3D();
+		carModel.add(theObject);
+		carModel.rotation.y = Math.PI/2;
+
+		return carModel;
+
+		}, onProgress, onError);
+
+	});
+
+}
+
+function unitize (object, targetSize) {  
+
+	// find bounding box of 'object'
+	var box3 = new THREE.Box3();
+	box3.setFromObject (object);
+	var size = new THREE.Vector3();
+	size.subVectors (box3.max, box3.min);
+	var center = new THREE.Vector3();
+	center.addVectors(box3.max, box3.min).multiplyScalar (0.5);
+
+	console.log ('center: ' + center.x + ', '+center.y + ', '+center.z );
+	console.log ('size: ' + size.x + ', ' +  size.y + ', '+size.z );
+
+	// uniform scaling according to objSize
+	var objSize = Math.max (size.x, size.y, size.z);
+	var scaleSet = targetSize/objSize;
+
+	var theObject =  new THREE.Object3D();
+	theObject.add (object);
+	object.scale.set (scaleSet, scaleSet, scaleSet);
+	object.position.set (-center.x*scaleSet, center.y*scaleSet/6, -center.z*scaleSet);
+	return theObject;
+}

@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8888;
 
 /*
 app.get('/', (req, res) => {
@@ -11,8 +11,9 @@ app.get('/', (req, res) => {
 });
 */
 
-app.use (express.static ('public'));
-//app.use(express.static(__dirname + '/public'));
+//app.use (express.static ('public'));
+app.use(express.static(__dirname + '/public'));
+//app.use('/js', express.static(__dirname + '/public/js'));
 
 app.get('/ctrl', (req, res) => {
 	res.sendFile(__dirname + '/controller0.html');

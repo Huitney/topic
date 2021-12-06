@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {buildCar} from "./buildThings.js";
+import {buildCar, ObstacleCar} from "./buildThings.js";
 import {firstPV} from "./func.js";
 import {cameraUpdate, treesLootAt, treesVisible} from "./func.js";
 import {onPointerDown} from "./buttonFunc.js";
@@ -42,8 +42,9 @@ export function init() {
     ////////////////////////////////////////////////////////////
 	//car
     car = buildCar(new THREE.Vector3(-122, 13, 21));
-	var car2 = buildCar(new THREE.Vector3(-138, 13, 56));
-	obstacles.push(car2);
+	//var car2 = buildCar(new THREE.Vector3(-138, 13, 56));
+	var car3 = ObstacleCar(new THREE.Vector3(-138, 13, 56), [18, 9, 9]);
+	obstacles.push(car3);
 	
 	//light
 	var light = new THREE.AmbientLight( 0x404040 ); // soft white light
