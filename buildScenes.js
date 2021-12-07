@@ -6,8 +6,8 @@ function buildScenes(){
 	//ground
 
 	
-	let loader = new THREE.TextureLoader()
-	loader.setCrossOrigin ("")
+	let loader = new THREE.TextureLoader();
+	loader.setCrossOrigin ("");
 
 	var geometry = new THREE.PlaneGeometry( 680, 880 );
 	var material = new THREE.MeshLambertMaterial({
@@ -22,9 +22,9 @@ function buildScenes(){
 	scene.add( ground );
 
 /////////////////////////////////////////  sidewalk  //////////////////////////////////////////////////
-	let map1 = loader.load ("https://i.imgur.com/KIQL2BB.jpg")
-	map1.wrapS = map1.wrapT = THREE.WrapRepeating
-	map1.repeat.set (.05,.05)
+	let map1 = loader.load ("https://i.imgur.com/KIQL2BB.jpg");
+	map1.wrapS = map1.wrapT = THREE.WrapRepeating;
+	map1.repeat.set (.05,.05);
 	var length = 108, width = 291;
 	var rr = 5;
 
@@ -373,28 +373,28 @@ function buildScenes(){
   for (let i = 0; i < 62; i++) {
 	let bb = bush.clone();
 	bb.position.set (360, 5, 460-i*15)
-	bushes.push(bb)
+	bushes.push(bb);
 	bushes0.add(bb);
 
   }
   for (let i = 0; i < 60; i++) {
 	let bb = bush.clone();
 	bb.position.set (-360, 5, 440-i*15)
-	bushes1.push(bb)
+	bushes1.push(bb);
 	bushes0.add(bb);
 
   }
   for (let i = 0; i < 49; i++) {
 	let bb = bush.clone();
 	bb.position.set (360-i*15, 5, 460)
-	bushes2.push(bb)
+	bushes2.push(bb);
 	bushes0.add(bb);
 
   }
   for (let i = 0; i < 49; i++) {
 	let bb = bush.clone();
 	bb.position.set (360-i*15, 5, -460)
-	bushes3.push(bb)
+	bushes3.push(bb);
 	bushes0.add(bb);
 
   }
@@ -411,8 +411,8 @@ function buildScenes(){
 		polygonOffsetFactor: -.5,
 		polygonOffsetUnits: -.5
 	});
-	texture.wrapS = texture.wrapT = THREE.WrapRepeating
-	texture.repeat.set (.4,10)
+	texture.wrapS = texture.wrapT = THREE.WrapRepeating;
+	texture.repeat.set (.4,10);
 
 	var grass = new THREE.Mesh(new THREE.PlaneGeometry(80, 970), texMat2);
 	grass.rotation.x = -Math.PI/2;
@@ -431,8 +431,8 @@ function buildScenes(){
       polygonOffsetFactor: -1,
 	  polygonOffsetUnits: -1
 	});
-	texture1.wrapS = texture1.wrapT = THREE.WrapRepeating
-	texture1.repeat.set (10,.4)
+	texture1.wrapS = texture1.wrapT = THREE.WrapRepeating;
+	texture1.repeat.set (10,.4);
 	var grass2 = new THREE.Mesh(new THREE.PlaneGeometry(780, 40), texMat2);
 	grass2.rotation.x = -Math.PI/2;
 	grass2.position.set(0, 0, 470);
