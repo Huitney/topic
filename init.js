@@ -44,7 +44,7 @@ export function init() {
     car = buildCar(new THREE.Vector3(-122, 13, 21));
 	//var car2 = buildCar(new THREE.Vector3(-138, 13, 56));
 	var car3 = new ObstacleCar(new THREE.Vector3(-138, 13, 56), [18, 9, 9]);
-	obstacles.push(car3);
+	//obstacles.push(car3);
 	
 	//light
 	var light = new THREE.AmbientLight( 0x404040 ); // soft white light
