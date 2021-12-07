@@ -560,7 +560,7 @@ function readModel (modelName, targetSize=40) {
 
 		var objLoader =  new OBJLoader();
 		objLoader.setMaterials(materials);
-		objLoader.setPath('models/');
+		objLoader.setPath('https://github.com/Huitney/topic/tree/master/models/');
 		objLoader.load(modelName+'.obj', function(object) {
 
 		let theObject =  unitize (object, targetSize);
