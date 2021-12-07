@@ -1,6 +1,6 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import { MTLLoader } from 'https://unpkg.com/three/examples/jsm/loaders/MTLLoader.js';
-import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'https://raw.githack.com/mrdoob/three.js/master/examples/jsm/loaders/OBJLoader.js';
+import { OBJLoader } from 'https://raw.githack.com/mrdoob/three.js/master/examples/jsm/loaders/MTLLoader.js';
 import {carParameter, scene} from "./init.js";
 import {buildDashboard} from "./buildDashboard.js";
 

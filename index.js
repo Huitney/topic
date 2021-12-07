@@ -4,16 +4,15 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 8888;
 
+
 /*
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
   console.log ('send index.html');
 });
 */
-
-//app.use (express.static ('public'));
-app.use(express.static(__dirname + '/public'));
-//app.use('/js', express.static(__dirname + '/public/js'));
+app.use (express.static ('public'));
+//app.use(express.static(__dirname + '/public'));
 
 app.get('/ctrl', (req, res) => {
 	res.sendFile(__dirname + '/controller0.html');
