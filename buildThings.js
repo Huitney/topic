@@ -553,7 +553,7 @@ function readModel (modelName, targetSize=40) {
 
 	var onError = function(xhr) {};
 
-	var mtlLoader =  new THREE.MTLLoader();
+	var mtlLoader =  new MTLLoader();
 	mtlLoader.setPath('models/');
 	mtlLoader.load(modelName+'.mtl', function(materials) {
 		materials.preload();
