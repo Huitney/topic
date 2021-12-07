@@ -1,6 +1,6 @@
 import * as THREE from "https://threejs.org/build/three.module.js";
 
-import {scene} from './init.js';
+import {scene} from 'https://raw.githack.com/Huitney/topic/master/init.js';
 var bushes = [], bushes1 = [], bushes2 = [], bushes3 = [];
 function buildScenes(){
 	//ground

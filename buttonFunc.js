@@ -1,8 +1,8 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {changeParkingMode, changeParkingModeButton, storeParkingAngle} from "./carMove.js";
-import {car, camera, topCamera, raycaster, radarSound, longBeep, topView} from "./init.js";
-import {changeTopView} from "./init.js";
-import {pickables} from "./buildDashboard.js";
+import {changeParkingMode, changeParkingModeButton, storeParkingAngle} from "https://raw.githack.com/Huitney/topic/master/carMove.js";
+import {car, camera, topCamera, raycaster, radarSound, longBeep, topView} from "https://raw.githack.com/Huitney/topic/master/init.js";
+import {changeTopView} from "https://raw.githack.com/Huitney/topic/master/init.js";
+import {pickables} from "https://raw.githack.com/Huitney/topic/master/buildDashboard.js";
 
 var mouse = new THREE.Vector2();
 var soundBT = false, CCW = 0;

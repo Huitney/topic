@@ -1,6 +1,6 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {car, camera, reversingCamera, keyboard} from "./init.js";
-import {bushes, bushes1, bushes2, bushes3} from "./buildScenes.js"
+import {car, camera, reversingCamera, keyboard} from "https://raw.githack.com/Huitney/topic/master/init.js";
+import {bushes, bushes1, bushes2, bushes3} from "https://raw.githack.com/Huitney/topic/master/buildScenes.js"
 
 var thirdPV = false, firstPV = false;
 

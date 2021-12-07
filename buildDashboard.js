@@ -2,7 +2,7 @@ import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import { Line2 } from "https://threejs.org/examples/jsm/lines/Line2.js";
 import { LineMaterial } from "https://threejs.org/examples/jsm/lines/LineMaterial.js";
 import { LineGeometry } from "https://threejs.org/examples/jsm/lines/LineGeometry.js";
-import {scene, sceneHUD} from "./init.js";
+import {scene, sceneHUD} from "https://raw.githack.com/Huitney/topic/master/init.js";
 
 var pickables = [];
 

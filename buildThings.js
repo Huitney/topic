@@ -1,8 +1,8 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import { MTLLoader } from 'https://raw.githack.com/mrdoob/three.js/master/examples/jsm/loaders/OBJLoader.js';
 import { OBJLoader } from 'https://raw.githack.com/mrdoob/three.js/master/examples/jsm/loaders/MTLLoader.js';
-import {carParameter, scene} from "./init.js";
-import {buildDashboard} from "./buildDashboard.js";
+import {carParameter, scene} from "https://raw.githack.com/Huitney/topic/master/init.js";
+import {buildDashboard} from "https://raw.githack.com/Huitney/topic/master/buildDashboard.js";
 
 export class Car {
 	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, sign, colorName = 'white') {

@@ -1,6 +1,6 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {car, topCamera, thirdPVCamera, GPSCamera, keyboard, obstacles, RCmesh, carParameter} from "./init.js";
-import {PDControl} from "./func.js";
+import {car, topCamera, thirdPVCamera, GPSCamera, keyboard, obstacles, RCmesh, carParameter} from "https://raw.githack.com/Huitney/topic/master/init.js";
+import {PDControl} from "https://raw.githack.com/Huitney/topic/master/func.js";
 
 var parkingMode = 0, parkingAngle = 0, PPart = 0;
 var parkingModeButton = false, pickedWheel = false;
