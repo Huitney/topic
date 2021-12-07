@@ -90,4 +90,21 @@ export function treesVisible(canSee){
 	bushes3.forEach (function(b) {b.visible = canSee})
 }
 
+export function loadCubemap() {
+
+	var path = "./pictures/Meadow/";
+	var format = '.jpg';
+  	var urls = [
+    	path + 'posx' + format, path + 'negx' + format,
+    	path + 'posy' + format, path + 'negy' + format,
+    	path + 'posz' + format, path + 'negz' + format
+  	];
+  	var loader = new THREE.CubeTextureLoader();
+  	loader.setCrossOrigin ('');
+  	var cubeMap = loader.load(urls);
+  	cubeMap.format = THREE.RGBFormat;
+  	return cubeMap;
+  
+}
+
 export {firstPV};

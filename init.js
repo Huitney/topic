@@ -91,6 +91,10 @@ export function init() {
 	longBeep.muted = false;
 	longBeep.loop = true;
 	
+	//background
+	var cubeMap = loadCubemap();
+  	scene.background = cubeMap;
+	
 	window.addEventListener ('pointerdown', onPointerDown, false);
 	raycaster = new THREE.Raycaster();
 	
