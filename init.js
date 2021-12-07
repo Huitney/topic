@@ -1,7 +1,7 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import {buildCar, ObstacleCar} from "https://raw.githack.com/Huitney/topic/master/buildThings.js";
 import {firstPV} from "https://raw.githack.com/Huitney/topic/master/func.js";
-import {cameraUpdate, treesLootAt, treesVisible} from "https://raw.githack.com/Huitney/topic/master/func.js";
+import {cameraUpdate, treesLootAt, treesVisible, loadCubemap} from "https://raw.githack.com/Huitney/topic/master/func.js";
 import {onPointerDown} from "https://raw.githack.com/Huitney/topic/master/buttonFunc.js";
 import {parking, keyboardAndRC, moveCar, flashTurnSignal} from "https://raw.githack.com/Huitney/topic/master/carMove.js";
 import {buildScenes} from "https://raw.githack.com/Huitney/topic/master/buildScenes.js";
