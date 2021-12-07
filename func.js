@@ -92,13 +92,19 @@ export function treesVisible(canSee){
 
 export function loadCubemap() {
 
-	var path = "./pictures/Meadow/";
+	/*var path = "./pictures/Meadow/";
 	var format = '.jpg';
   	var urls = [
     	path + 'posx' + format, path + 'negx' + format,
     	path + 'posy' + format, path + 'negy' + format,
     	path + 'posz' + format, path + 'negz' + format
+  	];*/
+	var urls = [
+    	"https://i.imgur.com/k0C89rK.jpg", "https://i.imgur.com/fxNB9KL.jpg",
+    	"https://i.imgur.com/Bwaz4mn.jpg", "https://i.imgur.com/uJyMINd.jpg",
+    	"https://i.imgur.com/MVQ1xKl.jpg", "https://i.imgur.com/Cahat7o.jpg"
   	];
+	
   	var loader = new THREE.CubeTextureLoader();
   	loader.setCrossOrigin ('');
   	var cubeMap = loader.load(urls);
