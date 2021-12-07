@@ -67,11 +67,11 @@ export function poll(){
 
 function radarPlay(){
 	
-	if(car.minDis < 3){
+	if(car.minDis < 3 & (car.gear !== 'p' | car.gear !== 'n')){
 		longBeep.play();
 		radarSound.pause();
 		radarAlert.ticker = false;
-	}else {
+	}else if(car.gear !== 'p' | car.gear !== 'n'){
 		radarSound.play();
 		longBeep.pause();
 	}
