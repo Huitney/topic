@@ -43,7 +43,7 @@ export function init() {
 	//car
     car = buildCar(new THREE.Vector3(-122, 13, 21));
 	var car2 = buildCar(new THREE.Vector3(-138, 13, 56));
-	//var car3 = new ObstacleCar(new THREE.Vector3(-138, 13, 56), [18, 9, 9]);
+	var car3 = new ObstacleCar(new THREE.Vector3(0, 0, 0), [18, 9, 9]);
 	obstacles.push(car2);
 	
 	//light
