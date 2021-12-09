@@ -554,13 +554,13 @@ function readModel (modelName, targetSize=40) {
 	var onError = function(xhr) {};
 
 	var mtlLoader =  new MTLLoader();
-	mtlLoader.setPath('models/');
+	mtlLoader.setPath('https://github.com/Huitney/topic/tree/master/models/');
 	mtlLoader.load(modelName+'.mtl', function(materials) {
 		materials.preload();
 
 		var objLoader =  new OBJLoader();
 		objLoader.setMaterials(materials);
-		objLoader.setPath('models/');
+		objLoader.setPath('https://github.com/Huitney/topic/tree/master/models/');
 		objLoader.load(modelName+'.obj', function(object) {
 
 		let theObject =  unitize (object, targetSize);
