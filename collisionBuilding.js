@@ -38,46 +38,46 @@ export class BSPNode {
 export function buildTree() {
 	
 	// outer wall
-	A = new Point (-360,-460);
-	B = new Point (-360,460);
-	C = new Point (360,460);
-	D = new Point (360,-460);
+	let A = new Point (-360,-460);
+	let B = new Point (-360,460);
+	let C = new Point (360,460);
+	let D = new Point (360,-460);
 
 	// inner wall 1
-	E1 = new Point (166,-240);
-	F1 = new Point (166,-190);
-	G1 = new Point (245,-190);
-	H1 = new Point (245,-240);
+	let E1 = new Point (166,-240);
+	let F1 = new Point (166,-190);
+	let G1 = new Point (245,-190);
+	let H1 = new Point (245,-240);
 	
 	// inner wall 2
-	E2 = new Point (166,190);
-	F2 = new Point (166,240);
-	G2 = new Point (245,240);
-	H2 = new Point (245,190);
+	let E2 = new Point (166,190);
+	let F2 = new Point (166,240);
+	let G2 = new Point (245,240);
+	let H2 = new Point (245,190);
 	
 	// inner wall 3
-	E3 = new Point (-245.5,275);
-	F3 = new Point (-245.5,325);
-	G3 = new Point (0.5,325);
-	H3 = new Point (0.5,275);
+	let E3 = new Point (-245.5,275);
+	let F3 = new Point (-245.5,325);
+	let G3 = new Point (0.5,325);
+	let H3 = new Point (0.5,275);
 	
 	// inner wall 4
-	E4 = new Point (-243.5,97);
-	F4 = new Point (-243.5,147);
-	G4 = new Point (-1.5,147);
-	H4 = new Point (-1.5,97);
+	let E4 = new Point (-243.5,97);
+	let F4 = new Point (-243.5,147);
+	let G4 = new Point (-1.5,147);
+	let H4 = new Point (-1.5,97);
 	
 	// inner wall 5
-	E5 = new Point (-108,-347);
-	F5 = new Point (-85,-82);
-	G5 = new Point (-5,-82);
-	H5 = new Point (-5,-347);
+	let E5 = new Point (-108,-347);
+	let F5 = new Point (-85,-82);
+	let G5 = new Point (-5,-82);
+	let H5 = new Point (-5,-347);
 	
 	// inner wall 6
-	E6 = new Point (-245,-346);
-	F6 = new Point (-245,-82);
-	G6 = new Point (-183,-82);
-	H6 = new Point (-204,-346);
+	let E6 = new Point (-245,-346);
+	let F6 = new Point (-245,-82);
+	let G6 = new Point (-183,-82);
+	let H6 = new Point (-204,-346);
 	
 	let N1 = buildTree2(A,B,C,D,E1,F1,G1,H1);
 	let N2 = buildTree2(A,B,C,D,E2,F2,G2,H2);
