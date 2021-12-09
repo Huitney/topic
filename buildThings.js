@@ -256,7 +256,7 @@ export class Obstacle {
 }
 
 export class ObstacleCar {
-	constructor(pos, size, modelName = 'X5') {
+	constructor(pos, size, modelName = 'truck') {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		//this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0]*2, size[1]*2, size[2]*2), new THREE.MeshBasicMaterial({map: texture, transparent:true}));
@@ -554,13 +554,13 @@ function readModel (modelName, targetSize=40) {
 	var onError = function(xhr) {};
 
 	var mtlLoader =  new MTLLoader();
-	mtlLoader.setPath('http://raw.githubusercontent.com/Huitney/topic/master/models/');
+	mtlLoader.setPath('https://raw.githubusercontent.com/Huitney/topic/master/models/');
 	mtlLoader.load(modelName+'.mtl', function(materials) {
 		materials.preload();
 
 		var objLoader =  new OBJLoader();
 		objLoader.setMaterials(materials);
-		objLoader.setPath('http://github.com/Huitney/topic/tree/master/models/');
+		objLoader.setPath('https://github.com/Huitney/topic/tree/master/models/');
 		objLoader.load(modelName+'.obj', function(object) {
 
 		let theObject =  unitize (object, targetSize);
