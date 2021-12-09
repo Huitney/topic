@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8008;
 
 
 /*
@@ -23,6 +23,13 @@ app.get('/scene', (req, res) => {
 	res.sendFile(__dirname + '/main.html');
 	console.log ('send main.html');
 });
+
+/*
+app.get('https://github.com/Huitney/topic/tree/master/models/', function (req, res) {
+	res.set('Access-Control-Allow-Origin', 'http://localhost:${port}');
+	res.end('hello world');
+});
+*/
 
 io.on('connection', (socket) => {
 	socket.on('angle from ctrl', msg => {
