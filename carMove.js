@@ -1,6 +1,7 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {car, topCamera, thirdPVCamera, GPSCamera, keyboard, obstacles, RCmesh, carParameter} from "https://raw.githack.com/Huitney/topic/master/init.js";
+import {car, topCamera, thirdPVCamera, GPSCamera, keyboard, obstacles, RCmesh, carParameter, buildingNodes} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {PDControl} from "https://raw.githack.com/Huitney/topic/master/func.js";
+import {inOut} from "https://raw.githack.com/Huitney/topic/master/collisionBuilding.js";
 
 var parkingMode = 0, parkingAngle = 0, PPart = 0;
 var parkingModeButton = false, pickedWheel = false;
@@ -336,6 +337,21 @@ export function moveCar(RC, omega, deltaT){
 	car.changeColor(false);
 	for(var i = 0;i < obstacles.length;i++){
 		if(car.intersect(obstacles[i])){    //intersect
+			car.move(C);
+			car.rotate(car.angle - omega*deltaT);
+			car.changeColor(true);
+			break;
+		}
+	}
+	
+	for(var i = 0;i < buildingNodes.length;i++){
+		let xz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, car.size[2]);
+		let nxz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, car.size[2]);
+		let xnz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, -car.size[2]);
+		let nxnz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, -car.size[2]);
+		
+		if(inOut(xz.x, xz.z, buildingNodes[i]) | inOut(nxz.x, nxz.z, buildingNodes[i]) 
+			| inOut(xnz.x, xnz.z, buildingNodes[i]) | inOut(nxnz.x, nxnz.z, buildingNodes[i])){    //intersect
 			car.move(C);
 			car.rotate(car.angle - omega*deltaT);
 			car.changeColor(true);

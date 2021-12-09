@@ -5,6 +5,7 @@ import {cameraUpdate, treesLootAt, treesVisible, loadCubemap} from "https://raw.
 import {onPointerDown} from "https://raw.githack.com/Huitney/topic/master/buttonFunc.js";
 import {parking, keyboardAndRC, moveCar, flashTurnSignal} from "https://raw.githack.com/Huitney/topic/master/carMove.js";
 import {buildScenes} from "https://raw.githack.com/Huitney/topic/master/buildScenes.js";
+import {buildTree} from "https://raw.githack.com/Huitney/topic/master/collisionBuilding.js";
 
 var scene, renderer, camera;
 var sceneHUD, GPSCamera;
@@ -18,6 +19,7 @@ var raycaster;
 var radarSound, RCmesh, longBeep;
 var topView = false;
 var carParameter;
+var buildingNodes;
 
 export function init() {
 
@@ -43,7 +45,7 @@ export function init() {
 	//car
     car = buildCar(new THREE.Vector3(-122, 13, 21));
 	var car2 = buildCar(new THREE.Vector3(-138, 13, 56));
-	var car3 = new ObstacleCar(new THREE.Vector3(0, 0, 0), [18, 9, 9]);
+	//var car3 = new ObstacleCar(new THREE.Vector3(0, 0, 0), [18, 9, 9]);
 	obstacles.push(car2);
 	
 	//light
@@ -100,6 +102,7 @@ export function init() {
 	
 	//drawReversingLine();
 	flashTurnSignal();
+	buildingNodes = buildTree();
 }
   
 export function animate() {
@@ -209,4 +212,4 @@ export function changeTopView(){
 }
 
 export {scene, sceneHUD, camera, GPSCamera, topCamera, thirdPVCamera, reversingCamera, keyboard
-		, car, obstacles, raycaster, radarSound, RCmesh, longBeep, topView, carParameter};
+		, car, obstacles, raycaster, radarSound, RCmesh, longBeep, topView, carParameter, buildingNodes};
