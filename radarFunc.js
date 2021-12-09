@@ -39,12 +39,13 @@ export function poll(){
 		let nx = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, 0));
 		let x = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, 0));
 				
-		let tmp[0] = inOut(xz.x, xz.z, buildingNodes[i]);
-		let tmp[1] = inOut(xnz.x, xnz.z, buildingNodes[i]);
-		let tmp[2] = inOut(nxnz.x, nxnz.z, buildingNodes[i]);
-		let tmp[3] = inOut(nxz.x, nxz.z, buildingNodes[i]);
-		let tmp[4] = inOut(nx.x, nx.z, buildingNodes[i]);
-		let tmp[5] = inOut(x.x, x.z, buildingNodes[i]);
+		let tmp = [];
+		tmp[0] = inOut(xz.x, xz.z, buildingNodes[i]);
+		tmp[1] = inOut(xnz.x, xnz.z, buildingNodes[i]);
+		tmp[2] = inOut(nxnz.x, nxnz.z, buildingNodes[i]);
+		tmp[3] = inOut(nxz.x, nxz.z, buildingNodes[i]);
+		tmp[4] = inOut(nx.x, nx.z, buildingNodes[i]);
+		tmp[5] = inOut(x.x, x.z, buildingNodes[i]);
 		
 		min[0].dis = min[0].dis < tmp[0] ? min[0].dis : tmp[0];
 		min[1].dis = min[1].dis < tmp[1] ? min[1].dis : tmp[1];
