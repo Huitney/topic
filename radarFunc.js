@@ -32,12 +32,12 @@ export function poll(){
 	}
 	
 	for(var i = 0;i < buildingNodes.length;i++){
-		let xz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, car.size[2]);
-		let xnz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, -car.size[2]);
-		let nxnz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, -car.size[2]);
-		let nxz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, car.size[2]);
-		let nx = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, 0);
-		let x = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, 0);
+		let xz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, car.size[2]));
+		let xnz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, -car.size[2]));
+		let nxnz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, -car.size[2]));
+		let nxz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, car.size[2]));
+		let nx = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, 0));
+		let x = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, 0));
 				
 		let tmp[0] = inOut(xz.x, xz.z, buildingNodes[i]);
 		let tmp[1] = inOut(xnz.x, xnz.z, buildingNodes[i]);

@@ -345,10 +345,10 @@ export function moveCar(RC, omega, deltaT){
 	}
 	
 	for(var i = 0;i < buildingNodes.length;i++){
-		let xz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, car.size[2]);
-		let nxz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, car.size[2]);
-		let xnz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, -car.size[2]);
-		let nxnz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, -car.size[2]);
+		let xz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, car.size[2]));
+		let nxz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, car.size[2]));
+		let xnz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, -car.size[2]));
+		let nxnz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, -car.size[2]));
 		
 		if(inOut(xz.x, xz.z, buildingNodes[i]) | inOut(nxz.x, nxz.z, buildingNodes[i]) 
 			| inOut(xnz.x, xnz.z, buildingNodes[i]) | inOut(nxnz.x, nxnz.z, buildingNodes[i])){    //intersect
