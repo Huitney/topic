@@ -554,7 +554,7 @@ function readModel (modelName, targetSize=40) {
 	var onError = function(xhr) {};
 
 	var mtlLoader =  new MTLLoader();
-	mtlLoader.setPath('https://raw.githubusercontent.com/Huitney/topic/master/models/');
+	mtlLoader.setPath('http://raw.githubusercontent.com/Huitney/topic/master/models/');
 	mtlLoader.load(modelName+'.mtl', function(materials) {
 		materials.preload();
 
