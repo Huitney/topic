@@ -256,7 +256,7 @@ export class Obstacle {
 }
 
 export class ObstacleCar {
-	constructor(pos, size, modelName = 'Hyundai') {
+	constructor(pos, size, modelName = 'X5') {
 		this.center = pos;
 		this.size = size; // array of halfwidth's
 		//this.mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0]*2, size[1]*2, size[2]*2), new THREE.MeshBasicMaterial({map: texture, transparent:true}));
