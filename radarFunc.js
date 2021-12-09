@@ -30,31 +30,7 @@ export function poll(){
 			min[5] = min[5].dis < tmp[5].dis ? min[5] : tmp[5];
 		} 
 	}
-	
-	for(var i = 0;i < buildingNodes.length;i++){
-		let xz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, car.size[2]));
-		let xnz = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, -car.size[2]));
-		let nxnz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, -car.size[2]));
-		let nxz = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, car.size[2]));
-		let nx = car.mesh.localToWorld(new THREE.Vector3(-car.size[0], 0, 0));
-		let x = car.mesh.localToWorld(new THREE.Vector3(car.size[0], 0, 0));
-				
-		let tmp = [];
-		tmp[0] = inOut(xz.x, xz.z, buildingNodes[i]);
-		tmp[1] = inOut(xnz.x, xnz.z, buildingNodes[i]);
-		tmp[2] = inOut(nxnz.x, nxnz.z, buildingNodes[i]);
-		tmp[3] = inOut(nxz.x, nxz.z, buildingNodes[i]);
-		tmp[4] = inOut(nx.x, nx.z, buildingNodes[i]);
-		tmp[5] = inOut(x.x, x.z, buildingNodes[i]);
 		
-		min[0].dis = min[0].dis < tmp[0] ? min[0].dis : tmp[0];
-		min[1].dis = min[1].dis < tmp[1] ? min[1].dis : tmp[1];
-		min[2].dis = min[2].dis < tmp[2] ? min[2].dis : tmp[2];
-		min[3].dis = min[3].dis < tmp[3] ? min[3].dis : tmp[3];
-		min[4].dis = min[4].dis < tmp[4] ? min[4].dis : tmp[4];
-		min[5].dis = min[5].dis < tmp[5] ? min[5].dis : tmp[5];
-	}
-	
 	//call alert
 	if(min[0].dis < 20) setTimeout(rightFrontSensor, min[0].dis * 40, min[0].dis);
 	else car.dashboard.frontRightAlert.visible = false;

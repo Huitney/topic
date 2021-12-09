@@ -5,7 +5,6 @@ import {cameraUpdate, treesLootAt, treesVisible, loadCubemap} from "https://raw.
 import {onPointerDown} from "https://raw.githack.com/Huitney/topic/master/buttonFunc.js";
 import {parking, keyboardAndRC, moveCar, flashTurnSignal} from "https://raw.githack.com/Huitney/topic/master/carMove.js";
 import {buildScenes} from "https://raw.githack.com/Huitney/topic/master/buildScenes.js";
-import {buildTree} from "https://raw.githack.com/Huitney/topic/master/collisionBuilding.js";
 
 var scene, renderer, camera;
 var sceneHUD, GPSCamera;
@@ -102,7 +101,6 @@ export function init() {
 	
 	//drawReversingLine();
 	flashTurnSignal();
-	buildingNodes = buildTree();
 }
   
 export function animate() {
