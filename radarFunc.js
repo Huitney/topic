@@ -13,6 +13,9 @@ export function poll(){
 		car.dashboard.backRightAlert.visible = false;
 		car.dashboard.backAlert.visible = false;
 		car.dashboard.frontAlert.visible = false;
+		beeper = false;
+		longBeep.loop = false;
+		radarAlert.ticker = false;
 		return;
 	}
 	
@@ -68,11 +71,11 @@ export function poll(){
 
 function radarPlay(){
 	
-	if(car.minDis < 3 & (car.gear !== 'p' | car.gear !== 'n')){
+	if(car.minDis < 3 & (car.gear != 'p' | car.gear != 'n')){
 		longBeep.play();
 		radarSound.pause();
 		radarAlert.ticker = false;
-	}else if(car.gear !== 'p' | car.gear !== 'n'){
+	}else if(car.gear != 'p' | car.gear != 'n'){
 		radarSound.play();
 		longBeep.pause();
 	}
