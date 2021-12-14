@@ -113,6 +113,8 @@ export function parking(){
 		}
     }else if(parkingMode === 2){     //stop parking
 		car.speed = 0;
+		car.dashboard.gearFrame.position.z = -3.08;//P
+		car.gear = 'p';
 	}else {                          //manual
 		PPart = 0;
 	}
