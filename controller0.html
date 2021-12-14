@@ -44,6 +44,8 @@ var clock = new THREE.Clock();
 
 var socket; // my socket with server
 
+var tt = 0;
+
 init();
 animate();
 
@@ -253,7 +255,7 @@ function onTouchStart(event) {
 			currentDialPt = null;
 			touchDial1 = false;
 			socket.emit ('gear from ctrl', 'd');
-		} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into parking
+		}/* else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into parking
 			$('#msg').text('hit parking');
 			gear = 'r';
 			rIcon.material.color.set('white');
@@ -262,8 +264,9 @@ function onTouchStart(event) {
 			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
 			socket.emit ('gear from ctrl', 'r');
-			socket.emit ('parking from ctrl', true);
-		} else {
+			socket.emit ('parking from ctrl', tt++);
+			//setTimeout(stopParking, 18000);
+		}*/ else {
 			$('#msg').text('no hit');
 			currentDialPt = null;  
 			touchDial1 = false;
@@ -341,7 +344,8 @@ function onTouchStart(event) {
 			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
 			socket.emit ('gear from ctrl', 'r');
-			socket.emit ('parking from ctrl', true);
+			socket.emit ('parking from ctrl', tt++);
+			setTimeout(stopParking, 17500);
 		} else {
 			$('#msg').text('no hit');
 			touchDial2 = false;
@@ -423,7 +427,8 @@ function onMouseDown(event) {
 		dIcon.material.color.set('dimgrey');
 		currentDialPt = null;
 		socket.emit ('gear from ctrl', 'r');
-		socket.emit ('parking from ctrl', true);
+		socket.emit ('parking from ctrl', tt++);
+		setTimeout(stopParking, 17500);
 	} else {
 		$('#msg').text('no hit');
 		currentDialPt = null;  
@@ -657,7 +662,10 @@ function clamp (v, vLo, vHi) {
 function stepOnGas() {
 
 	gasLevel += 0.02;
-	gasLevel = clamp (gasLevel,0,1);
+	if(gear === 'r')
+		gasLevel = clamp (gasLevel,0,0.075);
+	else
+		gasLevel = clamp (gasLevel,0,1);
 	 
 	if (stillGassing)
 		setTimeout (stepOnGas, 50);
@@ -666,7 +674,10 @@ function stepOnGas() {
 function pushBrake(){
 
 	gasLevel -= 0.02;
-	gasLevel = clamp (gasLevel,0,1);
+	if(gear === 'r')
+		gasLevel = clamp (gasLevel,0,0.075);
+	else
+		gasLevel = clamp (gasLevel,0,1);
 	
 	if (stillBraking)
 		setTimeout (pushBrake, 50);
@@ -696,6 +707,15 @@ function PDControl(dt){
 	// plant dynamics 
 	PDControl.vv += f*dt;
 	dialAngle += PDControl.vv*dt
+}
+
+function stopParking(){
+	gear = 'p';
+	pIcon.material.color.set('white');
+	rIcon.material.color.set('dimgrey');
+	nIcon.material.color.set('dimgrey');
+	dIcon.material.color.set('dimgrey');
+	socket.emit ('gear from ctrl', 'p');
 }
 
 function onWindowResize() {

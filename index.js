@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('gear from ctrl', msg => {
-		console.log ('from ctrl gear: ' + msg);
+		//console.log ('from ctrl gear: ' + msg);
 		socket.broadcast.emit ('gear sent', msg);  // to all others    
 	});
 	
@@ -53,17 +53,17 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('picked wheel from ctrl', msg => {
-		console.log ('picked: ' + msg);
+		//console.log ('picked: ' + msg);
 		socket.broadcast.emit ('picked wheel sent', msg);  // to all others    
 	});
 	
 	socket.on('picked gas from ctrl', msg => {
-		console.log ('picked: ' + msg);
+		//console.log ('picked: ' + msg);
 		socket.broadcast.emit ('picked gas sent', msg);  // to all others    
 	});
 	
 	socket.on('picked brake from ctrl', msg => {
-		console.log ('picked: ' + msg);
+		//console.log ('picked: ' + msg);
 		socket.broadcast.emit ('picked brake sent', msg);  // to all others    
 	});
 });
