@@ -256,6 +256,10 @@ function onTouchStart(event) {
 		} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into parking
 			$('#msg').text('hit parking');
 			gear = 'r';
+			rIcon.material.color.set('white');
+			pIcon.material.color.set('dimgrey');
+			nIcon.material.color.set('dimgrey');
+			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
 			socket.emit ('gear from ctrl', 'r');
 			socket.emit ('parking from ctrl', true);
@@ -331,6 +335,10 @@ function onTouchStart(event) {
 		} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into parking
 			$('#msg').text('hit parking');
 			gear = 'r';
+			rIcon.material.color.set('white');
+			pIcon.material.color.set('dimgrey');
+			nIcon.material.color.set('dimgrey');
+			dIcon.material.color.set('dimgrey');
 			currentDialPt = null;
 			socket.emit ('gear from ctrl', 'r');
 			socket.emit ('parking from ctrl', true);
@@ -409,6 +417,10 @@ function onMouseDown(event) {
 	} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into parking
 		$('#msg').text('hit parking');
 		gear = 'r';
+		rIcon.material.color.set('white');
+		pIcon.material.color.set('dimgrey');
+		nIcon.material.color.set('dimgrey');
+		dIcon.material.color.set('dimgrey');
 		currentDialPt = null;
 		socket.emit ('gear from ctrl', 'r');
 		socket.emit ('parking from ctrl', true);

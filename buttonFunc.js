@@ -70,6 +70,8 @@ function parkBTDown(){
 	storeParkingAngle();
 	car.dashboard.autoBT.visible = true;
 	car.dashboard.manuBT.visible = false;
+	car.dashboard.gearFrame.position.z = -2.93;//R
+	car.gear = 'r';
 }
 
 function topViewBTDown(){
@@ -128,12 +130,16 @@ function autoBTDown(){
 	changeParkingMode(0);
 	car.dashboard.autoBT.visible = false;
 	car.dashboard.manuBT.visible = true;
+	car.dashboard.gearFrame.position.z = -3.08;//P
+	car.gear = 'p';
 }
 
 function manuBTDown(){
 	changeParkingMode(2);
 	car.dashboard.autoBT.visible = true;
 	car.dashboard.manuBT.visible = false;
+	car.dashboard.gearFrame.position.z = -3.08;//P
+	car.gear = 'p';
 }
 
 function mode1BTDown(){

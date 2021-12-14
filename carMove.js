@@ -383,6 +383,10 @@ export function changeParkingMode(mode){
 export function controllParkingMode(){
 	parkingMode++;
 	parkingMode %= 3;
+	if(parkingMode === 2){
+		car.dashboard.gearFrame.position.z = -3.08;//P
+		car.gear = 'p';
+	}
 }
 
 export function changeParkingModeButton(mode){
