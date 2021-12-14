@@ -1107,7 +1107,22 @@ function buildScenes(){
 	arrow4.rotation.z = Math.PI/2;
 	scene.add(arrow1, arrow2, arrow3, arrow4);
 	//scene.add(arrow11);
+	
+	//stop sign
+	var texture8 = loader.load('https://i.imgur.com/dB4AdSy.png');
 
+	var stopSign = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), new THREE.MeshBasicMaterial({
+								map: texture8,
+								alphaTest: 0.5,
+								side: THREE.DoubleSide}));
+	stopSign.rotation.y = -Math.PI/2;	
+	stopSign.position.set(230, 25, 68);
+	var stopSignPole = new THREE.Mesh( new THREE.CylinderGeometry( 0.5, 0.5, 20, 32 ), new THREE.MeshBasicMaterial( {color: 'darkgray'} ) );
+	stopSignPole.rotation.y = Math.PI/2;	
+	stopSignPole.position.y = -15;
+	stopSign.add( stopSignPole );
+
+	scene.add(stopSign);
 	
 }
 

@@ -378,6 +378,11 @@ export function changeParkingMode(mode){
 	parkingMode = mode;
 }
 
+export function controllParkingMode(){
+	parkingMode++;
+	parkingMode %= 3;
+}
+
 export function changeParkingModeButton(mode){
 	parkingModeButton = mode;
 }
