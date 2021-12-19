@@ -1,6 +1,9 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import { OBJLoader } from 'https://raw.githack.com/mrdoob/three.js/master/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'https://raw.githack.com/mrdoob/three.js/master/examples/jsm/loaders/MTLLoader.js';
+import {Line2} from 'https://raw.githack.com/mrdoob/three.js/dev/examples/jsm/lines/Line2.js';
+import {LineMaterial} from 'https://raw.githack.com/mrdoob/three.js/dev/examples/jsm/lines/LineMaterial.js';
+import {LineGeometry} from 'https://raw.githack.com/mrdoob/three.js/dev/examples/jsm/lines/LineGeometry.js';
 import {carParameter, scene} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {buildDashboard} from "https://raw.githack.com/Huitney/topic/master/buildDashboard.js";
 
