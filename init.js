@@ -1,7 +1,7 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {buildCar, ObstacleCar} from "https://raw.githack.com/Huitney/topic/master/buildThings.js";
+import {buildCar, ObstacleCar, revLine} from "https://raw.githack.com/Huitney/topic/master/buildThings.js";
 import {firstPV} from "https://raw.githack.com/Huitney/topic/master/func.js";
-import {cameraUpdate, treesLootAt, treesVisible, loadCubemap} from "https://raw.githack.com/Huitney/topic/master/func.js";
+import {cameraUpdate, treesLootAt, treesVisible, loadCubemap, reversingLine, reversingLineVisible} from "https://raw.githack.com/Huitney/topic/master/func.js";
 import {onPointerDown} from "https://raw.githack.com/Huitney/topic/master/buttonFunc.js";
 import {parking, keyboardAndRC, moveCar, flashTurnSignal} from "https://raw.githack.com/Huitney/topic/master/carMove.js";
 import {buildScenes} from "https://raw.githack.com/Huitney/topic/master/buildScenes.js";
@@ -99,7 +99,8 @@ export function init() {
 	window.addEventListener ('pointerdown', onPointerDown, false);
 	raycaster = new THREE.Raycaster();
 	
-	//drawReversingLine();
+	//ReveringLine
+	revLine();
 	flashTurnSignal();
 }
   
@@ -140,6 +141,8 @@ export function animate() {
 	
 	//trees
 	treesLootAt();
+	
+	reversingLine();
   
     requestAnimationFrame(animate);
     render();
@@ -154,6 +157,7 @@ function render() {
     renderer.setViewport(0, 0, WW, HH);
     renderer.setScissor(0, 0, WW, HH);
     renderer.clear();
+	reversingLineVisible(false);
     renderer.render(scene, camera);
 
 	if(firstPV){
@@ -167,6 +171,7 @@ function render() {
 			car.brakeLightR.visible = false;
 			car.brakeLightL.visible = false;
 			treesVisible(false);
+			reversingLineVisible(true);
 			renderer.render(scene, reversingCamera);	
 			treesVisible(true);
 			car.brakeLightR.visible = true;

@@ -602,3 +602,65 @@ function unitize (object, targetSize) {
 	object.position.set (-center.x*scaleSet, center.y*scaleSet/6, -center.z*scaleSet);
 	return theObject;
 }
+
+export function revLine(){
+	var positions = [];
+
+
+	let len = 2;
+	for (let i = 0; i < len; i++) {
+		positions.push(-10, -10, -10);
+		positions.push(-10, -10, 10);
+	
+	}
+	var geometry = new LineGeometry();
+	geometry.setPositions(positions);
+
+
+	var matLine = new LineMaterial({
+		color: 0xffff00,
+		linewidth: 0.05, // in pixels
+		//vertexColors: THREE.VertexColors,
+		//resolution:  // to be set by renderer, eventually
+		dashed: false
+	});
+	const traceMesh = new Line2(geometry, matLine);
+	traceMesh.computeLineDistances();
+	for (var i = 0; i < 2; i++) {
+		traceMeshes.push (traceMesh.clone());
+		scene.add (traceMeshes[i]);
+	}
+	/////
+	var positions1 = [];
+
+	for (let i = 0; i < 9; i++) {  
+		positions1.push(0, -10, 10);
+		positions1.push(0, -10, -10);
+		positions1.push(30, -10, -10);
+		positions1.push(30, -10, 10);
+		positions1.push(10, -10, 10);
+		positions1.push(10, -10, -10); 
+		positions1.push(0, -10, -10); 
+		positions1.push(0, -10, 10); 
+		positions1.push(20, -10, 10); 
+
+
+	}
+
+	var geometry1 = new LineGeometry();
+	geometry1.setPositions(positions1);
+	var matLine1 = new LineMaterial({
+		color: 0x0080ff,
+		linewidth: 0.03, // in pixels
+		//vertexColors: THREE.VertexColors,
+		//resolution:  // to be set by renderer, eventually
+		dashed: false
+	});
+
+	var  traceMesh1 = new Line2(geometry1, matLine1);
+	traceMesh1.computeLineDistances();
+	
+	traceMeshesBlue.push (traceMesh1.clone());
+
+	scene.add (traceMeshesBlue[0]);
+}

@@ -113,4 +113,70 @@ export function loadCubemap() {
   
 }
 
+export function reversingLine(){
+		// compute icx based on steeringPhi
+		//debugger;
+		let icx = RC.x;
+		let icz = RC.z;
+	  	// RCmesh.position.x = icx;
+		
+		// rear bumpter center
+		let rbc = car.mesh.localToWorld(new THREE.Vector3(-20, 0, 0));
+		let rbr = car.mesh.localToWorld(new THREE.Vector3(-20, 0, 10));
+		let rbl = car.mesh.localToWorld(new THREE.Vector3(-20, 0, -10));
+		  
+		  // compute R
+	  
+		let vvc = rbc.clone().sub(RCmesh.position);
+		let Rc = vvc.length();//Math.sqrt(n*n + icx*icx);
+		let theta2c = Math.atan2(vvc.z, vvc.x);
+	  
+		let vvr = rbr.clone().sub(RCmesh.position);
+		let Rr = vvr.length();//Math.sqrt(n*n + icx*icx);
+		let theta2r = Math.atan2(vvr.z, vvr.x);
+	  
+		let vvl = rbl.clone().sub(RCmesh.position);
+		let Rl = vvl.length();//Math.sqrt(n*n + icx*icx);
+		let theta2l = Math.atan2(vvl.z, vvl.x);
+	  
+		  // compute delta_theta
+		var HL = 30;  
+		var delta_theta = HL/Rc;
+	  
+		scene.remove (scene.getObjectByName ('arcR'));
+		scene.remove (scene.getObjectByName ('arcL'));
+	  
+		let arc;
+	   
+		if (sign < 0) {
+			arc = makeCCWArc (Rr, theta2r-delta_theta, theta2r, [icx, icz],'yellow');
+			arc.name = 'arcR';
+			scene.add (arc);
+			arc.visible = firstPV;
+			arc = makeCCWArc (Rl, theta2l-delta_theta, theta2l, [icx, icz],'yellow');
+			arc.name = 'arcL';
+			scene.add (arc);
+			arc.visible = firstPV;
+			
+		} else {
+			arc = makeCCWArc (Rr, theta2r, theta2r+delta_theta, [icx, icz],'yellow');
+			arc.name = 'arcR';
+		
+			scene.add (arc);
+			arc.visible = firstPV;
+			arc = makeCCWArc (Rl, theta2l, theta2l+delta_theta, [icx, icz],'yellow');
+			arc.name = 'arcL';
+			scene.add (arc);
+			arc.visible = firstPV;
+		}
+	  
+		  rotateTrace (RC);
+}
+
+function reversingLineVisible(canSee){
+	traceMeshes.forEach (function(b) {b.visible = canSee})
+	traceMeshesBlue.forEach (function(b) {b.visible = canSee})
+
+}
+
 export {firstPV};
