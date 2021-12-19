@@ -173,7 +173,7 @@ export function reversingLine(){
 		  rotateTrace (RC);
 }
 
-function reversingLineVisible(canSee){
+export function reversingLineVisible(canSee){
 	traceMeshes.forEach (function(b) {b.visible = canSee})
 	traceMeshesBlue.forEach (function(b) {b.visible = canSee})
 
