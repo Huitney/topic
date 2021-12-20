@@ -347,13 +347,7 @@ export function moveCar(RC, omega, deltaT){
 		}
 	}
 		
-	topCamera.position.x = car.center.x;
-	topCamera.position.z = car.center.z;
-	topCamera.lookAt(car.center);
-	thirdPVCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(30,0,0)));
-	thirdPVCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-30,18,0)));
-	GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(50,0,0)));
-	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-60,200,0)));
+	
 }
 
 export function flashTurnSignal(){

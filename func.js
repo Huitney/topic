@@ -35,9 +35,9 @@ export function cameraUpdate(fSlowDown, bSlowDown){
 		camera.lookAt(tmp);
 		
 		if(car.speed < 0){
-			let carEnd = car.mesh.localToWorld (new THREE.Vector3 (-19,0,0));
+			let carEnd = car.mesh.localToWorld (new THREE.Vector3 (-15,0,0));
 			reversingCamera.position.copy (carEnd);
-			carEnd = car.mesh.localToWorld (new THREE.Vector3(-25, -1, 0));
+			carEnd = car.mesh.localToWorld (new THREE.Vector3(-20, -1, 0));
 			reversingCamera.lookAt(carEnd);
 		}
 		
@@ -62,6 +62,13 @@ export function cameraUpdate(fSlowDown, bSlowDown){
 		camera.position.set(-300, 200, 0); // fixed camera, no orbitControl!
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
+	topCamera.position.x = car.center.x;
+	topCamera.position.z = car.center.z;
+	topCamera.lookAt(car.center);
+	thirdPVCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(30,0,0)));
+	thirdPVCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-30,18,0)));
+	GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(50,0,0)));
+	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-60,200,0)));
 }
 
 export function PDControl(dt){
