@@ -142,7 +142,7 @@ export function animate() {
 	//trees
 	treesLootAt();
 	
-	reversingLine();
+	reversingLine(RC);
   
     requestAnimationFrame(animate);
     render();

@@ -114,7 +114,7 @@ export function loadCubemap() {
   
 }
 
-export function reversingLine(){
+export function reversingLine(RC){
 		// compute icx based on steeringPhi
 		//debugger;
 		let icx = RC.x;
@@ -172,6 +172,24 @@ export function reversingLine(){
 		}
 	  
 		  rotateTrace (RC);
+}
+
+function rotateTrace (rotC) {
+	var trace = new THREE.Vector3 (-20, 0,0);
+	car.mesh.localToWorld (trace);
+	var localY = new THREE.Vector3(0, 1, 0);
+	for (var i = 1; i < 2; i++) {
+		var tMrc = trace.clone().sub (rotC);
+		var theta = 12/tMrc.length();
+		var tr = tMrc.applyAxisAngle (localY, -sign*theta*i);
+		tr.add (rotC);
+		traceMeshes[i].position.copy (tr);
+		traceMeshes[i].rotation.y = car.angle + (-sign*theta*i)*2.5;
+	}
+	traceMeshesBlue[0].position.copy( car.mesh.localToWorld (new THREE.Vector3(-20-(i%3*10), 0, 0)));
+	traceMeshesBlue[0].rotation.y = car.angle;
+
+
 }
 
 export function reversingLineVisible(canSee){
