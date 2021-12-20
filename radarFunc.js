@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import {car, obstacles, radarSound, longBeep, buildingNodes} from "https://raw.githack.com/Huitney/topic/master/init.js";
+import {car, obstacles, radarSound, longBeep} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {inOut} from "https://raw.githack.com/Huitney/topic/master/collisionBuilding.js";
 
 var beeper = false, radarOn = false;
