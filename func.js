@@ -192,6 +192,35 @@ function rotateTrace (rotC) {
 
 }
 
+function makeCCWArc(r, theta1, theta2, center = [0, 0], colorName='white') {
+	const N = 100;
+	// CCW: theta1 < theta2
+	if (theta2 < theta1) theta2 += Math.PI * 2;
+
+	let dq = (theta2 - theta1) / N;
+	let points = [];
+	for (let i = 0, q = theta1; i < N; i++, q += dq) {
+		points.push(r * Math.cos(q) + center[0], 0, r * Math.sin(q) + center[1]);
+
+	}
+	
+	var geometry = new LineGeometry();
+	geometry.setPositions(points);
+
+	var matLine2 = new LineMaterial({
+		color: colorName,
+		linewidth: 0.05, // in pixels
+		dashed: false,
+		polygonOffset: true,
+		polygonOffsetFactor: -20,
+		polygonOffsetUnits: -20
+	});
+	const arc = new Line2(geometry, matLine2);
+	arc.computeLineDistances();
+
+	return arc;
+}
+
 export function reversingLineVisible(canSee){
 	traceMeshes.forEach (function(b) {b.visible = canSee})
 	traceMeshesBlue.forEach (function(b) {b.visible = canSee})
