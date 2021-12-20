@@ -128,15 +128,15 @@ export function reversingLine(RC){
 		  
 		  // compute R
 	  
-		let vvc = rbc.clone().sub(RCmesh.position);
+		let vvc = rbc.clone().sub(RC);
 		let Rc = vvc.length();//Math.sqrt(n*n + icx*icx);
 		let theta2c = Math.atan2(vvc.z, vvc.x);
 	  
-		let vvr = rbr.clone().sub(RCmesh.position);
+		let vvr = rbr.clone().sub(RC);
 		let Rr = vvr.length();//Math.sqrt(n*n + icx*icx);
 		let theta2r = Math.atan2(vvr.z, vvr.x);
 	  
-		let vvl = rbl.clone().sub(RCmesh.position);
+		let vvl = rbl.clone().sub(RC);
 		let Rl = vvl.length();//Math.sqrt(n*n + icx*icx);
 		let theta2l = Math.atan2(vvl.z, vvl.x);
 	  
