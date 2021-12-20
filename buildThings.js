@@ -6,6 +6,7 @@ import {LineMaterial} from 'https://raw.githack.com/mrdoob/three.js/dev/examples
 import {LineGeometry} from 'https://raw.githack.com/mrdoob/three.js/dev/examples/jsm/lines/LineGeometry.js';
 import {carParameter, scene} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {buildDashboard} from "https://raw.githack.com/Huitney/topic/master/buildDashboard.js";
+var traceMeshes = [], traceMeshesBlue = [];
 
 export class Car {
 	constructor(pos, size, materialArray, materialArray2, dashboard, mapArrow, sign, colorName = 'white') {
@@ -667,3 +668,5 @@ export function revLine(){
 
 	scene.add (traceMeshesBlue[0]);
 }
+
+export { traceMeshes, traceMeshesBlue };
