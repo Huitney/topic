@@ -37,7 +37,7 @@ export function cameraUpdate(fSlowDown, bSlowDown){
 		if(car.speed < 0){
 			let carEnd = car.mesh.localToWorld (new THREE.Vector3 (-15,0,0));
 			reversingCamera.position.copy (carEnd);
-			carEnd = car.mesh.localToWorld (new THREE.Vector3(-25, -1, 0));
+			carEnd = car.mesh.localToWorld (new THREE.Vector3(-20, -3, 0));
 			reversingCamera.lookAt(carEnd);
 		}
 		
