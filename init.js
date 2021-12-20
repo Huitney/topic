@@ -18,7 +18,7 @@ var raycaster;
 var radarSound, RCmesh, longBeep;
 var topView = false;
 var carParameter;
-var buildingNodes;
+var sign;
 
 export function init() {
 
@@ -142,6 +142,7 @@ export function animate() {
 	//trees
 	treesLootAt();
 	
+	sign = animate.theta > 0 ? 1: -1;
 	reversingLine(RC);
   
     requestAnimationFrame(animate);
@@ -215,4 +216,4 @@ export function changeTopView(){
 }
 
 export {scene, sceneHUD, camera, GPSCamera, topCamera, thirdPVCamera, reversingCamera, keyboard
-		, car, obstacles, raycaster, radarSound, RCmesh, longBeep, topView, carParameter, buildingNodes};
+		, car, obstacles, raycaster, radarSound, RCmesh, longBeep, topView, carParameter, sign};
