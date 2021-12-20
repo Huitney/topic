@@ -175,6 +175,7 @@ function render() {
 			reversingLineVisible(true);
 			renderer.render(scene, reversingCamera);	
 			treesVisible(true);
+			reversingLineVisible(false);
 			car.brakeLightR.visible = true;
 			car.brakeLightL.visible = true;
 		}
