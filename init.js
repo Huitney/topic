@@ -154,7 +154,6 @@ function render() {
 	var WW = window.innerWidth;
 	var HH = window.innerHeight;
     renderer.setScissorTest( true );
-	reversingLineVisible(false);
     renderer.setViewport(0, 0, WW, HH);
     renderer.setScissor(0, 0, WW, HH);
     renderer.clear();
@@ -171,7 +170,7 @@ function render() {
 			car.brakeLightR.visible = false;
 			car.brakeLightL.visible = false;
 			treesVisible(false);
-			reversingLineVisible(true);
+			//reversingLineVisible(true);
 			renderer.render(scene, reversingCamera);	
 			treesVisible(true);
 			car.brakeLightR.visible = true;
@@ -182,7 +181,6 @@ function render() {
 			renderer.setScissor(WW/2.41, HH/4, WW/13, HH/6);
 			renderer.clear();
 			car.mesh.visible = true;
-			reversingLineVisible(false);
 			renderer.render(scene, topCamera);
 			renderer.setViewport(WW*1.545/3.13, HH/4, WW/13, HH/6);
 			renderer.setScissor(WW*1.545/3.13, HH/4, WW/13, HH/6);
@@ -196,13 +194,15 @@ function render() {
 			renderer.clear();
 			car.mapArrow.visible = true;
 			treesVisible(false);
-			reversingLineVisible(false);
 			renderer.render(scene, GPSCamera);
 			treesVisible(true);
 			car.mapArrow.visible = false;
 		}
 	}
-	else car.mesh.visible = true;
+	else{
+		reversingLineVisible(false);
+		car.mesh.visible = true;
+	} 
 	renderer.setScissorTest( false );
 }
 
