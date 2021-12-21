@@ -154,11 +154,10 @@ function render() {
 	var WW = window.innerWidth;
 	var HH = window.innerHeight;
     renderer.setScissorTest( true );
-
+	reversingLineVisible(false);
     renderer.setViewport(0, 0, WW, HH);
     renderer.setScissor(0, 0, WW, HH);
     renderer.clear();
-	reversingLineVisible(false);
     renderer.render(scene, camera);
 
 	if(firstPV){
