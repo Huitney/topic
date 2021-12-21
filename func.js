@@ -35,7 +35,7 @@ export function cameraUpdate(fSlowDown, bSlowDown){
 		camera.lookAt(tmp);
 		
 		if(car.speed < 0){
-			let carEnd = car.mesh.localToWorld (new THREE.Vector3 (-19,0,0));
+			let carEnd = car.mesh.localToWorld (new THREE.Vector3 (-19,1,0));
 			reversingCamera.position.copy (carEnd);
 			carEnd = car.mesh.localToWorld (new THREE.Vector3(-25, -1, 0));
 			reversingCamera.lookAt(carEnd);
@@ -188,7 +188,7 @@ function rotateTrace (rotC) {
 	var trace = new THREE.Vector3 (-20, 0,0);
 	car.mesh.localToWorld (trace);
 	var localY = new THREE.Vector3(0, 1, 0);
-	for (var i = 1; i < 2; i++) {
+	for (var i = 0; i < 1; i++) {
 		var tMrc = trace.clone().sub (rotC);
 		var theta = 12/tMrc.length();
 		var tr = tMrc.applyAxisAngle (localY, -sign*theta*i);
