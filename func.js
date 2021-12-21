@@ -232,7 +232,7 @@ function makeCCWArc(r, theta1, theta2, center = [0, 0], colorName='white') {
 }
 
 export function reversingLineVisible(canSee){
-	traceMeshes.forEach (function(b) {b.visible = canSee;});
+	traceMeshes.forEach (function(b) {b.visible = canSee;console.log(canSee);});
 	traceMeshesBlue.forEach (function(b) {b.visible = canSee;});
 
 }
