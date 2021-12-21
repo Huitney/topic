@@ -157,6 +157,7 @@ function render() {
     renderer.setViewport(0, 0, WW, HH);
     renderer.setScissor(0, 0, WW, HH);
     renderer.clear();
+	reversingLineVisible(false);
     renderer.render(scene, camera);
 
 	if(firstPV){
@@ -199,10 +200,8 @@ function render() {
 			car.mapArrow.visible = false;
 		}
 	}
-	else{
-		reversingLineVisible(false);
+	else
 		car.mesh.visible = true;
-	} 
 	renderer.setScissorTest( false );
 }
 
