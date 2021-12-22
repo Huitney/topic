@@ -188,7 +188,7 @@ function rotateTrace (rotC) {
 	var trace = new THREE.Vector3 (-20, 0,0);
 	car.mesh.localToWorld (trace);
 	var localY = new THREE.Vector3(0, 1, 0);
-	for (var i = 0; i < 1; i++) {
+	for (var i = 1; i < 2; i++) {
 		var tMrc = trace.clone().sub (rotC);
 		var theta = 12/tMrc.length();
 		var tr = tMrc.applyAxisAngle (localY, -sign*theta*i);
