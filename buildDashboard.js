@@ -68,8 +68,7 @@ export function buildDashboard(){
 	});
 	var steeringWheel = new THREE.Mesh(new THREE.CircleGeometry(1.9, 32), texMat);
 	steeringWheel.rotation.y = Math.PI/2;
-	steeringWheel.position.z = -2.9;
-	steeringWheel.position.y = -0.8;
+	steeringWheel.position.set(-0.01, -0.8, -2.9);
 			
 	//dashboard
 	texMat = new THREE.MeshBasicMaterial({

@@ -55,6 +55,7 @@ export function init() {
   
     ////////////////////////////
     RCmesh = new THREE.Mesh (new THREE.SphereGeometry(5,6,6), new THREE.MeshBasicMaterial());
+	RCmesh.visible = false;
     scene.add(RCmesh);
 
     //////////////////////////////////////////////

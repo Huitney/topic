@@ -1,6 +1,6 @@
 import * as THREE from "https://threejs.org/build/three.module.js";
 
-import {scene} from 'https://raw.githack.com/Huitney/topic/master/init.js';
+import {scene} from './init.js';
 var bushes = [], bushes1 = [], bushes2 = [], bushes3 = [];
 function buildScenes(){
 	//ground
@@ -449,7 +449,7 @@ function buildScenes(){
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 	texture.repeat.set(2, 1);*/
-	texture.minFilter = THREE.NearestFilter;
+	texture.minFilter = THREE.LinearFilter;
 	texture.needsUpdate = true;
 	var zebraCrossing1 = new THREE.Mesh(new THREE.PlaneGeometry(130, 60), new THREE.MeshBasicMaterial({
 		map: texture,
@@ -484,7 +484,7 @@ function buildScenes(){
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 	texture.repeat.set(2, 1);
-	texture.minFilter = THREE.NearestFilter;
+	texture.minFilter = THREE.LinearMipMapLinearFilter;
 	texture.needsUpdate = true;
 	var road1 = new THREE.Mesh(new THREE.PlaneGeometry(270, 80), new THREE.MeshBasicMaterial({
 		map: texture,
@@ -498,7 +498,7 @@ function buildScenes(){
 
 
 	texture1 = loader.load('https://i.imgur.com/KvjCb5P.png');
-	texture1.minFilter = THREE.NearestFilter;
+	texture1.minFilter = THREE.LinearFilter;
 	texture1.needsUpdate = true;
 	var road2 = new THREE.Mesh(new THREE.PlaneGeometry(70, 80), new THREE.MeshBasicMaterial({
 		map: texture1,
@@ -509,14 +509,14 @@ function buildScenes(){
 		polygonOffsetUnits: -1}));
 	road2.position.x = 225;
 	road2.rotation.x = Math.PI/2;
-
+	texture1.minFilter = THREE.LinearMipMapLinearFilter;
 
 	var texture2 = loader.load('https://i.imgur.com/VPddEdt.png');
 
 	texture2.wrapS = THREE.RepeatWrapping;
 	texture2.wrapT = THREE.RepeatWrapping;
 	texture2.repeat.set(2, 1);
-	texture2.minFilter = THREE.NearestFilter;
+	texture2.minFilter = THREE.LinearMipMapLinearFilter;
 	texture2.needsUpdate = true;
 	var road3 = new THREE.Mesh(new THREE.PlaneGeometry(323,80), new THREE.MeshBasicMaterial({
 		map: texture,
@@ -649,7 +649,7 @@ function buildScenes(){
 
 
 	var texture3 = loader.load('https://i.imgur.com/Q8DzNSQ.png');
-	texture3.minFilter = THREE.NearestFilter;	
+	texture3.minFilter = THREE.LinearMipMapLinearFilter;	
 	texture3.needsUpdate = true;
 	var road16 = new THREE.Mesh(new THREE.PlaneGeometry(80, 40), new THREE.MeshBasicMaterial({
 		map: texture3,
@@ -701,7 +701,7 @@ function buildScenes(){
 	road21.rotation.z =  -Math.PI/2;
 
 	var texture4 = loader.load('https://i.imgur.com/LeLVX2W.png');
-	texture4.minFilter = THREE.NearestFilter;	
+	texture4.minFilter = THREE.LinearMipMapLinearFilter;	
 	texture4.needsUpdate = true;
 	var road22 = new THREE.Mesh(new THREE.PlaneGeometry(85, 85), new THREE.MeshBasicMaterial({
 		map: texture4,
@@ -1064,7 +1064,7 @@ function buildScenes(){
 	/////////////////////////////////////////////arrow//////////////////////////////////////////////////
 	var texture6 = loader.load('https://i.imgur.com/hu3ZIWY.png');
 
-	texture6.minFilter = THREE.NearestFilter;
+	texture6.minFilter = THREE.LinearMipMapLinearFilter;
 	texture6.needsUpdate = true;
 	var arrow1 = new THREE.Mesh(new THREE.PlaneGeometry(35, 60), new THREE.MeshBasicMaterial({
 		map: texture6,
@@ -1086,7 +1086,7 @@ function buildScenes(){
 
 	var texture7 = loader.load('https://i.imgur.com/f5UGMBz.png');
 
-	texture7.minFilter = THREE.NearestFilter;
+	texture7.minFilter = THREE.LinearMipMapLinearFilter;
 	texture7.needsUpdate = true;
 	var arrow3 = new THREE.Mesh(new THREE.PlaneGeometry(35, 60), new THREE.MeshBasicMaterial({
 		map: texture7,
