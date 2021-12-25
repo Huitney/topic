@@ -62,7 +62,7 @@ export function buildDashboard(){
 	
 	//steering wheel
 	let texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/0ltwDD9.png'),
+		map: loader.load('https://i.imgur.com/0ltwDD9.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -72,7 +72,7 @@ export function buildDashboard(){
 			
 	//dashboard
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/KV143SQ.png'),
+		map: loader.load('https://i.imgur.com/KV143SQ.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -83,7 +83,7 @@ export function buildDashboard(){
 	
 	//screen
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/Yzp5Nmi.png'),
+		map: loader.load('https://i.imgur.com/Yzp5Nmi.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -95,7 +95,7 @@ export function buildDashboard(){
 	
 	//gear
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/gzWiMRh.png'),
+		map: loader.load('https://i.imgur.com/gzWiMRh.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -108,7 +108,7 @@ export function buildDashboard(){
 	
 	//gearFrame
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/oTfN2ti.png'),
+		map: loader.load('https://i.imgur.com/oTfN2ti.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -119,7 +119,7 @@ export function buildDashboard(){
 	
 	//parkBT
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/AlHYNp3.png'),
+		map: loader.load('https://i.imgur.com/AlHYNp3.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -131,7 +131,7 @@ export function buildDashboard(){
 
 	//autoBT
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/2wkfSV9.png'),
+		map: loader.load('https://i.imgur.com/2wkfSV9.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -144,7 +144,7 @@ export function buildDashboard(){
 	
 	//manuBT
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/XIsYz0D.png'),
+		map: loader.load('https://i.imgur.com/XIsYz0D.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -155,7 +155,7 @@ export function buildDashboard(){
 	
 	//mode1BT
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/taNvJdb.png'),
+		map: loader.load('https://i.imgur.com/taNvJdb.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -167,7 +167,7 @@ export function buildDashboard(){
 	
 	//mode2BT
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/VtzN4y6.png'),
+		map: loader.load('https://i.imgur.com/VtzN4y6.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -179,7 +179,7 @@ export function buildDashboard(){
 	
 	//radarOn
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/SLIy2b4.png'),
+		map: loader.load('https://i.imgur.com/SLIy2b4.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -191,7 +191,7 @@ export function buildDashboard(){
 	
 	//radarOff
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/7Om3su8.png'),
+		map: loader.load('https://i.imgur.com/7Om3su8.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -203,7 +203,7 @@ export function buildDashboard(){
 	
 	//topViewBT
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/dpGfOHI.png'),
+		map: loader.load('https://i.imgur.com/dpGfOHI.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -277,7 +277,7 @@ export function buildDashboard(){
 	
 	//mapIcon
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/BfHiBya.png'),
+		map: loader.load('https://i.imgur.com/BfHiBya.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -290,7 +290,7 @@ export function buildDashboard(){
 	
 	//CCW
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/c7ynEsQ.png'),
+		map: loader.load('https://i.imgur.com/c7ynEsQ.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -302,7 +302,7 @@ export function buildDashboard(){
 	
 	//zoomIn
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/RepKBvi.png'),
+		map: loader.load('https://i.imgur.com/RepKBvi.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -314,7 +314,7 @@ export function buildDashboard(){
 	
 	//zoomOut
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/6GixlJH.png'),
+		map: loader.load('https://i.imgur.com/6GixlJH.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -326,7 +326,7 @@ export function buildDashboard(){
 	
 	//gasIcon
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/P51HddP.png'),
+		map: loader.load('https://i.imgur.com/P51HddP.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -338,7 +338,7 @@ export function buildDashboard(){
 	
 	//brakeIcon
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/khjtf3o.png'),
+		map: loader.load('https://i.imgur.com/khjtf3o.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -356,7 +356,7 @@ export function buildDashboard(){
 	
 	//speedometer
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/CHfdlEr.png'),
+		map: loader.load('https://i.imgur.com/CHfdlEr.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -374,7 +374,7 @@ export function buildDashboard(){
 	
 	//turnSignalL
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/DGZapB4.png'),
+		map: loader.load('https://i.imgur.com/DGZapB4.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});
@@ -386,7 +386,7 @@ export function buildDashboard(){
 	
 	//turnSignalR
 	texMat = new THREE.MeshBasicMaterial({
-		map: loader.load('./pictures/DGZapB4.png'),
+		map: loader.load('https://i.imgur.com/DGZapB4.png'),
 		alphaTest: 0.5,
 		side: THREE.DoubleSide
 	});

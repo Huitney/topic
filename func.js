@@ -104,9 +104,9 @@ export function treesVisible(canSee){
 export function loadCubemap() {
 
 	var urls = [
-    	"./pictures/Meadow/k0C89rK.jpg", "./pictures/Meadow/fxNB9KL.jpg",
-    	"./pictures/Meadow/Bwaz4mn.jpg", "./pictures/Meadow/uJyMINd.jpg",
-    	"./pictures/Meadow/MVQ1xKl.jpg", "./pictures/Meadow/Cahat7o.jpg"
+    	"https://i.imgur.com/k0C89rK.jpg", "https://i.imgur.com/fxNB9KL.jpg",
+    	"https://i.imgur.com/Bwaz4mn.jpg", "https://i.imgur.com/uJyMINd.jpg",
+    	"https://i.imgur.com/MVQ1xKl.jpg", "https://i.imgur.com/Cahat7o.jpg"
   	];
 	
   	var loader = new THREE.CubeTextureLoader();

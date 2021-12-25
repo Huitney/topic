@@ -345,53 +345,53 @@ export function buildCar(pos) {
   
     var materialArray = [];
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/iRrkNU7.png'),
+		map: loader.load ('https://i.imgur.com/iRrkNU7.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/m8OcKV5.png'),
+		map: loader.load ('https://i.imgur.com/m8OcKV5.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/vjq6Rm5.png'),
+		map: loader.load ('https://i.imgur.com/vjq6Rm5.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/vjq6Rm5.png'),
+		map: loader.load ('https://i.imgur.com/vjq6Rm5.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/BbC4LNk.png'),
+		map: loader.load ('https://i.imgur.com/BbC4LNk.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/BbC4LNk.png'),
+		map: loader.load ('https://i.imgur.com/BbC4LNk.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
 	
 	var materialArray2 = [];
     materialArray2.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/JMN31Pd.png'),
+		map: loader.load ('https://i.imgur.com/JMN31Pd.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray2.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/E6Aa12z.png'),
+		map: loader.load ('https://i.imgur.com/E6Aa12z.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray2.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/bBnU4nu.png'),
+		map: loader.load ('https://i.imgur.com/bBnU4nu.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray2.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/bBnU4nu.png'),
+		map: loader.load ('https://i.imgur.com/bBnU4nu.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray2.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/E3Z6EF9.png'),
+		map: loader.load ('https://i.imgur.com/E3Z6EF9.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
     materialArray2.push(new THREE.MeshLambertMaterial({
-		map: loader.load ('./pictures/E3Z6EF9.png'),
+		map: loader.load ('https://i.imgur.com/E3Z6EF9.png'),
 		transparent: true, opacity: 0.7, side: THREE.DoubleSide, alphaTest: 0.5
 	}));
   
@@ -399,7 +399,7 @@ export function buildCar(pos) {
     let wheelMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side:THREE.DoubleSide});
     let circle = new THREE.Mesh(new THREE.CircleGeometry(5, 32), 
 								new THREE.MeshBasicMaterial({
-									map: loader.load ('./pictures/ZeYqhuv.png'), 
+									map: loader.load ('https://i.imgur.com/ZeYqhuv.png'), 
 									transparent: true, 
 									side:THREE.DoubleSide
 								}));
@@ -418,7 +418,7 @@ export function buildCar(pos) {
 	
 	//mapArrow
 	var arrowMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), new THREE.MeshBasicMaterial({
-																		map: loader.load('./pictures/1wmEVdS.png'),
+																		map: loader.load('https://i.imgur.com/1wmEVdS.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
 																	}));
@@ -430,7 +430,7 @@ export function buildCar(pos) {
 	
 	//brakeLight
 	var brakeLight = new THREE.Mesh(new THREE.CircleGeometry(1.3, 32), new THREE.MeshBasicMaterial({
-																		map: loader.load('./pictures/CrbaIo1.png'),
+																		map: loader.load('https://i.imgur.com/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
 																	}));
@@ -438,13 +438,13 @@ export function buildCar(pos) {
 	
 	//turnSignal
 	var turnSignalR = new THREE.Mesh(new THREE.RingGeometry(1.3, 2, 32, 8, Math.PI, Math.PI), new THREE.MeshBasicMaterial({
-																		map: loader.load('./pictures/CrbaIo1.png'),
+																		map: loader.load('https://i.imgur.com/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
 																	}));
 	turnSignalR.rotation.y = Math.PI/2;
 	var turnSignalL = new THREE.Mesh(new THREE.RingGeometry(1.3, 2, 32, 8, Math.PI, Math.PI), new THREE.MeshBasicMaterial({
-																		map: loader.load('./pictures/CrbaIo1.png'),
+																		map: loader.load('https://i.imgur.com/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
 																	}));
@@ -452,7 +452,7 @@ export function buildCar(pos) {
 	
 	//backUpLight
 	var backUpLight = new THREE.Mesh(new THREE.RingGeometry(1.3, 2, 32, 8, 0, Math.PI), new THREE.MeshBasicMaterial({
-																		map: loader.load('./pictures/CrbaIo1.png'),
+																		map: loader.load('https://i.imgur.com/CrbaIo1.png'),
 																		alphaTest: 0.5,
 																		side: THREE.DoubleSide
 																	}));
