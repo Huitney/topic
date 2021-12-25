@@ -62,7 +62,7 @@ export function init() {
     renderer.autoClear = false;
 	
     //topCamera
-    topCamera = new THREE.OrthographicCamera(-window.innerWidth/26, window.innerWidth/26
+    topCamera = new THREE.OrthographicCamera(-window.innerWidth/13, window.innerWidth/13
 											, window.innerHeight/12, -window.innerHeight/12, 1, 1000);
     topCamera.position.y = 100;
 	topCamera.up.set(1, 0, 0);
@@ -80,8 +80,7 @@ export function init() {
     reversingCamera.position.set(-60, 23, 40);
 	
 	//GPSCamera
-    GPSCamera = new THREE.OrthographicCamera(-window.innerWidth/6.5, window.innerWidth/6.5
-											, window.innerHeight/6, -window.innerHeight/6, 1, 1000);
+    GPSCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
     GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(50,0,0)));
 	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-60,200,0)));
 
@@ -160,7 +159,7 @@ function render() {
     renderer.clear();
 	reversingLineVisible(false);
     renderer.render(scene, camera);
-
+	
 	if(firstPV){
 		car.mesh.visible = false;
 		renderer.render(sceneHUD, camera);
@@ -179,15 +178,15 @@ function render() {
 			car.brakeLightL.visible = true;
 		}
 		else if(topView){
-			renderer.setViewport(WW/2.41, HH/4, WW/13, HH/6);
-			renderer.setScissor(WW/2.41, HH/4, WW/13, HH/6);
+			renderer.setViewport(WW/2.41, HH/4, WW/7.5, HH/6);
+			renderer.setScissor(WW/2.41, HH/4, WW/7.5, HH/6);
 			renderer.clear();
 			car.mesh.visible = true;
-			renderer.render(scene, topCamera);
+			renderer.render(scene, topCamera);/*
 			renderer.setViewport(WW*1.545/3.13, HH/4, WW/13, HH/6);
 			renderer.setScissor(WW*1.545/3.13, HH/4, WW/13, HH/6);
 			renderer.clear();
-			renderer.render(scene, thirdPVCamera);
+			renderer.render(scene, thirdPVCamera);*/
 			car.mesh.visible = false;
 		}
 		else{
@@ -204,6 +203,7 @@ function render() {
 	else
 		car.mesh.visible = true;
 	renderer.setScissorTest( false );
+	
 }
 
 function onWindowResize() {

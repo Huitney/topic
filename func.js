@@ -4,9 +4,9 @@ import {LineMaterial} from 'https://raw.githack.com/mrdoob/three.js/dev/examples
 import {LineGeometry} from 'https://raw.githack.com/mrdoob/three.js/dev/examples/jsm/lines/LineGeometry.js';
 import {car, camera, reversingCamera, keyboard, scene, sign, topCamera, thirdPVCamera, GPSCamera, obstacles, RCmesh, carParameter} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {bushes, bushes1, bushes2, bushes3} from "https://raw.githack.com/Huitney/topic/master/buildScenes.js"
-import {traceMeshes, traceMeshesBlue} from './buildThings.js';
+import {traceMeshes, traceMeshesBlue} from 'https://raw.githack.com/Huitney/topic/master/buildThings.js';
 
-var thirdPV = false, firstPV = false;
+var thirdPV = false, firstPV = true;
 
 //button
 $("#thirdPV").click(function() {
@@ -67,7 +67,7 @@ export function cameraUpdate(fSlowDown, bSlowDown){
 	topCamera.lookAt(car.center);
 	thirdPVCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(30,0,0)));
 	thirdPVCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-30,18,0)));
-	GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(50,0,0)));
+	GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(60,0,0)));
 	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-60,200,0)));
 }
 
@@ -80,40 +80,33 @@ export function PDControl(dt){
 
 	// plant dynamics 
 	PDControl.vv += f*dt;
-	car.theta += PDControl.vv*dt
+	car.theta += PDControl.vv*dt;
 }
 
 export function treesLootAt(){
 	let cameraRoot = camera.position.clone();
 	cameraRoot.y =camera.position.y;
 
-	bushes.forEach (function(b) {b.lookAt (cameraRoot)})
-	bushes1.forEach (function(b) {b.lookAt (cameraRoot)})
-	bushes2.forEach (function(b) {b.lookAt (cameraRoot)})
-	bushes3.forEach (function(b) {b.lookAt (cameraRoot)})
+	bushes.forEach (function(b) {b.lookAt (cameraRoot)});
+	bushes1.forEach (function(b) {b.lookAt (cameraRoot)});
+	bushes2.forEach (function(b) {b.lookAt (cameraRoot)});
+	bushes3.forEach (function(b) {b.lookAt (cameraRoot)});
 }
 
 export function treesVisible(canSee){
 
-	bushes.forEach (function(b) {b.visible = canSee})
-	bushes1.forEach (function(b) {b.visible = canSee})
-	bushes2.forEach (function(b) {b.visible = canSee})
-	bushes3.forEach (function(b) {b.visible = canSee})
+	bushes.forEach (function(b) {b.visible = canSee});
+	bushes1.forEach (function(b) {b.visible = canSee});
+	bushes2.forEach (function(b) {b.visible = canSee});
+	bushes3.forEach (function(b) {b.visible = canSee});
 }
 
 export function loadCubemap() {
 
-	/*var path = "./pictures/Meadow/";
-	var format = '.jpg';
-  	var urls = [
-    	path + 'posx' + format, path + 'negx' + format,
-    	path + 'posy' + format, path + 'negy' + format,
-    	path + 'posz' + format, path + 'negz' + format
-  	];*/
 	var urls = [
-    	"https://i.imgur.com/k0C89rK.jpg", "https://i.imgur.com/fxNB9KL.jpg",
-    	"https://i.imgur.com/Bwaz4mn.jpg", "https://i.imgur.com/uJyMINd.jpg",
-    	"https://i.imgur.com/MVQ1xKl.jpg", "https://i.imgur.com/Cahat7o.jpg"
+    	"./pictures/Meadow/k0C89rK.jpg", "./pictures/Meadow/fxNB9KL.jpg",
+    	"./pictures/Meadow/Bwaz4mn.jpg", "./pictures/Meadow/uJyMINd.jpg",
+    	"./pictures/Meadow/MVQ1xKl.jpg", "./pictures/Meadow/Cahat7o.jpg"
   	];
 	
   	var loader = new THREE.CubeTextureLoader();
