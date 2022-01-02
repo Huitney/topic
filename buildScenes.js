@@ -97,9 +97,17 @@ function buildScenes(){
 	};
 	
 	geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-	var sidewalk3 = new THREE.Mesh(geometry, material);
-	sidewalk3.rotation.x = Math.PI / 2;
-	sidewalk3.position.set(-260, 1.5, 240);
+    var material = new THREE.MeshLambertMaterial({
+        color: 0x888888,//0x6b6b6b
+        polygonOffset: true,
+        polygonOffsetFactor: -3,
+        polygonOffsetUnits: -3,
+        map:map1,
+        side:THREE.DoubleSide
+    });
+    var sidewalk3 = new THREE.Mesh(geometry, material);
+    sidewalk3.rotation.x = Math.PI / 2;
+    sidewalk3.position.set(-260, 1.5, 240);
 
 	var length = 271, width = 106;
 	var rr = 5;
