@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
@@ -206,6 +204,8 @@ function onTouchStart(event) {
 			setTimeout (stepOnGas, 0);
 			stillGassing = true;
 			stillBraking = false;
+			socket.emit ('picked gas from ctrl', true);
+			socket.emit ('picked brake from ctrl', false);
 			currentDialPt = null;
 			touchDial1 = false;
 		} else if (Math.abs(mouseX-5)<5 && Math.abs(mouseY-10)<5) {  // fall into brake area
@@ -213,6 +213,8 @@ function onTouchStart(event) {
 			setTimeout (pushBrake, 0);
 			stillGassing = false;
 			stillBraking = true;
+			socket.emit ('picked gas from ctrl', false);
+			socket.emit ('picked brake from ctrl', true);
 			currentDialPt = null;
 			touchDial1 = false;
 		} else if (Math.abs(mouseX-2.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into p
@@ -292,12 +294,16 @@ function onTouchStart(event) {
 			setTimeout (stepOnGas, 0);
 			stillGassing = true;
 			stillBraking = false;
+			socket.emit ('picked gas from ctrl', true);
+			socket.emit ('picked brake from ctrl', false);
 			touchDial2 = false;
 		} else if (Math.abs(mouseX-5)<5 && Math.abs(mouseY-10)<5) {  // fall into brake area
 			$('#msg').text('hit brake');
 			setTimeout (pushBrake, 0);
 			stillGassing = false;
 			stillBraking = true;
+			socket.emit ('picked gas from ctrl', false);
+			socket.emit ('picked brake from ctrl', true);
 			touchDial2 = false;
 		} else if (Math.abs(mouseX-2.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into p
 			$('#msg').text('hit p');
@@ -345,7 +351,7 @@ function onTouchStart(event) {
 			currentDialPt = null;
 			socket.emit ('gear from ctrl', 'r');
 			socket.emit ('parking from ctrl', tt++);
-			setTimeout(stopParking, 17500);
+			setTimeout(stopParking, 18000);
 		} else {
 			$('#msg').text('no hit');
 			touchDial2 = false;
@@ -375,12 +381,16 @@ function onMouseDown(event) {
 		setTimeout (stepOnGas, 0);
 		stillGassing = true;
 		stillBraking = false;
+		socket.emit ('picked gas from ctrl', true);
+		socket.emit ('picked brake from ctrl', false);
 		currentDialPt = null;
 	} else if (Math.abs(mouseX-5)<5 && Math.abs(mouseY-10)<5) {  // fall into brake area
 		$('#msg').text('hit brake');
 		setTimeout (pushBrake, 0);
 		stillGassing = false;
 		stillBraking = true;
+		socket.emit ('picked gas from ctrl', false);
+		socket.emit ('picked brake from ctrl', true);
 		currentDialPt = null;
 	} else if (Math.abs(mouseX-2.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into p
 		$('#msg').text('hit p');
@@ -428,7 +438,7 @@ function onMouseDown(event) {
 		currentDialPt = null;
 		socket.emit ('gear from ctrl', 'r');
 		socket.emit ('parking from ctrl', tt++);
-		setTimeout(stopParking, 17500);
+		setTimeout(stopParking, 18000);
 	} else {
 		$('#msg').text('no hit');
 		currentDialPt = null;  
@@ -464,17 +474,18 @@ function onTouchMove(event) {
 		let deltaAngle = moveVec.angleTo (currentVec) * (ccw ? 1 : -1);
 
 		//  console.log (ccw);
-		dialAngle += deltaAngle;
-		dialAngle = clamp (dialAngle, -3*Math.PI, 3*Math.PI);
+		let delTmp = dialAngle;
+		delTmp += deltaAngle;
+		delTmp = clamp (delTmp, -3*Math.PI, 3*Math.PI);
 
 		//////////////////////////////////////////
-		let msg = dialAngle.toFixed(2); //`${(moveAngle-Math.PI/2).toFixed(2)}`;
+		let msg = delTmp.toFixed(2); //`${(moveAngle-Math.PI/2).toFixed(2)}`;
 		$('#msg').text(msg);
 
 		//console.log (`moveX: ${movePt[0].toFixed(2)}; currentX: ${currentDialPt[0].toFixed(2)}; ` );
 		currentDialPt = [movePt[0], movePt[1]];
-			
-		socket.emit ('angle from ctrl', dialAngle);
+		dialAngle = delTmp;
+		//socket.emit ('angle from ctrl', dialAngle);
 	}
 	
 	if (event.touches.length === 2 & touchDial2) {
@@ -500,17 +511,18 @@ function onTouchMove(event) {
 		let deltaAngle = moveVec.angleTo (currentVec) * (ccw ? 1 : -1);
 
 		//  console.log (ccw);
-		dialAngle += deltaAngle;
-		dialAngle = clamp (dialAngle, -3*Math.PI, 3*Math.PI);
+		let delTmp = dialAngle;
+		delTmp += deltaAngle;
+		delTmp = clamp (delTmp, -3*Math.PI, 3*Math.PI);
 
 		//////////////////////////////////////////
-		let msg = dialAngle.toFixed(2); //`${(moveAngle-Math.PI/2).toFixed(2)}`;
+		let msg = delTmp.toFixed(2); //`${(moveAngle-Math.PI/2).toFixed(2)}`;
 		$('#msg').text(msg);
 
 		//console.log (`moveX: ${movePt[0].toFixed(2)}; currentX: ${currentDialPt[0].toFixed(2)}; ` );
 		currentDialPt = [movePt[0], movePt[1]];
-			
-		socket.emit ('angle from ctrl', dialAngle);
+		dialAngle = delTmp;
+		//socket.emit ('angle from ctrl', dialAngle);
 	}
   
 }
@@ -541,17 +553,18 @@ function onMouseMove(event) {
 	let deltaAngle = moveVec.angleTo (currentVec) * (ccw ? 1 : -1);
 
 	//  console.log (ccw);
-	dialAngle += deltaAngle;
-	dialAngle = clamp (dialAngle, -3*Math.PI, 3*Math.PI);
+	let delTmp = dialAngle;
+	delTmp += deltaAngle;
+	delTmp = clamp (delTmp, -3*Math.PI, 3*Math.PI);
 
 	//////////////////////////////////////////
-	let msg = dialAngle.toFixed(2); //`${(moveAngle-Math.PI/2).toFixed(2)}`;
+	let msg = delTmp.toFixed(2); //`${(moveAngle-Math.PI/2).toFixed(2)}`;
 	$('#msg').text(msg);
 
 	//console.log (`moveX: ${movePt[0].toFixed(2)}; currentX: ${currentDialPt[0].toFixed(2)}; ` );
 	currentDialPt = [movePt[0], movePt[1]];
-
-	socket.emit ('angle from ctrl', dialAngle);
+	dialAngle = delTmp;
+	
 }
 
 function onTouchEnd(event) {
@@ -561,9 +574,11 @@ function onTouchEnd(event) {
 
 		if (stillGassing === true) {  // gas pedal was down
 			stillGassing = false;
+			socket.emit ('picked gas from ctrl', false);
 			setTimeout (DGear, 0);
 		} else if(stillBraking === true){
 			stillBraking = false;
+			socket.emit ('picked brake from ctrl', false);
 			setTimeout (DGear, 0);
 		}
 	}
@@ -574,9 +589,11 @@ function onMouseUp(event) {
 
 	if (stillGassing === true) {  // gas pedal was down
 		stillGassing = false;
+		socket.emit ('picked gas from ctrl', false);
 		setTimeout (DGear, 0);
 	} else if(stillBraking === true){
 		stillBraking = false;
+		socket.emit ('picked brake from ctrl', false);
 		setTimeout (DGear, 0);
 	}
 }
@@ -586,8 +603,9 @@ function animate() {
 	renderer.render(scene, camera);
 	
 	var deltaT = clock.getDelta();
-
+	
 	dial.rotation.z = dialAngle;
+	
 	if(socket)
 		updateTachometer (gasLevel); 
 	
@@ -602,24 +620,16 @@ function animate() {
 	}
 	
 	if(socket){
-		if(stillGassing) 
-			socket.emit ('picked gas from ctrl', true);
-		else 
-			socket.emit ('picked gas from ctrl', false);
-		
-		if(stillBraking) 
-			socket.emit ('picked brake from ctrl', true);
-		else 
-			socket.emit ('picked brake from ctrl', false);
-	
 		if(currentDialPt){
 			socket.emit ('picked wheel from ctrl', true);
+			socket.emit ('angle from ctrl', dialAngle);
 		}
 		else{
 			socket.emit ('picked wheel from ctrl', false);
 			PDControl(deltaT);
 			if(dialAngle == 0.00000)
 				dialAngle = 0.00001;
+			socket.emit ('angle from ctrl', dialAngle);
 		}
 	}
 }

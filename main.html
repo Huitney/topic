@@ -43,7 +43,7 @@ $(function () {
 	socket = io();
 
 	socket.on('angle sent', function(msg) {
-		car.theta = (msg / (Math.PI*3)) * (Math.PI/7) * 2;
+		car.theta = msg / 21;
 		//console.log(msg, car.theta);
 	});
 	

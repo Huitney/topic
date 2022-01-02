@@ -67,8 +67,8 @@ export function cameraUpdate(fSlowDown, bSlowDown){
 	topCamera.lookAt(car.center);
 	thirdPVCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(30,0,0)));
 	thirdPVCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-30,18,0)));
-	GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(60,0,0)));
-	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-60,200,0)));
+	GPSCamera.lookAt (car.mesh.localToWorld (new THREE.Vector3(80,0,0)));
+	GPSCamera.position.copy (car.mesh.localToWorld (new THREE.Vector3 (-120,150,0)));
 }
 
 export function PDControl(dt){
