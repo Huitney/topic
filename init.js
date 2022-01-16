@@ -157,7 +157,7 @@ function render() {
     renderer.setViewport(0, 0, WW, HH);
     renderer.setScissor(0, 0, WW, HH);
     renderer.clear();
-	reversingLineVisible(false);
+	//reversingLineVisible(false);
     renderer.render(scene, camera);
 	
 	if(firstPV){
@@ -171,7 +171,7 @@ function render() {
 			car.brakeLightR.visible = false;
 			car.brakeLightL.visible = false;
 			treesVisible(false);
-			reversingLineVisible(true);
+			//reversingLineVisible(true);
 			renderer.render(scene, reversingCamera);	
 			treesVisible(true);
 			car.brakeLightR.visible = true;

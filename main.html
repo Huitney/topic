@@ -75,7 +75,8 @@ $(function () {
 	});
 	
 	socket.on('parking sent', function(msg) {
-		controllParkingMode(car.gear);
+		controllParkingMode();
+		console.log(car.gear)
 	});
 	
 	socket.on('picked wheel sent', function(msg) {
