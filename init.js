@@ -143,7 +143,7 @@ export function animate() {
 	treesLootAt();
 	
 	sign = car.theta > 0 ? 1: -1;
-	reversingLine(RC);
+	//reversingLine(RC);
   
     requestAnimationFrame(animate);
     render();

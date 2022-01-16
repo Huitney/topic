@@ -218,7 +218,7 @@ function makeCCWArc(r, theta1, theta2, center = [0, 0], colorName='white') {
 		polygonOffsetFactor: -20,
 		polygonOffsetUnits: -20
 	});
-	const arc = new Line2(geometry, matLine2);
+	const arc = new Line2(geometry, matLine2);//
 	arc.computeLineDistances();
 
 	return arc;

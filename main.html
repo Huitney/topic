@@ -20,7 +20,7 @@
 <button id="firstPV"><img src="https://i.imgur.com/AX5vRqY.png" style="width:80px;height:80px;"></button>
 
 <script type ="module">
-import * as THREE from "https://unpkg.com/three@0.125.1/build/three.module.js";
+import * as THREE from "https://unpkg.com/three/build/three.module.js";
 import {init, animate, car} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {poll} from "https://raw.githack.com/Huitney/topic/master/radarFunc.js";
 import {changePickedWheel, changePickedGas, changePickedBrake, controllParkingMode} from "https://raw.githack.com/Huitney/topic/master/carMove.js";
@@ -75,7 +75,7 @@ $(function () {
 	});
 	
 	socket.on('parking sent', function(msg) {
-		controllParkingMode();
+		controllParkingMode(car.gear);
 	});
 	
 	socket.on('picked wheel sent', function(msg) {
