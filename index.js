@@ -33,12 +33,12 @@ app.get('https://github.com/Huitney/topic/tree/master/models/', function (req, r
 
 io.on('connection', (socket) => {
 	socket.on('angle from ctrl', msg => {
-		//console.log ('from ctrl angle: ' + msg);
+		console.log ('from ctrl angle: ' + msg);
 		socket.broadcast.emit ('angle sent', msg);  // to all others    
 	});
 	
 	socket.on('value from ctrl', msg => {
-		//console.log ('from ctrl value: ' + msg);
+		console.log ('from ctrl value: ' + msg);
 		socket.broadcast.emit ('value sent', msg);  // to all others    
 	});
 	

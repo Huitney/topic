@@ -33,7 +33,7 @@ var dialAngle = 0, numberOfTurns = 0;
 var dial, tachometer;
 var gasIcon, brakeIcon;
 var pIcon, rIcon, nIcon, dIcon;
-var gear = 'p';
+var gear = 'p', auto = false;
 var currentDialPt = null;
 var touchDial1 = false, touchDial2 = false;
 var gasLevel = 0.1;
@@ -344,6 +344,7 @@ function onTouchStart(event) {
 		} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into parking
 			$('#msg').text('hit parking');
 			gear = 'r';
+			auto = true;
 			rIcon.material.color.set('white');
 			pIcon.material.color.set('dimgrey');
 			nIcon.material.color.set('dimgrey');
@@ -431,6 +432,7 @@ function onMouseDown(event) {
 	} else if (Math.abs(mouseX-22.5)<2.5 && Math.abs(mouseY+7.5)<2.5) {  // fall into parking
 		$('#msg').text('hit parking');
 		gear = 'r';
+		auto = true;
 		rIcon.material.color.set('white');
 		pIcon.material.color.set('dimgrey');
 		nIcon.material.color.set('dimgrey');
@@ -438,7 +440,7 @@ function onMouseDown(event) {
 		currentDialPt = null;
 		socket.emit ('gear from ctrl', 'r');
 		socket.emit ('parking from ctrl', tt++);
-		setTimeout(stopParking, 18000);
+		setTimeout(stopParking, 17700);
 	} else {
 		$('#msg').text('no hit');
 		currentDialPt = null;  
@@ -619,7 +621,7 @@ function animate() {
 		brakeIcon.material.color.set('red');
 	}
 	
-	if(socket){
+	if(socket & !auto){
 		if(currentDialPt){
 			socket.emit ('picked wheel from ctrl', true);
 			socket.emit ('angle from ctrl', dialAngle);
