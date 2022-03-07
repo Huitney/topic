@@ -12,6 +12,14 @@
 <audio id="longBeep" style="display:none" muted>
 <source src="https://huitney.github.io/topic/sounds/beep-13(long).wav" type='audio/wav'></audio>
 
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://unpkg.com/three/build/three.module.js"
+    }
+}
+</script>
+
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
 <script src="https://cdn.socket.io/4.1.3/socket.io.js"></script>
@@ -20,7 +28,8 @@
 <button id="firstPV"><img src="https://i.imgur.com/AX5vRqY.png" style="width:80px;height:80px;"></button>
 
 <script type ="module">
-import * as THREE from "https://unpkg.com/three/build/three.module.js";
+//import * as THREE from "https://unpkg.com/three/build/three.module.js";
+import * as THREE from 'three';
 import {init, animate, car} from "https://raw.githack.com/Huitney/topic/master/init.js";
 import {poll} from "https://raw.githack.com/Huitney/topic/master/radarFunc.js";
 import {changePickedWheel, changePickedGas, changePickedBrake, controllParkingMode} from "https://raw.githack.com/Huitney/topic/master/carMove.js";
